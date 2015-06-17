@@ -5,7 +5,7 @@
 
 
 // Our variables
-$base-font-family: Helvetica, Arial, sans-serif;
+$base-font-family: "Open Sans", Courier, Arial, sans-serif;
 $code-font:        Courier;
 $base-font-size:   16px;
 $small-font-size:  $base-font-size * 0.875;
@@ -13,13 +13,14 @@ $base-line-height: 1.5;
 
 $spacing-unit:     30px;
 
-$text-color:       #FFF;
-$background-color: #282828;
-$brand-color:      #2a7ae2;
-$link-color:       #8E44AD;
-$link-hover-color: #BE90D4;
-$string-color:     #F5D76E;
-$comment-color:    #666;
+$text-color:         #FFF;
+$background-color:   #282828;
+$brand-color:        #2a7ae2;
+$link-color:         #8E44AD;
+$link-hover-color:   #BE90D4;
+$string-hover-color: #F5D76E;
+$string-color:       #F5AB35;
+$comment-color:      #666;
 
 $grey-color:       #828282;
 $grey-color-light: lighten($grey-color, 40%);

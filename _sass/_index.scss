@@ -44,7 +44,7 @@
       position: relative;
       font-size: 1.5rem;
       .post-date {
-        @include transition(0s);
+        @include transition(0.3s);
         position: relative;
         color: $link-color;
         display: inline-block;
@@ -53,12 +53,12 @@
         }
       }
       .post-title {
-        @include transition(0s);
+        @include transition(0.3s);
         position: relative;
         color: $string-color;
         display: inline-block;
         &:hover {
-          color: $link-hover-color;
+          color: $string-hover-color;
         }
       }
     }

@@ -6,13 +6,28 @@
 }
 
 .single-post {
+  @include mobile-viewport { width: 95%; }
   position: relative;
   margin: 0 auto;
   width: 80%;
-  header {
+  .single-post-header {
+    position: relative;
     color: black;
+    padding: 0;
+    .title {
+      position: relative;
+      font-weight: 600;
+      font-size: 2rem;  
+    }
+    .date {
+      position: relative;
+      font-size: 1.1rem;
+    }
   }
-  article {
+  .single-post-content {
+    position: relative;
     color: black;
+    font-family: $base-font-family;
+    font-weight: 400;
   }
 }
