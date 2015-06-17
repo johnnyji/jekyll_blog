@@ -1,0 +1,13 @@
+# Site settings
+title: Johnny Ji
+email: johnny@johnnyji.com
+phone_number: 604-772-5528
+description: > # this means to ignore newlines until "baseurl:"
+  This is a collection of stuff that I found interesing and wanted to write about. Both as a hacker and a human being in training.
+baseurl: "" # the subpath of your site, e.g. /blog/
+url: "http://johnnyji.me" # the base hostname & protocol for your site
+twitter_username: johnnyisji
+github_username:  johnnyji
+
+# Build settings
+markdown: kramdown

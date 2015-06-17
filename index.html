@@ -1,0 +1,33 @@
+---
+layout: default
+---
+
+<div class="home">
+
+  <div class="index-header">
+    <h2 class="ruby class-header">
+      <span class="ruby keyword">def</span> MyBlog 
+      <span class="ruby class-inherit">&lt; JohnnyJi::Life</span>
+    </h2>
+    <p class="comment">
+      # This is stuff that I found interesting. So I decided to jot it down. {p.s. This is not valid Ruby code. Please don't try to run this.}
+    </p>
+  </div>
+
+  <div class="post-list">
+    {% for post in site.posts %}
+      <div class="post-container">
+        <div class="post-date">{{ post.date | date: "%b %-d, %Y" }}:</div>
+        <h3 class="post-title">
+          <a href="{{ post.url | prepend: site.baseurl }}">{{ post.title }}</a>
+        </h3>
+        <p class="post-preview">
+          {{ post.content | strip_html | truncatewords:50 }}
+        </p>
+      </div>
+    {% endfor %}
+  </div>
+
+  <h2 class="ruby keyword end-class">end</h2>
+
+</div>

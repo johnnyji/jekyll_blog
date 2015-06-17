@@ -1,0 +1,36 @@
+header {
+  position: relative;
+  width: 100%;
+  height: 70px;
+  padding: 0.7rem 4rem;
+  letter-spacing: 1px;
+  font-size: 1.62rem;
+  .header-title {
+    @include transition(0s);
+    position: relative;
+    display: inline-block;
+    font-family: $code-font;
+    color: white;
+    &:hover {
+      cursor: pointer;
+      top: -3px;
+    }
+  }
+  .social-media-links {
+    position: relative;
+    display: inline-block;
+    vertical-align: top;
+    color: white;
+    float: right;
+    .social-link {
+      padding: 0 0.5rem;
+      i {
+        color: white;
+        &:hover {
+          top: -3px;
+          cursor: pointer;
+        }
+      }
+    }
+  }
+}
