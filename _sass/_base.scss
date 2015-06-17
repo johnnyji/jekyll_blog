@@ -129,8 +129,6 @@ blockquote {
   }
 }
 
-
-
 /**
  * Code formatting
  */
@@ -143,6 +141,12 @@ pre, code {
 code {
   padding: 1px 5px;
   color: #f8f8f2;
+  .lineno {
+    color: #75715e;
+    margin-right: 5px;
+    padding-right: 10px;
+    border-right: 1px solid #75715e;
+  }
 }
 
 pre {
