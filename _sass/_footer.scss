@@ -1,4 +1,9 @@
 footer {
+  @include medium-viewport { font-size: 80% }
+  @include mobile-viewport { 
+    font-size: 60%;
+    span { display: none; }
+  }
   text-align: center;
   color: $comment-color;
   font-family: $code-font;

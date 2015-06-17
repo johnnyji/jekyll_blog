@@ -13,8 +13,11 @@ dl, dd, ol, ul, figure {
   */
 
 .ruby { font-weight: 400; } 
-.keyword { color: #96281B; font-weight: 600; }
-.class-inherit { font-style: italic; color: #26A65B; }
+.model { font-style: italic; color: #22A7F0; }
+.hash-key { color: $link-color; }
+.keyword { color: #96281B; }
+.string { color: $string-color; } 
+.class-inherit { color: #26A65B; }
 .comment { color: $comment-color; }
 
 
@@ -134,12 +137,12 @@ blockquote {
 pre, code {
   font-size: 15px;
   border-radius: 3px;
-  background-color: #eef;
+  background-color: #333333;
 }
 
 code {
   padding: 1px 5px;
-  color: darkgreen;
+  color: #eef;
 }
 
 pre {

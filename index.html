@@ -3,38 +3,38 @@ layout: default
 ---
 <div class="index-container">
   <div class="intro-container">
-    <h2 class="ruby class-header">
-      <span class="ruby keyword">def</span> MyBlog 
-      <span class="ruby class-inherit">&lt; JohnnyJi::Life</span>
-    </h2>
-    <p class="comment">
-      # This is stuff that I found interesting. So I decided to jot it down. If you were looking for my website, it's actually at 
-      <a class="website-link" href="http://johnnyji.com" target="_blank">johnnyji.com</a>.{p.s. This is not valid Ruby code. Please don't try to run this.}
-    </p>
-    </div>
+      <h2 class="intro-title">
+        <div class="comment"># I sometimes discover interesting</div>
+        <div class="comment"># things. So I made a website to</div>
+        <div class="comment"># keep track of them.</div>
+        <!-- <div>
+          @user = <span class="ruby model">User</span>.find_by(name: "Johnny")
+        </div>
+        <div>
+          @user.posts.all.order(created_at: :desc)
+        </div>
+        <span class="ruby model">Posts</span>.<span class="ruby keyword">where</span>(<span class="ruby hash-key">opinionated:</span> <span class="ruby hash-key">true</span>) -->
+      </h2>
+  </div>
 
-    <div class="post-list">
+  <div class="post-list">
 
     {% for post in site.posts %}
       <div class="post-container">
-        <div class="post-header">
-          { 
-            <a class="post-date" href="{{ post.url | prepend: site.baseurl }}">
-              {{ post.date | date: "%b %-d, %Y" }}:
-            </a>
-            <a class="post-title" href="{{ post.url | prepend: site.baseurl }}">
-            "{{ post.title }}"
-            </a> 
-          }
+        <div class="post-header">           
+          <a class="post-date" href="{{ post.url | prepend: site.baseurl }}">
+            {{ post.date | date: "%b %-d, %Y" }}:
+          </a>
+          <a class="post-title" href="{{ post.url | prepend: site.baseurl }}">
+          "{{ post.title }}"
+          </a>
         </div>
         <p class="post-preview">
-          {{ post.content | strip_html | truncatewords:35 }}
+          {{ post.content | strip_html | strip_newlines | truncatewords:25 }}
         </p>
       </div>
     {% endfor %}
 
-    </div>
-
-  <h2 class="ruby keyword end-class">end</h2>
+  </div>
 
 </div>

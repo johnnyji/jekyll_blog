@@ -11,3 +11,7 @@ github_username:  johnnyji
 
 # Build settings
 markdown: kramdown
+
+# kramdown:
+#   input: GFM
+#   syntax_highlighter: rouge
