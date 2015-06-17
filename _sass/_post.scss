@@ -1,0 +1,18 @@
+.single-post-container {
+  position: relative;
+  background-color: white;
+  padding: 2rem;
+  width: 100vw;
+}
+
+.single-post {
+  position: relative;
+  margin: 0 auto;
+  width: 80%;
+  header {
+    color: black;
+  }
+  article {
+    color: black;
+  }
+}

@@ -1,9 +1,7 @@
 ---
 layout: default
 ---
-
-<div class="home">
-
+<div class="index-container">
   <div class="intro-container">
     <h2 class="ruby class-header">
       <span class="ruby keyword">def</span> MyBlog 
@@ -13,21 +11,29 @@ layout: default
       # This is stuff that I found interesting. So I decided to jot it down. If you were looking for my website, it's actually at 
       <a class="website-link" href="http://johnnyji.com" target="_blank">johnnyji.com</a>.{p.s. This is not valid Ruby code. Please don't try to run this.}
     </p>
-  </div>
+    </div>
 
-  <div class="post-list">
+    <div class="post-list">
+
     {% for post in site.posts %}
       <div class="post-container">
-        <div class="post-date">{{ post.date | date: "%b %-d, %Y" }}:</div>
-        <h3 class="post-title">
-          <a href="{{ post.url | prepend: site.baseurl }}">{{ post.title }}</a>
-        </h3>
+        <div class="post-header">
+          { 
+            <a class="post-date" href="{{ post.url | prepend: site.baseurl }}">
+              {{ post.date | date: "%b %-d, %Y" }}:
+            </a>
+            <a class="post-title" href="{{ post.url | prepend: site.baseurl }}">
+            "{{ post.title }}"
+            </a> 
+          }
+        </div>
         <p class="post-preview">
-          {{ post.content | strip_html | truncatewords:50 }}
+          {{ post.content | strip_html | truncatewords:35 }}
         </p>
       </div>
     {% endfor %}
-  </div>
+
+    </div>
 
   <h2 class="ruby keyword end-class">end</h2>
 

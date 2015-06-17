@@ -2,7 +2,7 @@ footer {
   text-align: center;
   color: $comment-color;
   font-family: $code-font;
-  margin: 2.5rem 0;
+  margin: 2rem 0;
   a {
     @include transition(0.3s);
     color: inherit;

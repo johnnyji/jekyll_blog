@@ -5,83 +5,37 @@
 @import "index";
 @import "footer";
 @import "header";
+@import "post";
 
 
 /**
  * Page content
  */
+
 .page-container {
   position: relative;
   margin: 0 auto;
-  width: 60vw;
-  max-width: 700px;
-  @include medium-viewport {
-    width: 70vw;
-  }
-  @include larger-mobile-viewport {
-    width: 80vw;
-  }
-  @include mobile-viewport {
-    width: 90vw;
-  }
-}
-
-.page-heading {
-    font-size: 20px;
-}
-
-.post-list {
-    margin-left: 0;
-    list-style: none;
-    > li {
-        margin-bottom: $spacing-unit;
-    }
-}
-
-.post-meta {
-    font-size: $small-font-size;
-    color: $grey-color;
-}
-
-.post-link {
-    display: block;
-    font-size: 24px;
-}
-
-/**
- * Posts
- */
-.post-header {
-    margin-bottom: $spacing-unit;
-}
-
-.post-title {
-    font-size: 42px;
-    letter-spacing: -1px;
-    line-height: 1;
-    @include media-query($on-laptop) {
-        font-size: 36px;
-    }
+  width: 100%;
 }
 
 .post-content {
-    margin-bottom: $spacing-unit;
-    h2 {
-        font-size: 32px;
-        @include media-query($on-laptop) {
-            font-size: 28px;
-        }
+  margin-bottom: $spacing-unit;
+  h2 {
+    font-size: 32px;
+    @include media-query($on-laptop) {
+        font-size: 28px;
     }
-    h3 {
-        font-size: 26px;
-        @include media-query($on-laptop) {
-            font-size: 22px;
-        }
-    }
-    h4 {
-        font-size: 20px;
-        @include media-query($on-laptop) {
-            font-size: 18px;
-        }
-    }
+  }
+  h3 {
+      font-size: 26px;
+      @include media-query($on-laptop) {
+          font-size: 22px;
+      }
+  }
+  h4 {
+      font-size: 20px;
+      @include media-query($on-laptop) {
+          font-size: 18px;
+      }
+  }
 }

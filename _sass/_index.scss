@@ -1,3 +1,19 @@
+.index-container {
+  position: relative;
+  margin: 0 auto;
+  width: 60vw;
+  max-width: 700px;
+  @include medium-viewport {
+    width: 70vw;
+  }
+  @include larger-mobile-viewport {
+    width: 80vw;
+  }
+  @include mobile-viewport {
+    width: 90vw;
+  }
+}
+
 .intro-container {
   @include mobile-viewport { display: none; }
   @include larger-mobile-viewport { display: none; }
@@ -18,15 +34,38 @@
 }
 
 .post-list {
-  
-}
-
-.post-container {
-  
-}
-
-.post-preview {
-  
+  position: relative;
+  .post-container {
+    position: relative;
+    margin: 2.5rem 0;
+    .post-header {
+      @include mobile-viewport { font-size: 1rem; };
+      @include medium-viewport { font-size: 1.25rem; };
+      position: relative;
+      font-size: 1.5rem;
+      .post-date {
+        @include transition(0s);
+        position: relative;
+        color: $link-color;
+        display: inline-block;
+        &:hover {
+          color: $link-hover-color;
+        }
+      }
+      .post-title {
+        @include transition(0s);
+        position: relative;
+        color: $string-color;
+        display: inline-block;
+        &:hover {
+          color: $link-hover-color;
+        }
+      }
+    }
+    .post-preview {
+      font-family: $base-font-family;
+    }
+  } 
 }
 
 .end-class {
