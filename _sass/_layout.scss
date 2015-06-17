@@ -18,6 +18,9 @@
   @include medium-viewport {
     width: 70vw;
   }
+  @include larger-mobile-viewport {
+    width: 80vw;
+  }
   @include mobile-viewport {
     width: 90vw;
   }

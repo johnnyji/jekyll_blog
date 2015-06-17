@@ -6,6 +6,11 @@ header {
   letter-spacing: 1px;
   font-size: 1.62rem;
   .header-title {
+    @include mobile-viewport {
+      margin: 0.5rem 0;
+      width: 100%;
+      text-align: center;
+    }
     @include transition(0s);
     position: relative;
     display: inline-block;
@@ -17,12 +22,18 @@ header {
     }
   }
   .social-media-links {
+    @include mobile-viewport {
+      margin: 0.5rem 0;
+      width: 100%;
+      text-align: center;
+    }
     position: relative;
     display: inline-block;
     vertical-align: top;
     color: white;
     float: right;
     .social-link {
+      @include transition(0s);
       padding: 0 0.5rem;
       i {
         color: white;
