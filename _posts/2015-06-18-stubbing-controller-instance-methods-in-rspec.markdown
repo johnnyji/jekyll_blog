@@ -8,8 +8,9 @@ categories: RSpec
 Recently I've had to restructure our [company's][fitplan] API at work and part of that writing new request specs for everything.
 
 One HUGE headache I ran into while writing request specs was bypassing controller `before_actions` such as `require_user`, as well as stubbing out crucial controller instance methods like `current_user`.
+<br><br>
 
-I spent a good few days researching online for different methods, and I don't exaggerate when I say that I tried nearly everything:
+I tried searching online; I don't exaggerate when I say that I tried nearly everything:
 
 {% highlight ruby %}
 let(:user) { FactoryGirl.create(:user) }
@@ -26,11 +27,11 @@ allow(controller).to receive(:current_user).and_return(user)
 allow(ApplicationController)to receive(:current_user).and_return(user)
 #=> by this point I was ready to give up...
 {% endhighlight %}
-<br>
 
 You get the idea... Hours of searching Stack Overflow and Relish and different docs didn't yield me the answer I needed.
+<br><br>
 
-Then I realized that `current_user`, `require_login` and all these methods were INSTANCE METHODS. Not class methods. <strong>Here's the correct way to stub out instance methods in RSpec:</strong>
+Then I realized that `current_user`, `require_login` and all these methods were <strong>INSTANCE METHODS</strong>. Not class methods. <strong>Here's the correct way to stub out instance methods in RSpec:</strong>
 
 {% highlight ruby %}
 let(:user) { FactoryGirl.create(:user) }
@@ -45,7 +46,7 @@ end
 {% endhighlight %}
 
 This RSpec helper allows you to stub out any instance method that exists on any class. However, my major use for this has been for stubbing out controller methods such as `current_user`, any controller before actions and <strong>access tokens</strong> if I'm doing request specs on a Rails API.
-<br>
+<br><br>
 
 <em>Example of controller action to test:</em>
 
@@ -64,6 +65,7 @@ class UsersController < Api::ApplicationController
 
 end
 {% endhighlight %}
+<br>
 
 In this example, we are using the [Doorkeeper gem][doorkeeper] to protect the controller against unauthorized API calls (the following example will work with other token authorization methods too, the process is similar).
 
@@ -87,11 +89,11 @@ end
 
 #=> 1 example, 1 success
 {% endhighlight %}
-<br>
 
-We have now succesfully stubbed out `current_user` and `doorkeeper_token` and can now successfully test our controller#action!
+We have now succesfully stubbed out `current_user` and `doorkeeper_token` and can now successfully test our `controller#action`!
+<br><br>
 
-BUT WAIT. There's a bunch of code used just for stubbing, it would suck if we had to repeat that code over and over again for every request spec that we create... So let's move that into a spec support in order to write less code!
+<strong>BUT WAIT.</strong> There's a bunch of code used just for stubbing, it would suck if we had to repeat that code over and over again for every request spec that we create... So let's move that into a spec support in order to write less code!
 
 {% highlight ruby %}
 # /app/spec/support/api_controller_helper.rb
@@ -135,7 +137,7 @@ end
 
 It took me quite a while to figure this out but in the end it was more than worth it. Armed with this knowledge, I'm sure you'll be able to bang out pages and pages of request specs in no time!
 
-Fuck yeah.
+<strong>Fuck yeah.</strong>
 
 
 
