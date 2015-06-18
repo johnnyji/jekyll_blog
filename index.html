@@ -21,16 +21,21 @@ layout: default
 
     {% for post in site.posts %}
       <div class="post-container">
-        <div class="post-header">           
-          <a class="post-date" href="{{ post.url | prepend: site.baseurl }}">
-            {{ post.date | date: "%b %-d, %Y" }}:
-          </a>
-          <a class="post-title" href="{{ post.url | prepend: site.baseurl }}">
-          "{{ post.title }}"
-          </a>
+        <div class="post-header">
+          <div>
+            <a class="post-date" href="{{ post.url | prepend: site.baseurl }}">
+              {{ post.date | date: "%b %-d, %Y" }}:
+            </a>
+          </div>
+          <div>
+            <a class="post-title" href="{{ post.url | prepend: site.baseurl }}">
+              {{ post.title }}
+            </a>
+          </div>
         </div>
+
         <p class="post-preview">
-          {{ post.content | strip_html | strip_newlines | truncatewords:25 }}
+          {{ post.content | strip_html | strip_newlines | truncatewords:20 }}
         </p>
       </div>
     {% endfor %}

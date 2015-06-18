@@ -27,6 +27,7 @@ class Teacher
   has_one :account, as: :accountable
 end
 {% endhighlight %}
+<br>
  
 Breaking down the models this way allows us to seperate the concerns of authentication, profile information and teacher/student specific information into their own datasets. I favour this over STI because here, there are no `nil` columns anywhere.
 
@@ -50,6 +51,7 @@ FactoryGirl.define do
   end
 end
 {% endhighlight %}
+<br>
 
 We associate the factories to their polymorphicable (is that a word?), because in the model, they belong to their polymorphicable. Now it's time to create the student and teacher factories:
 
@@ -71,7 +73,8 @@ FactoryGirl.define do
   end
 end
 {% endhighlight %}
+<br>
 
-For the sake of scrolling, I won't create the teacher factory because it's the same idea. When creating the factories for the models that have the polymorphic model, you simply add on the polymorphic model in an `after(:build)` and ` after(:create)` block and specify the polymorphicable to be the model the factory is for.
+For the sake of scrolling, I won't create the teacher factory because it's the same idea. When creating the factories for the models that have the polymorphic model, you simply add on the polymorphic model in an `after(:build)` and `after(:create)` block and specify the polymorphicable to be the model the factory is for.
 
 <b>TADA. Polymorphic associations in FactoryGirl... Done!

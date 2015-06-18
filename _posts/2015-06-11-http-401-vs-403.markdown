@@ -1,0 +1,18 @@
+---
+layout: post
+title: "HTTP 401 vs. 403"
+date: 2015-06-11
+categories: HTTP
+---
+
+So today I understood the difference between a 401 and 403 HTTP status code. Which is commonly mistaken for the same response. But here's the distinguishing difference.
+
+<b>HTTP 401 (Unauthorized)
+
+This is the server saying <em>"You are either unauthenticated or authenticated incorrectly"</em>, and therefore access to the content is blocked, until the client is authorized.
+
+ 
+
+<b>HTTP 403 (Forbidden)
+
+This is the server saying <em>"I know who you are, you are authenticated, however you don't have the correct permission level to access this content".</em> Such as a user who is authenticated, but trying to access admin content.

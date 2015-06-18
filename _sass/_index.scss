@@ -1,18 +1,9 @@
 .index-container {
   position: relative;
-  margin: 0 0 0 4rem;
+  margin: 0 4rem;
   padding-bottom: 0.5rem;
-  width: 60vw;
+  width: 100vw;
   max-width: 700px;
-  @include medium-viewport {
-    width: 70vw;
-  }
-  @include larger-mobile-viewport {
-    width: 80vw;
-  }
-  @include mobile-viewport {
-    width: 90vw;
-  }
 }
 
 .intro-container {
@@ -25,7 +16,6 @@
     position: relative;
     margin: 0 auto;
     font-size: 1.5rem;
-    // text-align: center;
     width: 100%;
   }
   .website-link {
@@ -38,13 +28,6 @@
 }
 
 .post-list {
-  // position: relative;
-  // margin: 0 auto;
-  // width: 60vw;
-  // max-width: 700px;
-  // @include medium-viewport { width: 70vw; }
-  // @include larger-mobile-viewport { width: 80vw; }
-  // @include mobile-viewport { width: 90vw; }
   .post-container {
     position: relative;
     margin: 2.5rem 0;
@@ -55,24 +38,22 @@
       font-size: 1.5rem;
       .post-date {
         @include transition(0.3s);
-        position: relative;
+        font-size: 1.2rem;
         color: $link-color;
-        display: inline-block;
         &:hover {
           color: $link-hover-color;
         }
       }
       .post-title {
         @include transition(0.3s);
-        position: relative;
         color: $string-color;
-        display: inline-block;
         &:hover {
           color: $string-hover-color;
         }
       }
     }
     .post-preview {
+      margin-top: 0.3rem;
     }
   } 
 }
