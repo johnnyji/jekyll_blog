@@ -1,5 +1,5 @@
 .index-container {
-  @include larger-mobile-viewport { width: 70vw; margin: 0 4rem; }
+  @include larger-mobile-viewport { width: 90vw; margin: 0 4rem; }
   @include medium-viewport { width: 85vw; margin: 0 4rem; }
   @include mobile-viewport { width: 85vw; margin: 0 2rem; }
   position: relative;
@@ -12,6 +12,8 @@
 .intro-container {
   @include mobile-viewport { display: none; }
   @include larger-mobile-viewport { display: none; }
+  @include medium-viewport { font-size: 1.8rem; }
+  margin: 3rem 0 1rem 0;
   .intro-title {
     position: relative;
     margin: 0 auto;
@@ -33,9 +35,18 @@
 
 }
 
+.last-closing-brace {
+  @include mobile-viewport { visibility: hidden; }
+  @include larger-mobile-viewport { display: none; }
+  font-size: 2rem;
+  margin-bottom: 3rem;
+}
+
 .get-blog-posts {
+  @include larger-mobile-viewport { margin-left: 0; }
   @include mobile-viewport {
-    .brace { display: none; }
+    .brace { display: none }
+    margin: 0 auto;
     font-size: 1.7rem;
   }
   font-size: 1.8rem;
@@ -43,6 +54,8 @@
 }
 
 .return {
+  @include mobile-viewport { margin-left: 1rem; font-size: 1.7rem; }
+  @include larger-mobile-viewport { margin-left: 2rem; }
   font-size: 1.8rem;
   margin-left: 3rem; 
 }
@@ -53,6 +66,8 @@
 
 .post-list {
   .post-container {
+    @include mobile-viewport { margin: 0 1rem; }
+    @include larger-mobile-viewport { margin: 0 2rem; }
     position: relative;
     margin-left: 2rem;
     max-width: 700px;

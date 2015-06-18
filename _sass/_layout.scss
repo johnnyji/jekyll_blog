@@ -17,6 +17,7 @@
 }
 
 .page-container {
+  @include larger-mobile-viewport { margin-top: 2rem; }
   position: relative;
   margin: 1rem auto 0 auto;
   width: 100%;
