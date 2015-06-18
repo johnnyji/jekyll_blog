@@ -47,9 +47,9 @@
       }
       .post-title {
         @include transition(0.3s);
-        color: $string-color;
+        color: $link-color;
         &:hover {
-          color: $string-hover-color;
+          color: $link-hover-color;
         }
       }
     }
