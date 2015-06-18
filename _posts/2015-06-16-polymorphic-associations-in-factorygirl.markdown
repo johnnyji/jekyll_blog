@@ -4,7 +4,7 @@ title:  "Polymorphic Associations in FactoryGirl"
 date:   2015-06-16 13:29:08
 categories: RSpec
 ---
-Before we begin. Please set `config.use_transactional_fixtures = true` in your spec helper. I found that when I wasn't doing this, Factory Girl was creating duplicate instances of my models and because of that, validations were failing.
+Before we begin. A helpful note is to set `config.use_transactional_fixtures = true` in your spec helper. I found that when I wasn't doing this, Factory Girl was creating duplicate instances of my models and because of that, validations were failing.
 
 So recently at work I've been refactoring the user models into polymorphic associations. Part of that process was introducing new factories for these polymorphic associations in Factory Girl. The associations are as follows:
 
