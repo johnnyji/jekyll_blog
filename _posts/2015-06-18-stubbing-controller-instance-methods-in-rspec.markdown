@@ -5,9 +5,9 @@ date: 2015-06-18
 categories: RSpec
 ---
 
-Recently I've had to restructure our [company's][fitplan] API at work and part of that writing new request specs for everything.
+Recently I've had to restructure our [company's][fitplan] API, and part of that was writing new request specs for everything.
 
-One HUGE headache I ran into while writing request specs was bypassing controller `before_actions` such as `require_user`, as well as stubbing out crucial controller instance methods like `current_user`.
+One <strong>HUGE</strong> headache I ran into while writing request specs for the API was bypassing controller `before_actions` such as `require_user`, as well as stubbing out crucial controller instance methods like `current_user`.
 <br><br>
 
 I tried searching online; I don't exaggerate when I say that I tried nearly everything:
