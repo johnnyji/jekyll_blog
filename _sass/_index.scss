@@ -1,4 +1,7 @@
 .index-container {
+  @include larger-mobile-viewport { width: 70vw; margin: 0 4rem; }
+  @include medium-viewport { width: 85vw; margin: 0 4rem; }
+  @include mobile-viewport { width: 85vw; margin: 0 2rem; }
   position: relative;
   margin: 0 4rem;
   padding-bottom: 0.5rem;
@@ -11,8 +14,6 @@
   @include larger-mobile-viewport { display: none; }
   margin: 2.5rem 0;
   .intro-title {
-    @include medium-viewport { font-size: 2.2rem;  }
-    @include mobile-viewport { font-size: 2rem; }
     position: relative;
     margin: 0 auto;
     font-size: 1.5rem;
@@ -53,6 +54,7 @@
       }
     }
     .post-preview {
+      color: $comment-color;
       margin-top: 0.3rem;
     }
   } 

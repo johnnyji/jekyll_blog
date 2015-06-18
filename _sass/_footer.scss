@@ -1,7 +1,7 @@
 footer {
-  @include medium-viewport { font-size: 80% }
+  @include medium-viewport { font-size: 90% }
   @include mobile-viewport { 
-    font-size: 60%;
+    font-size: 70%;
     span { display: none; }
   }
   text-align: center;
