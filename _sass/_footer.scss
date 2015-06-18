@@ -13,7 +13,6 @@ footer {
   font-size: 1.2rem;
   margin: 2rem 0;
   a {
-    @include transition(0.3s);
     color: inherit;
   }
 }

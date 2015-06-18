@@ -77,7 +77,6 @@
       position: relative;
       font-size: 1.6rem;
       .post-title {
-        @include transition(0.3s);
         color: $string-color;
         &:hover {
           color: $string-hover-color;

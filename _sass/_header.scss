@@ -12,7 +12,6 @@ header {
       width: 100%;
       text-align: center;
     }
-    @include transition(0s);
     position: relative;
     display: inline-block;
     font-family: $code-font;
@@ -35,7 +34,6 @@ header {
     color: whitesmoke;
     float: right;
     .social-link {
-      @include transition(0s);
       padding: 0 0.5rem;
       i {
         color: whitesmoke;
