@@ -1,12 +1,14 @@
 footer {
-  @include medium-viewport { font-size: 90% }
-  @include mobile-viewport { 
-    font-size: 70%;
-    span { display: none; }
+  @include medium-viewport { font-size: 1.15rem; span { display: none; }}
+  @include mobile-viewport { display: none; }
+  @include larger-mobile-viewport { 
+    font-size: 1rem; 
+    span { display: none; } 
   }
   text-align: center;
-  color: $comment-color;
+  color: #fff;
   font-family: $code-font;
+  font-size: 1.2rem;
   margin: 2rem 0;
   a {
     @include transition(0.3s);
