@@ -4,42 +4,38 @@ layout: default
 <div class="index-container">
   <div class="intro-container">
       <h2 class="intro-title">
-        <div class="comment"># I sometimes discover interesting</div>
-        <div class="comment"># things. So I made a website to</div>
-        <div class="comment"># keep track of them.</div>
-        <!-- <div>
-          @user = <span class="ruby model">User</span>.find_by(name: "Johnny")
-        </div>
-        <div>
-          @user.posts.all.order(created_at: :desc)
-        </div>
-        <span class="ruby model">Posts</span>.<span class="ruby keyword">where</span>(<span class="ruby hash-key">opinionated:</span> <span class="ruby hash-key">true</span>) -->
+        <span class="javascript model">class</span> <span class="javascript class">MyBlog</span> <span class="javascript keyword">extends</span> <span class="javascript class">JohnnyJi</span> {
       </h2>
   </div>
 
   <div class="post-list">
+    <div class="get-blog-posts">
+      <span class="javascript keyword">get</span> blogPosts() <span class="brace">{</span>
 
-    {% for post in site.posts %}
-      <div class="post-container">
-        <div class="post-header">
-          <div>
-            <a class="post-date" href="{{ post.url | prepend: site.baseurl }}">
-              {{ post.date | date: "%b %-d, %Y" }}:
-            </a>
-          </div>
-          <div>
-            <a class="post-title" href="{{ post.url | prepend: site.baseurl }}">
-              {{ post.title }}
-            </a>
-          </div>
-        </div>
+      <div class="return">
+        <span class="javascript keyword">return</span> {
+          {% for post in site.posts %}
+            <div class="post-container">
+              <div class="post-header">
+                <div>
+                  <a class="post-title" href="{{ post.url | prepend: site.baseurl }}">
+                    {{ post.title }}
+                  </a>
+                </div>
+              </div>
 
-        <p class="post-preview">
-          # {{ post.content | strip_html | strip_newlines | truncatewords:20 }}
-        </p>
+              <p class="post-preview">
+                <strong><em>{{ post.date | date: "%b %-d, %Y" }}</em></strong> // {{ post.content | strip_html | strip_newlines | truncatewords:20 }}
+              </p>
+            </div>
+          {% endfor %}
       </div>
-    {% endfor %}
+
+      <div class="return">}</div>
+
+    </div>
+    <div class="get-blog-posts">}</div>
 
   </div>
-
+  <span style="font-size:2rem;">}</span>
 </div>

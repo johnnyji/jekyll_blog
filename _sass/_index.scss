@@ -6,17 +6,17 @@
   margin: 0 4rem;
   padding-bottom: 0.5rem;
   width: 100vw;
-  max-width: 700px;
+  // max-width: 700px;
 }
 
 .intro-container {
   @include mobile-viewport { display: none; }
   @include larger-mobile-viewport { display: none; }
-  margin: 2.5rem 0;
+  // margin: 2.5rem 0;
   .intro-title {
     position: relative;
     margin: 0 auto;
-    font-size: 1.5rem;
+    font-size: 2rem;
     width: 100%;
   }
   .website-link {
@@ -28,15 +28,30 @@
 
 }
 
+.get-blog-posts {
+  @include mobile-viewport {
+    .brace { display: none; }
+    font-size: 1.7rem;
+  }
+  font-size: 1.8rem;
+  margin-left: 3rem;
+}
+
+.return {
+  font-size: 1.8rem;
+  margin-left: 3rem; 
+}
+
 .post-list {
   .post-container {
     position: relative;
-    margin: 2.5rem 0;
+    margin-left: 2rem;
+    max-width: 700px;
     .post-header {
       @include mobile-viewport { font-size: 1rem; };
       @include medium-viewport { font-size: 1.25rem; };
       position: relative;
-      font-size: 1.5rem;
+      font-size: 1.8rem;
       .post-date {
         @include transition(0.3s);
         font-size: 1.2rem;
@@ -55,6 +70,7 @@
     }
     .post-preview {
       color: $comment-color;
+      font-size: 1rem;
       margin-top: 0.3rem;
     }
   } 

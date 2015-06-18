@@ -13,9 +13,11 @@ dl, dd, ol, ul, figure {
   */
 
 .ruby { font-weight: 400; } 
+.javascript { font-weight: 400; } 
+.class { color: #61B329; }
 .model { font-style: italic; color: #22A7F0; }
 .hash-key { color: $link-color; }
-.keyword { color: #96281B; }
+.keyword { color: lighten(#96281B, 6%); }
 .string { color: $string-color; } 
 .class-inherit { color: #26A65B; }
 .comment { color: $comment-color; }
