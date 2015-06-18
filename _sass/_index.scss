@@ -18,7 +18,7 @@
     font-size: 2rem;
     width: 100%;
     a {
-      color: #fff;
+      color: whitesmoke;
       &:hover {
         color: $link-hover-color;
       }
@@ -47,6 +47,10 @@
   margin-left: 3rem; 
 }
 
+.posts {
+  margin: 0.5rem auto;
+}
+
 .post-list {
   .post-container {
     position: relative;
@@ -69,6 +73,9 @@
       color: $comment-color;
       font-size: 1rem;
       margin-top: 0.3rem;
+      em {
+        color: whitesmoke;
+      }
     }
   }
 }

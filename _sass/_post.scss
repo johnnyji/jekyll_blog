@@ -1,15 +1,9 @@
-.single-post-container {
-  position: relative;
-  background-color: white;
-  padding: 3rem;
-  width: 100vw;
-}
-
 .single-post {
   @include mobile-viewport { width: 95%; }
   position: relative;
   margin: 0 auto;
   width: 80%;
+  padding: 3rem;
   .single-post-header {
     position: relative;
     color: black;
@@ -18,8 +12,6 @@
       position: relative;
       font-weight: 600;
       font-size: 2rem;  
-      #html-tag-left { padding-right: 8px; }
-      #html-tag-right { padding-left: 2px; }
     }
     .date {
       position: relative;
@@ -29,7 +21,7 @@
   }
   .single-post-content {
     position: relative;
-    color: black;
+    color: $background-color;
     font-family: $base-font-family;
     font-weight: 400;
     margin-bottom: 5rem;
