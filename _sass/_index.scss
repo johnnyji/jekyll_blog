@@ -3,21 +3,26 @@
   @include medium-viewport { width: 85vw; margin: 0 4rem; }
   @include mobile-viewport { width: 85vw; margin: 0 2rem; }
   position: relative;
-  margin: 0 4rem;
+  margin: 0 auto;
   padding-bottom: 0.5rem;
   width: 100vw;
-  // max-width: 700px;
+  max-width: 800px;
 }
 
 .intro-container {
   @include mobile-viewport { display: none; }
   @include larger-mobile-viewport { display: none; }
-  // margin: 2.5rem 0;
   .intro-title {
     position: relative;
     margin: 0 auto;
     font-size: 2rem;
     width: 100%;
+    a {
+      color: #fff;
+      &:hover {
+        color: $link-hover-color;
+      }
+    }
   }
   .website-link {
     color: $comment-color;
@@ -51,20 +56,12 @@
       @include mobile-viewport { font-size: 1rem; };
       @include medium-viewport { font-size: 1.25rem; };
       position: relative;
-      font-size: 1.8rem;
-      .post-date {
-        @include transition(0.3s);
-        font-size: 1.2rem;
-        color: $link-color;
-        &:hover {
-          color: $link-hover-color;
-        }
-      }
+      font-size: 1.6rem;
       .post-title {
         @include transition(0.3s);
-        color: $link-color;
+        color: $string-color;
         &:hover {
-          color: $link-hover-color;
+          color: $string-hover-color;
         }
       }
     }
@@ -73,5 +70,5 @@
       font-size: 1rem;
       margin-top: 0.3rem;
     }
-  } 
+  }
 }

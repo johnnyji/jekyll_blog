@@ -4,13 +4,13 @@ layout: default
 <div class="index-container">
   <div class="intro-container">
       <h2 class="intro-title">
-        <span class="javascript model">class</span> <span class="javascript class">MyBlog</span> <span class="javascript keyword">extends</span> <span class="javascript class">JohnnyJi</span> {
+        <span class="javascript model">class</span> <span class="javascript"><a href="http://johnnyji.me">MyBlog</a></span> <span class="javascript keyword">extends</span> <span class="javascript"><a href="http://johnnyji.com" target="_blank">JohnnyJi</a></span> {
       </h2>
   </div>
 
   <div class="post-list">
     <div class="get-blog-posts">
-      <span class="javascript keyword">get</span> blogPosts() <span class="brace">{</span>
+      <span class="javascript keyword">get</span> <span class="javascript class">blogPosts</span>() <span class="brace">{</span>
 
       <div class="return">
         <span class="javascript keyword">return</span> {
@@ -25,7 +25,7 @@ layout: default
               </div>
 
               <p class="post-preview">
-                <strong><em>{{ post.date | date: "%b %-d, %Y" }}</em></strong> // {{ post.content | strip_html | strip_newlines | truncatewords:20 }}
+                <em style="color:#fff;">{{ post.date | date: "%b %-d, %Y" }}:</em> // {{ post.content | strip_html | strip_newlines | truncatewords:20 }}
               </p>
             </div>
           {% endfor %}

@@ -5,8 +5,10 @@ footer {
     font-size: 1rem; 
     span { display: none; } 
   }
+  position: relative;
   text-align: center;
-  color: #fff;
+  clear: both;
+  color: $comment-color;
   font-family: $code-font;
   font-size: 1.2rem;
   margin: 2rem 0;
