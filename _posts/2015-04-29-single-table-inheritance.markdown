@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "STI stands for Single Table Inheritance"
+title: "STI Stands for Single Table Inheritance"
 date: 2015-04-29
 categories: Rails
 ---

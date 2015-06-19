@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Difference between procs and lambdas"
+title: "Difference Between Procs and Lambdas"
 date: 2015-04-02
 categories: Ruby
 ---

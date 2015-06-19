@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Stubbing controller instance methods in RSpec (How actually stub current user!)"
+title: "How to Stub Controller Methods in RSpec Request Specs! (FTW)"
 date: 2015-06-18
 categories: RSpec
 ---

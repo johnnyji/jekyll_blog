@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Importance of labels in forms"
+title: "Importance of Labels in Forms"
 date: 2015-04-29
 categories: HTML
 ---

@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Lighthouse Labs W2D3: RSpec stubs and mocks"
+title: "Lighthouse Labs W2D3: RSpec Stubs and Mocks"
 date: 2015-04-08
 categories: RSpec
 ---

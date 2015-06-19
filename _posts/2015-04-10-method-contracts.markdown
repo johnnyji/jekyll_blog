@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Method contracts"
+title: "Method Contracts"
 date: 2015-04-10
 categories: Theory
 ---

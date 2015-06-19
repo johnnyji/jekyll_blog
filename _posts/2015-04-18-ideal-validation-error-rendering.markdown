@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Ideal validation error rendering!"
+title: "Ideal Validation Error Rendering in ERB!"
 date: 2015-04-18
 categories: Rails
 ---

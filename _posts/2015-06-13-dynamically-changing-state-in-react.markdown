@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "Dynamic state changing in React.js"
+title:  "Dynamic State Changing in React.js"
 date:   2015-06-13
 categories: React
 ---

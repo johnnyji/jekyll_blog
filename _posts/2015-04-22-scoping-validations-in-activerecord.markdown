@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Scoping validations in ActiveRecord"
+title: "Scoping Validations in ActiveRecord"
 date: 2015-04-22
 categories: Rails
 ---

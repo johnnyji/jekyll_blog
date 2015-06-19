@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Lib folder vs. Services in Rails"
+title: "Lib Folder vs. Services in Rails"
 date: 2015-05-19
 categories: Rails
 ---

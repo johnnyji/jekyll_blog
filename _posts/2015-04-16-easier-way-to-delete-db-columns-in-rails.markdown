@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Easier way to delete DB columns in Rails"
+title: "Easier Way to Delete DB Columns in Rails"
 date: 2015-04-16
 categories: Rails
 ---

@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Update addon in React.js"
+title: "Update Addon in React.js"
 date: 2015-06-03
 categories: React
 ---

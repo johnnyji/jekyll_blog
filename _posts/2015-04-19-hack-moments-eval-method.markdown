@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Hack moments: eval method"
+title: "Hack Moments: eval"
 date: 2015-04-19
 categories: Rails
 ---
