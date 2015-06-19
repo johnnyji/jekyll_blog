@@ -15,7 +15,7 @@ header {
     position: relative;
     display: inline-block;
     font-family: $code-font;
-    color: whitesmoke;
+    color: #FAFAFA;
     &:hover {
       cursor: pointer;
       top: -3px;
@@ -31,12 +31,12 @@ header {
     position: relative;
     display: inline-block;
     vertical-align: top;
-    color: whitesmoke;
+    color: #FAFAFA;
     float: right;
     .social-link {
       padding: 0 0.5rem;
       i {
-        color: whitesmoke;
+        color: #FAFAFA;
         &:hover {
           top: -3px;
           cursor: pointer;
