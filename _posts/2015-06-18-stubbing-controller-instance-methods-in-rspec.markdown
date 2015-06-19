@@ -54,7 +54,7 @@ This RSpec helper allows you to stub out any instance method that exists on any 
 # Here we have users#show which will 
 # render the occupation of the user in json
 
-class UsersController < Api::ApplicationController
+class Api::UsersController < Api::ApplicationController
   doorkeeper_for :all
   before_action: require_user
 
@@ -112,6 +112,7 @@ RSpec.configure |config| do
   config.include ApiControllerHelper
 end
 {% endhighlight %}
+<br>
 
 In the end, our spec will look like this:
 
@@ -136,8 +137,12 @@ end
 <br>
 
 It took me quite a while to figure this out but in the end it was more than worth it. Armed with this knowledge, I'm sure you'll be able to bang out pages and pages of request specs in no time!
+<br><br>
 
-<strong>Fuck yeah.</strong>
+<strong>TL;DR</strong> Use `allow_any_instance_of(Object).to receive(method_on_object).and_return(mock_method_used_for_testing)` to mock an instance method on any object. Such as `current_user` on a controller.
+<br><br><br>
+
+<h3><strong>Fuck yeah.</strong></h3>
 
 
 

@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "Ideal validation error rendering!"
-date: 2014-04-18
+date: 2015-04-18
 categories: Rails
 ---
 
