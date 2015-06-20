@@ -83,7 +83,7 @@ describe "GET /users/show " do
   end
 
   it "should respond with status 200" do
-    expect(response.body).to eq("200")
+    expect(response.code).to eq("200")
   end
 end
 
