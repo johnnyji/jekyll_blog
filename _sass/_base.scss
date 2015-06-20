@@ -11,8 +11,7 @@ dl, dd, ol, ul, figure {
 /**
   * Ruby Styling
   */
-
-.ruby { font-weight: 400; } 
+ 
 .javascript { font-weight: 400; } 
 .class { color: #61B329; }
 .model { font-style: italic; color: #22A7F0; }
@@ -136,16 +135,12 @@ blockquote {
 pre, code {
   font-size: 15px;
   border-radius: 3px;
-  background-color: #333333;
-  outline: 0px solid transparent;
-  &:focus {
-    outline: 0px solid transparent;
-  }
 }
 
 code {
   padding: 1px 5px;
-  color: #f8f8f2;
+  background-color: darken(whitesmoke, 10%);
+  color: darken(#bf616a, 5%);
   .lineno {
     color: #75715e;
     margin-right: 5px;
@@ -159,6 +154,7 @@ pre {
   overflow-x: auto;
   white-space: pre-wrap;
   > code {
+    background-color: inherit;
     border: 0;
     padding-right: 0;
     padding-left: 0;
