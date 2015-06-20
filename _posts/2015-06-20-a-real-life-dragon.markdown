@@ -22,7 +22,7 @@ I don't read many books but one of my favourites was his book called [Decisions]
 
 Along with many other influencers of mine, Jim is someone who helped me realize that I want to create my own path. He helped me realize that I was not born into this world to just breed and die; but to leave my mark and to change this world in a way that would otherwise be impossible without me.
 
-<strong>So here's a digital toast.</strong> Thank you for your amazing story Jim. Because of you, I dropped out of school and followed me own path. Because of you I decided to take the road less travelled; and because of you, my life will never be the same. 
+<strong>So here's a digital toast.</strong> Thank you for your amazing story Jim. Because of you, I dropped out of school and followed my own path. Because of you I decided to take the road less travelled; and because of you, my life will never be the same. 
 
 
 [book]: http://www.amazon.ca/Decisions-Making-Right-Righting-Wrong/dp/1443411817
