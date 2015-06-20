@@ -132,6 +132,7 @@ blockquote {
 /**
  * Code formatting
  */
+
 pre, code {
   font-size: 15px;
   border-radius: 3px;
@@ -139,7 +140,7 @@ pre, code {
 
 code {
   padding: 1px 5px;
-  background-color: darken(whitesmoke, 5%);
+  background-color: darken(whitesmoke, 3%);
   color: darken(#bf616a, 5%);
   .lineno {
     color: #75715e;
@@ -153,6 +154,7 @@ pre {
   padding: 8px 12px;
   overflow-x: auto;
   white-space: pre-wrap;
+  background-color: #333333;
   > code {
     background-color: inherit;
     border: 0;
