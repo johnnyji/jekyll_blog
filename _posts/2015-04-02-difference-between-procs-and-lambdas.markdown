@@ -11,7 +11,7 @@ When you instantiate a `lambda` within a method, the lambda will perform it's fu
 
 {% highlight ruby %}
 def some_method
-  my_lambda = lamda { return "Hello!" }.call
+  my_lambda = lambda { return "Hello!" }.call
   "Goodbye"
 end
 
