@@ -157,7 +157,7 @@ var InputField = React.createClass({
 
 So as you can see here, we are no longer having to pass props around to invoke callbacks in order to change parent state.
 
-TL;DR Anytime we have to change a state on a distant parent component, we simply call an action which will trigger a store function. The store will do it's calculation and trigger it's own event, which React components can listen to, and those components that are listening will automatically receive the new data, without us having to manually pass the data through callback props.
+<strong>TL;DR</strong> Anytime we have to change a state on a distant parent component, we simply call an action which will trigger a store function. The store will do it's calculation and trigger it's own event, which React components can listen to, and those components that are listening will automatically receive the new data, without us having to manually pass the data through callback props.
 
 Reflux is an amazing tool and I've only begun to take a look at it, so I'm sure that I'll post more about it in the future! Until then, have fun Reacting!
 
