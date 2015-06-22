@@ -47,7 +47,7 @@ var DisplayInfo = React.createClass({
     return (
       <div>
         <h1>Name: {this.props.firstChildOnlyInfo}</h1>
-        <h3>Sex: {this.props.sex}</h1>
+        <h3>Sex: {this.props.sex}</h3>
 
         <InputField handleChangeName={this.props.handleChangeName} />
       </div>
@@ -135,7 +135,7 @@ var DisplayInfo = React.createClass({
     return (
       <div>
         <h1>Name: {this.props.firstChildOnlyInfo}</h1>
-        <h3>Sex: {this.props.sex}</h1>
+        <h3>Sex: {this.props.sex}</h3>
       
         <InputField />
       </div>
