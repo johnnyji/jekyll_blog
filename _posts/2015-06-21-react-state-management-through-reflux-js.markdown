@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "React State Management Through Reflux.js"
-date: 06-21-2015
+date: 2015-06-21
 categories: React
 ---
 
@@ -80,7 +80,7 @@ var ParentAction = Reflux.createActions([
 
 var ParentStore = Reflux.createStore({
   init: function() {
-    // we keep the state on the store instead of the React component
+    // we keep a track of the state on the store
     this.state: {
       name: "Johnny",
       sex: "male"
