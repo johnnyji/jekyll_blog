@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Setting Up Helpers in RSpec"
+title: "Configuring Helpers in RSpec"
 date: 2015-06-23
 categories: RSpec
 ---
