@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "Lighthouse Labs W1D3: The Power of Symbols"
-date: 04-01-2015
+date: 2015-04-01
 categories: Ruby
 ---
 
