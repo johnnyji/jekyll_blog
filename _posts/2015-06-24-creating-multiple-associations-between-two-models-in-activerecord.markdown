@@ -53,8 +53,8 @@ class Actor
   # creates two associations for the same model, specifying that model with a through relationship and :source
   has_many :leading_roles
   has_many :supporting_roles
-  has_many :leading_performances, through: :leading_roles, source: production
-  has_many :supporting_performances, through: :supporting_roles, source: production
+  has_many :leading_performances, through: :leading_roles, source: :production
+  has_many :supporting_performances, through: :supporting_roles, source: :production
 end
 
 # through association models
