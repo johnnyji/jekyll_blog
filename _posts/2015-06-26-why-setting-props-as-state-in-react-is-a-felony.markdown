@@ -11,6 +11,7 @@ When I started out with React, I made this mistake countless times, and like the
 
 Let's take a step back and define what `props` and `states` are:
 
+<br>
 <strong>Props:</strong>
 <blockquote>
   Props are short for properties. These are static properties on a React component that are immutable (cannot be changed).
