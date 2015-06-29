@@ -28,7 +28,7 @@ class Teacher
 end
 {% endhighlight %}
 <br>
- 
+
 Breaking down the models this way allows us to seperate the concerns of authentication, profile information and teacher/student specific information into their own datasets. I favour this over STI because here, there are no `nil` columns anywhere.
 
 So the question remains, how do we create factories for such associations? Well first we need to create a profile and account factory and specify them as polymorphic:
@@ -58,23 +58,19 @@ We associate the factories to their polymorphicable (is that a word?), because i
 {% highlight ruby %}
 FactoryGirl.define do
   factory :student, class: Student do
-    trait :trial          { subscription_status: 0 } 
-    trait :subscribed     { subscription_status: 1 } 
-
-    after(:build) do |student|
-      student.account = build(:account, accountable: student)
-      student.profile = build(:profile, profileable: student)
-    end
+    trait :trial          { subscription_status: 0 }
+    trait :subscribed     { subscription_status: 1 }
 
     after(:create) do |student|
-      student.account.save!
-      student.profile.save!
+      create(:account, accountable: student)
+      create(:profile, profileable: student)
     end
+
   end
 end
 {% endhighlight %}
 <br>
 
-For the sake of scrolling, I won't create the teacher factory because it's the same idea. When creating the factories for the models that have the polymorphic model, you simply add on the polymorphic model in an `after(:build)` and `after(:create)` block and specify the polymorphicable to be the model the factory is for.
+For the sake of scrolling, I won't create the teacher factory because it's the same idea. When creating the factories for the models that have the polymorphic model, you simply create the polymorphic model in an `after(:create)` block and specify the polymorphicable to be the model the factory is for.
 
-<b>TADA. Polymorphic associations in FactoryGirl... Done!
+<strong>TADA. Polymorphic associations in FactoryGirl... Done!</strong>
