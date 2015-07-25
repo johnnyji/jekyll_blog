@@ -42,12 +42,14 @@ Here's a quick highlight of the awesome stuff we built in just 3 hours of learni
 <br><br>
 
 <strong>Building a party robot:</strong>
-<iframe 
-  width="400px"
-  height="300px"
-  frameborder="0"
-  src="https://instagram.com/p/5kuQ0KhZTF/?taken-by=johnnyisji" 
-  allowfullscreen></iframe>
+{% raw %}
+  <iframe 
+    width="400px"
+    height="300px"
+    frameborder="0"
+    src="https://instagram.com/p/5kuQ0KhZTF/?taken-by=johnnyisji" 
+    allowfullscreen></iframe>
+{% endraw %}
 
 <br><br>
 
