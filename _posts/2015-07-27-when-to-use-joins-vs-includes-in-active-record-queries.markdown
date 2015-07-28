@@ -13,10 +13,18 @@ If you need to access a table and it's association, it's better to use `include`
 @result = Post.includes(:tags, comments: [:user, :tags]).find(3)
 
 # This query will return the post with an id of 3, and it's associations which include it's tags, comments, each comment's user and tags. This query preloads all the information.
+
+@result.user #=> this will load the user info without another additional query
 {% endhighlight %}
 <br>
 
-However, if you use a `joins` method, this will only create the association between the two tables but it won't actually get the data unless you manually specify through a `select`. Therefore, when you use `joins` and you try to access attributes on the joined table, you are still make excessive queries that are not necessary.
+However, if you use a `joins` method, this will only create the association between the two tables but it won't actually get the data unless you manually specify through a `select`. Therefore, when you use `joins` and you try to access attributes on the joined table, you are still making excessive queries that are not necessary.
 
+{% highlight ruby %}
+@result = Post.joins(:tags, comments: [:user, :tags]).find(3)
 
+# This will make the association between all the tables, but it will not preload any information.
 
+@result.user #=> this will be a seperate SQL query.
+{% endhighlight %}
+<br>
