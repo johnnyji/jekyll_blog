@@ -28,3 +28,12 @@ However, if you use a `joins` method, this will only create the association betw
 @result.user #=> this will be a seperate SQL query.
 {% endhighlight %}
 <br>
+
+`joins` do have their handiness. For example, if you ever need to select only some columsn from a table, a join is preferred because `includes` will not allow you to specify the attributes you select.
+
+{% highlight ruby %}
+@result = Post.joins(:comments).select("comments.title AS comment_title").find(3)
+
+# This will only select the comment titles for this post.
+{% endhighlight %}
+<br>
