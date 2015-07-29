@@ -36,4 +36,4 @@ However, if you use a `joins` method, this will only create the association betw
 
 # This will only select the comment titles for this post.
 {% endhighlight %}
-<br>
+<br> 
