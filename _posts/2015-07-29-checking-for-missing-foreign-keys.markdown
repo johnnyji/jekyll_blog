@@ -21,4 +21,4 @@ c.tables.collect do |t|
 end
 {% endhighlight %}
 
-[tomward] https://tomafro.net/2009/09/quickly-list-missing-foreign-key-indexes
+[tomward]: https://tomafro.net/2009/09/quickly-list-missing-foreign-key-indexes
