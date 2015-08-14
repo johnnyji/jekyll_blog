@@ -1,6 +1,6 @@
 ---
 layout: post
-title: 'Binding React Functions in ES6'
+title: 'Binding React Component Functions in ES6'
 date: 2015-08-13
 categories: React
 ---
@@ -60,7 +60,7 @@ export default class LoginHandler extends ReactTemplate {
     // this.verifyEmail = this.verifyEmail.bind(this);
     // this._verifyPassword = this.verifyPassword.bind(this);
     // this._verifyPasswordConfirmation = this.verifyPasswordConfirmation.bind(this);
-    this.bindFunctions('_verifyEmail', '_verifyPassword', '_verifyPasswordConfirmation');
+    this._bindFunctions('_verifyEmail', '_verifyPassword', '_verifyPasswordConfirmation');
   }
   _verifyEmail(e) {
     //...
