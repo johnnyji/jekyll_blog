@@ -34,15 +34,15 @@ export default routes;
 {% endhighlight %}
 
 {% highlight javascript %}
-  // app/app.js
+// app/app.js
 
-  import React from 'react';
-  import Router from 'react-router';
-  import routes from './shared/routes'
+import React from 'react';
+import Router from 'react-router';
+import routes from './shared/routes'
 
-  Router.run(routes, Router.HistoryLocation, (Handler) => {
-    React.render(<Handler />, document.body);
-  });
+Router.run(routes, Router.HistoryLocation, (Handler) => {
+  React.render(<Handler />, document.body);
+});
 {% endhighlight %}
 <br>
 
@@ -53,42 +53,41 @@ You'll see that the second argument the `Router.run` function takes is `Router.H
 In our `routes` file, we have specified that our most top level route is `/`, which points to the `AppHandler`. This is the setup for our `AppHandler`:
 
 {% highlight javascript %}
-  // app/components/app/appHandler.js
+// app/components/app/appHandler.js
 
-  import React from 'react';
-  import Router from 'react-router';
-  import { Link, RouteHandler } from 'react-router';
+import React from 'react';
+import Router from 'react-router';
+import { Link, RouteHandler } from 'react-router';
 
 
-  export default class AppHandler extends React.Component {
-    render() {
-      return (
-        <div className='app'>
-          <Link to='login'>Login</Link>
+export default class AppHandler extends React.Component {
+  render() {
+    return (
+      <div className='app'>
+        <Link to='login'>Login</Link>
 
-          // VERY IMPORTANT, this is what handles all our routes
-          <RouteHandler />  
-        </div>
-      );
-    }
+        // VERY IMPORTANT, this is what handles all our routes
+        <RouteHandler />  
+      </div>
+    );
   }
+}
 {% endhighlight %}
 <br>
 
 We specify must `<RouteHandler />` at the very bottom of our component render in order for the router links to work. Now, whenever the user clicks on a `Link` component that we've imported from the router, the corresponding `<Route />` component in our `routes.js` will be called.
 
 {% highlight javascript %}
-  // The link component's "to" prop will find the corresponding route component with the same "name" prop. These two props are the identifying factors that link the two components.
+// The link component's "to" prop will find the corresponding route component with the same "name" prop. These two props are the identifying factors that link the two components.
 
-  // this link...
-  <Link to='some-path'>Go to path!</Link>
-  
-  // will hit this route!
-  <Route name='some-path' path='/some_url_path' handler={SomeReactComponent} />
+// this link...
+<Link to='some-path'>Go to path!</Link>
+
+// will hit this route!
+<Route name='some-path' path='/some_url_path' handler={SomeReactComponent} />
 {% endhighlight %}
 <br>
 
 React Router seems really amazing and I can wait to dig way deeper into it. This is just the tip of the router iceberg for me and I'll document my progress as I discover more and more amazing things about it!
 
 [reactrouter]: https://rackt.github.io/react-router/
-

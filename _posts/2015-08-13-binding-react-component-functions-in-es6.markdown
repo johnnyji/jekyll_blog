@@ -42,7 +42,7 @@ import React from 'react';
 export default class ReactTemplate extends React.Component {
   // (...params) is the new Rest Parameters in ES6 that allow multiple number of parameters
   _bindFunctions(...funcs) {
-    funcs.forEach((func) => { this[func] = this[func].bind(this) });
+    funcs.forEach(func => this[func] = this[func].bind(this));
   }
 }
 {% endhighlight %}
