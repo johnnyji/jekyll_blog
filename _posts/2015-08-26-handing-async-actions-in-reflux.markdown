@@ -51,7 +51,7 @@ export default class PostsList extends React.Component {
 var PostActions = Reflux.createActions({
   'loadPosts': { children: ['completed', 'failed'] },
   'someSyncAction': {},
-  'youGeThePoint': {}
+  'youGetThePoint': {}
 });
 {% endhighlight %}
 
