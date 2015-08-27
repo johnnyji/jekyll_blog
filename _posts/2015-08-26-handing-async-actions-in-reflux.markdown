@@ -65,11 +65,14 @@ var PostActions = Reflux.createActions({
 });
 
 PostActions.loadPosts.listen(function() {
-  // PostCaller will call our API for posts and return a promise, so we're basically resolving a promise based on the outcome of the promise returned by the PostCaller.
+  // We will call our API for posts and return a promise, and based on the outcome of that promise, we either complete or fail the action.
 
-  PostCaller.loadPosts
-    .then(this.completed)
-    .catch(this.failed);
+  ApiCaller.sendAjaxRequest({
+    url: '/api/posts',
+    method: 'GET'
+  })
+  .then(this.completed)
+  .catch(this.failed);
 
   // Your AJAX calls should be moved into it's own seperate API Util class, which I'll demonstrate later.
 });
@@ -83,9 +86,11 @@ var PostStore = Reflux.createStore({
     this.state = { //... };
     this.listenToMany(PostActions);
   },
-  onLoadPostsCompleted: function() {
+  onLoadPostsCompleted: function(result) {
     // when PostActions.loadPosts.completed() is called, we hit this function.
     // ... store the posts in state ... trigger state ...
+    this.state.posts = result.data.posts;
+    this.trigger(this.state);
   },
   onLoadPostsFailed: function() {
     // when PostActions.loadPosts.failed() is called, we hit this function.
@@ -97,16 +102,14 @@ var PostStore = Reflux.createStore({
 
 Now that we understand the general workflow, let's hook up our API Util classes!
 
-First we need to create a class that acts as a wrapper for all our API calls. It may be very tempting to just fall back to using jQuery's `$.ajax` (which is awesome, I'm not knocking it one bit), but if that's all we're using jQuery for, then there's no need to include the entire dependency in our project. It'd be much easier to write our own AJAX wrapper, which would look something like this:
+We need to create a class that acts as a wrapper for all our API calls. It may be very tempting to just fall back to using jQuery's `$.ajax` (which is awesome, I'm not knocking it one bit), but if that's all we're using jQuery for, then there's no need to include the entire dependency in our project. It'd be much easier to write our own AJAX wrapper, which would look something like this:
 
 {% highlight javascript %}
 export default class ApiCaller {
-  constructor() {
-    this.urlPrefix = '/api';
-  }
+
   // this method assumes that you are sending/receiving JSON
   // options: { url: ..., method:..., data:... }
-  _sendAjaxRequest(options) {
+  static sendAjaxRequest(options) {
     return new Promise((resolve, reject) => {
       let request = new XMLHttpRequest();
       request.open(options.method, options.url);
@@ -116,71 +119,48 @@ export default class ApiCaller {
           status: request.status,
           data: JSON.parse(request.responseText)
         };
-
-        // if the response is OK, we resolve the promise, else reject
         if (result.status >= 200 && result.status <= 299) {
+          console.log('Response: ', result.data);
           resolve(result);
         } else {
+          console.log('Response: ', result.data);
           reject(result);
         }
       };
 
       request.onerror = () => {
+        console.log('Response: ', result.data);
         reject({ status: 500, data: 'Connection error' });
       }
-      
-      // if there's data, we send the request with data
-      if (options.data == null) {
-        request.send();
-      } else {
-        request.send(options.data);
-      }
+
+      console.log(`Sending ${options.method} Request to ${options.url}`);
+      request.send(options.data);
     });
   }
 
 }
 {% endhighlight %}
 
-Nice, now we have our own simple AJAX wrapper. Let's create a specific `PostCaller` API Util class and put this to use!
+Now that we have our API Util, let's hook it up to our actions.
 
 {% highlight javascript %}
-export default class PostCaller extends ApiCaller {
-  constructor() {
-    super();
-  }
-  loadPosts() {
-    return new Promise((resolve, reject) => {
-      // looks similar to jQuery's $.ajax doesn't it?
-      this._sendAjaxRequest({
-        method: 'GET',
-        url: `${this.urlPrefix}/timesheets`
-      })
-      .then(result => { resolve(result) })
-      .catch(result => { reject(result) });
-      // we're once again resolving and rejecting based on the response of the API call
-    }.bind(this));
-  }
-}
-{% endhighlight %}
-
-Now that we have API Utils, let's hook it up to our actions.
-
-{% highlight javascript %}
-var Api = new PostCaller();
-
 var PostActions = Reflux.createActions({
   'loadPosts': { children: ['completed', 'failed'] }
 });
 
 PostActions.loadPosts.listen(function() {
-  // calling either this.completed or this.failed based on the resolution of loadPosts
+  // calling either this.completed or this.failed based on the result of our AJAX call
 
-  Api.loadPosts.then(this.completed).catch(this.failed);
+  Api.sendAjaxRequest({
+    url: '/api/posts',
+    method: 'GET'
+  })
+  .then(this.completed)
+  .catch(this.failed);
 });
 {% endhighlight %}
 
 And we just handle the outcome in our store with `onLoadPostsCompleted` and `onLoadPostsFailed` and we should be good!
-
 
 That's the basic idea behind the workflow. The component will trigger an action, the action will call an API Util call that makes the API call and returns a promise, the action listens to that promise and calls either `completed` or `failed` based on the outcome of the promise, the store then has two seperate functions that respond to both the completed and failed events emitted by the action.
 <br>
