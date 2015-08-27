@@ -163,6 +163,6 @@ PostActions.loadPosts.listen(function() {
 And we just handle the outcome in our store with `onLoadPostsCompleted` and `onLoadPostsFailed` and we should be good!
 
 That's the basic idea behind the workflow. The component will trigger an action, the action will call an API Util call that makes the API call and returns a promise, the action listens to that promise and calls either `completed` or `failed` based on the outcome of the promise, the store then has two seperate functions that respond to both the completed and failed events emitted by the action.
-<br>
+<br><br>
 
 <strong>Happy AJAXing!</strong>
