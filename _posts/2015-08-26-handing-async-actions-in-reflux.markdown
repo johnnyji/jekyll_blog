@@ -113,6 +113,9 @@ export default class ApiCaller {
     return new Promise((resolve, reject) => {
       let request = new XMLHttpRequest();
       request.open(options.method, options.url);
+      
+      console.log(`Sending ${options.method} Request to ${options.url}`);
+      options.data ? request.send(JSON.stringify(options.data)) : request.send();
 
       request.onload = () => {
         let result = {
@@ -132,9 +135,6 @@ export default class ApiCaller {
         console.log('Response: ', result.data);
         reject({ status: 500, data: 'Connection error' });
       }
-
-      console.log(`Sending ${options.method} Request to ${options.url}`);
-      request.send(options.data);
     });
   }
 
