@@ -198,6 +198,7 @@ AuthActions.autoLoginUser.listen(function(jwt) {
     .catch(this.failed);
   }
 
+module.exports = AuthActions;
 });
 {% endhighlight %}
 
@@ -215,6 +216,8 @@ var AuthStore = Reflux.createStore({
     RouterContainer.get().transitionTo('/dashboard');
   }
 });
+
+module.exports = AuthStore;
 {% endhighlight %}
 
 Once we call `autoLoginUser`, it makes an AJAX call to our API to authenticate the `JWT`, once the token has been verified, we save the current user data in our state, trigger it and redirect the user to their dashboard.
