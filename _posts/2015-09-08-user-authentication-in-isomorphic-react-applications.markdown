@@ -197,9 +197,9 @@ AuthActions.autoLoginUser.listen(function(jwt) {
     .then(this.completed)
     .catch(this.failed);
   }
+});
 
 module.exports = AuthActions;
-});
 {% endhighlight %}
 
 {% highlight javascript %}
