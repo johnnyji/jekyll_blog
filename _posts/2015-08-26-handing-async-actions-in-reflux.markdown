@@ -2,7 +2,7 @@
 layout: post
 title: 'Handling Async Actions in Reflux.js'
 date: 2015-08-26
-categories: CSS
+categories: Flux
 ---
 
 I've been using Reflux for the past while now and up until recently, whenever I needed to make an API call, the workflow has been my React component triggering the action, the action emitting to the store and the store making an AJAX call and storing the result. Simple right?
