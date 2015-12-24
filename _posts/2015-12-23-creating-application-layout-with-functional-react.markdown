@@ -132,9 +132,23 @@ This is absolutely the perfect tool for our layout components. After a bit of re
 {% highlight javascript %}
 
 // Newly functional components
-const ListItem = (props) => <li className={this.props.className + ' list-item'}>{this.props.children}</li>;
-class List = (props) => <ul className={this.props.className + ' list'}>{this.props.children}</ul>;
-const ContentWrapper = (props) => <div className={this.props.className + ' content-wrapper'}>{this.props.children}</div>;
+const ListItem = (props) => (
+  <li className={this.props.className + ' list-item'}>
+    {this.props.children}
+  </li>
+);
+
+class List = (props) => (
+  <ul className={this.props.className + ' list'}>
+    {this.props.children}
+  </ul>
+);
+
+const ContentWrapper = (props) => (
+  <div className={this.props.className + ' content-wrapper'}>
+    {this.props.children}
+  </div>
+);
 
 // Now finally, here's our new `Dashboard` component
 class Dashboard extends React.Component {
