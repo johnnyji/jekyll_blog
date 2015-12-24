@@ -107,14 +107,14 @@ The release of `React v0.14` introduced something very useful - <b>Functional Re
 {% highlight javascript %}
 const List = (props) => {
   return (
-    <li className={this.props.className + ' list'}>
-      {this.props.children}
+    <li className={props.className + ' list'}>
+      {props.children}
     </li>
   ) 
 };
 
 // Or to even shorten this...
-const List = (props) => <li className={this.props.className + ' list'}>{this.props.children}</li>;
+const List = (props) => <li className={props.className + ' list'}>{props.children}</li>;
 
 ReactDOM.render(
   <List className='post-list'>{/*...*/}</List>
@@ -133,20 +133,20 @@ This is absolutely the perfect tool for our layout components. After a bit of re
 
 // Newly functional components
 const ListItem = (props) => (
-  <li className={this.props.className + ' list-item'}>
-    {this.props.children}
+  <li className={props.className + ' list-item'}>
+    {props.children}
   </li>
 );
 
 class List = (props) => (
-  <ul className={this.props.className + ' list'}>
-    {this.props.children}
+  <ul className={props.className + ' list'}>
+    {props.children}
   </ul>
 );
 
 const ContentWrapper = (props) => (
-  <div className={this.props.className + ' content-wrapper'}>
-    {this.props.children}
+  <div className={props.className + ' content-wrapper'}>
+    {props.children}
   </div>
 );
 
