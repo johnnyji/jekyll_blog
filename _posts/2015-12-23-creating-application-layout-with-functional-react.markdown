@@ -97,7 +97,7 @@ That `Dashboard` component is so much more <b>legible</b> than our previous one!
 
 Once I started migrating all the <em>dumb</em> layout and UI components into their own components, I was so much more efficient at visualizing my app without even opening a web browser, because I knew what all of those components looked like, and I could easily compose them together to create a view.
 
-<b>But wait</b> - you've probably noticed that one of the downsides of this is very repeatative and mundane code. Even worse, we're inherting all of `React.Component`'s functionalities and methods, when really all we're doing is rendering the child props, this can get a bit expensive as you start to build a lot of these layout components.
+<b>But wait</b> - you've probably noticed that one of the downsides of this is very repetitive and mundane code. Even worse, we're inherting all of `React.Component`'s functionalities and methods, when really all we're doing is rendering the child props, this can get a bit expensive as you start to build a lot of these layout components.
 <br><br>
 
 <b>FUNCTIONAL REACT TO THE RESCUE!</b>
