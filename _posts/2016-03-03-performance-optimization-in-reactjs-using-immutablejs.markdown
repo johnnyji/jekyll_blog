@@ -9,10 +9,13 @@ Over the past little bit I've began to work more and more about speed and optimi
 
 I watched a [great talk][talk] this morning given by my boss [Ev][ev], who is one of the smartest developers I know. In this talk he touches on things that tend to slow down our React applications, and it boils down to two main reasons:
 
-1. Rendering to the DOM is insanely slow. Avoid it as much as you can.
-2. Re-rendering to the DOM is just as painful. Avoid it as much as you can.
+<blockquote>
+  <div>1. Rendering to the DOM is insanely slow. Avoid it as much as you can. </div>
+  <div>2. Re-rendering to the DOM is just as painful. Avoid it as much as you can.</div>
+</blockquote>
 
 Okay, so clearly there's a direct message here; <b>avoid unnecessary writes to the DOM whenever possible</b>. Let's take a look at this in the context of React.js.
+<br /><br />
 
 There is really no escaping the initial `render` process (otherwise users would not see anything on your page!). Knowing this, our best bet is to reduce the amount of re-renders to as little as we possibly can. This is the perfect job for `shouldComponentUpdate`.
 
@@ -27,10 +30,11 @@ As a part of React's [lifecycle][lifecycle], `shouldComponentUpdate` is a method
 {% endhighlight %}
 
 `shouldComponentUpdate` by itself already seems really useful for determining if a component should re-render. Simply put, if the props/state don't change, then don't re-render. Voila!
+<br /><br />
 
 But wait... This is can get really ugly really fast. I can think of two general cases where your `shouldComponentUpdate` can get out of hand.
 
-### 1. Too many props and state to check
+<h3><b>1. Too many props and state to check</b></h3>
 {% highlight javascript %}
   shouldComponentUpdate(nextProps, nextState) {
     return (
@@ -46,9 +50,9 @@ But wait... This is can get really ugly really fast. I can think of two general 
 {% endhighlight %}
 
 In this example, it's extremely easy to remove or add a prop/state to the component and forget to do the same in `shouldComponentUpdate`.
+<br /><br />
 
-### 2. Deeply nested props/state
-
+<h3><b>Deeply nested props/state</b></h3>
 {% highlight javascript %}
   /*
     this.props.user = {
@@ -83,12 +87,12 @@ In this example, it's extremely easy to remove or add a prop/state to the compon
 {% endhighlight %}
 
 In this example, we have less props but more deeply nested props (which is good). However, we can no longer use a simple `===` equator, we have to compare the two objects to see if they're different. What's even worse is that because both are nested, we have to recursively do a deep comparison.
-
 <br /><br />
-So why does this suck? Because deep comparisons are expensive to perform, and when done on every prop/state of every component over an entire app, could leave a nasty scar.
+
+So why does this suck? Well because deep comparisons are expensive to perform, and when done on every prop/state of every component over an entire app, could leave a nasty scar.
 
 `shouldComponentUpdate` is actually so useful, React has an add-on helper mixin called `PureRenderMixin` that out-of-the-box implements it for you. All you need to do is decorate or mixin your component with the functionality. Unfortunately `PureRenderMixin` also only performs shallow comparisons; which still doesn't solve our problem.
-<br /><br />
+<br /><br /><br />
 
 <h2>So what do I do? Answer: Immutable.js</h2>
 
@@ -122,6 +126,7 @@ Immutable.js is just a collection of methods that will take your JavaScript data
 {% endhighlight %}
 
 Of course this is not actually how `Immutable.js` stores your data, but the structure and the logic is the same. It is nothing more an object wrapper that make sure you can't mutate the contained data, thus achieving the effect of <em>immutability</em>.
+<br /><br /><br />
 
 ### What does this have to do with optimizing React?
 
@@ -148,11 +153,10 @@ Here it comes. Because `Immutable.js` records are immutable, everytime a change 
 
 If all changes to `Immutable.js` records return a new record with a new `reference` id, that effectively means not matter how deeply nested the change, we will still be aware that the new record has INFACT changed. <b>We can deep compare Immutable.js datatypes by simply checking if the references are different</b>.
 
-I'll say it again:
-
-#### We can deep compare Immutable.js datatypes by simply checking if the references are different.
+I'll say it again: <b>We can deep compare Immutable.js datatypes by simply checking if the references are different.</b>
 
 Didn't our whole problem with `shouldComponentUpdate` and `PureRenderMixin` have to do with the inpracticality of performing deep comparisons on our props/state?
+<br /><br /><br />
 
 ### PureRenderMixin + Immutable.js === Problem Solved!
 
@@ -160,7 +164,7 @@ Because `Immutable.js` creates new records with new references upon any change t
 
 The ability to use `PureRenderMixin` on any component in our app regardless of the props/state structure complexity is amazing. This allows us to make certain that components throughout our app are only ever re-rendering when they truely need to.
 
-<b>Less re-rendering === Boost in performance.</b>
+### Less re-rendering === Boost in performance.
 
 <br/><br/><br/>
 Till Next Time!
