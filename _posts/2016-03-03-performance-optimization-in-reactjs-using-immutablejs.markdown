@@ -12,7 +12,7 @@ I watched a [great talk][talk] this morning given by my boss [Ev][ev], who is on
 <br />
 <blockquote>
   <div>1. Rendering to the DOM is insanely slow. Avoid it as much as you can. </div>
-  <div>2. Re-rendering to the DOM is just as painful. Avoid it as much as you can.</div>
+  <div>2. Re-rendering to the DOM is just as slow. Avoid it as much as you can.</div>
 </blockquote>
 <br />
 
@@ -101,12 +101,12 @@ So why does this suck? Well because deep comparisons are expensive to perform, a
 [Immutable.js][immutable] is an amazing library that provides us with a way of having immutable datatypes in JavaScript.
 
 {% highlight javascript %}
-  Immutable.List([1,2,3])             // Like an array, but immutable
-  Immutable.Map({a: 1, b: 2, c: 3})   // Like an object, but immutable
+  Immutable.List([1,2,3]);             // Like an array, but immutable
+  Immutable.Map({a: 1, b: 2, c: 3});   // Like an object, but immutable
   // and so much more, etc...
 {% endhighlight %}
 
-Immutable.js not only allows us to bring functional programming perks such as immutable datatypes into JavaScript, but it also has an attribute that allows us to optimize the hell out of our React code. But first we need to understand how Immutable.js achieves immutability in a language at allows for mutations.
+Immutable.js not only brings functional programming perks such as immutable datatypes into JavaScript, but it can also allows us to optimize the hell out of our React code. But first we need to understand how Immutable.js achieves immutability in a language at allows for mutations.
 
 Immutable.js is just a collection of methods that will take your JavaScript datatypes as arguments and create an object that stores them. Under the hood, it actually works something like this:
 
