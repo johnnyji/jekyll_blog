@@ -104,7 +104,7 @@ Immutable.js not only allows us to bring functional programming perks such as im
 
 Immutable.js is just a collection of methods that will take your JavaScript datatypes as arguments and create an object that stores them. Under the hood, it actually works something like this:
 
-{% highlight  %}
+{% highlight javascript %}
   const user = {
     firstName: 'Johnny',
     lastName: 'Ji'
