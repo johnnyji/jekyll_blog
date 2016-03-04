@@ -92,7 +92,7 @@ So why does this suck? Because deep comparisons are expensive to perform, and wh
 
 <h2>So what do I do? Answer: Immutable.js</h2>
 
-Immutable.js is an amazing library that provides us with a way of having immutable datatypes in JavaScript.
+[Immutable.js][immutable] is an amazing library that provides us with a way of having immutable datatypes in JavaScript.
 
 {% highlight javascript %}
   Immutable.List([1,2,3])             // Like an array, but immutable
@@ -100,8 +100,72 @@ Immutable.js is an amazing library that provides us with a way of having immutab
   // and so much more, etc...
 {% endhighlight %}
 
-Immutable.js not only allows us to bring functional paradigms such as immutability into JavaScript, but it also does a little thing
+Immutable.js not only allows us to bring functional programming perks such as immutable datatypes into JavaScript, but it also has an attribute that allows us to optimize the hell out of our React code. But first we need to understand how Immutable.js achieves immutability in a language at allows for mutations.
 
+Immutable.js is just a collection of methods that will take your JavaScript datatypes as arguments and create an object that stores them. Under the hood, it actually works something like this:
+
+{% highlight  %}
+  const user = {
+    firstName: 'Johnny',
+    lastName: 'Ji'
+  };
+
+  const immutableUser = Immutable.Map({
+    firstName: 'Johnny',
+    lastName: 'Ji'
+  });
+
+  // immutableUser is now an instance of `Immutable.Map`, which is actually a JavaScript object containing information
+  // about the `user` object we passed it. You can imagine it as something like this =>
+  //
+  // {id: 1, ref: 2bfe829d, size: 2, _actualData: {firstName: 'Johnny', lastName: 'Ji'}, methods: {...}};
+{% endhighlight %}
+
+Of course this is not actually how `Immutable.js` stores your data, but the structure and the logic is the same. It is nothing more an object wrapper that make sure you can't mutate the contained data, thus achieving the effect of <em>immutability</em>.
+
+### What does this have to do with optimizing React?
+
+Here it comes. Because `Immutable.js` records are immutable, everytime a change is made, a new copy of the record is returned, and the previous one is never altered. But the best part about that is that every new record also comes with a new `reference` attribute.
+
+{% highlight javascript %}
+  const car = Immutable.fromJS({
+    exterior: {
+      details: {
+        color: 'blue'
+      }
+    }
+  });
+
+  const differentCar = car.setIn(['exterior', 'details', 'color'], 'red');
+
+  // The original `car` was never changed, instead a new copy of `car` with the color attribute set to red
+  // was created and set to variable called `differentCar`. Most importantly, notice that the reference of the
+  // two maps have changed:
+  //
+  // `car` =>           {size: ..., id: ..., _actualData: ..., ref: 123}
+  // `differentCar` =>  {size: ..., id: ..., _actualData: ..., ref: 738}
+{% endhighlight %}
+
+If all changes to `Immutable.js` records return a new record with a new `reference` id, that effectively means not matter how deeply nested the change, we will still be aware that the new record has INFACT changed. <b>We can deep compare Immutable.js datatypes by simply checking if the references are different</b>.
+
+I'll say it again:
+
+#### We can deep compare Immutable.js datatypes by simply checking if the references are different.
+
+Didn't our whole problem with `shouldComponentUpdate` and `PureRenderMixin` have to do with the inpracticality of performing deep comparisons on our props/state?
+
+### PureRenderMixin + Immutable.js === Problem Solved!
+
+Because `Immutable.js` creates new records with new references upon any change to the data, we can do deep comparisons of current props/state to next props/state for next to nothing! In fact, so long as you use `Immutable.js` for your datatypes, `PureRenderMixin` will work and "deep compare" out-of-the-box without you having to do any extra configurations!
+
+The ability to use `PureRenderMixin` on any component in our app regardless of the props/state structure complexity is amazing. This allows us to make certain that components throughout our app are only ever re-rendering when they truely need to.
+
+<b>Less re-rendering === Boost in performance.</b>
+
+<br/><br/><br/>
+Till Next Time!
+
+[immutable]: https://facebook.github.io/immutable-js/
 [ev]: https://github.com/globexdesigns
 [talk]: https://www.youtube.com/watch?v=Jv18_gdAhGg
 [lifecycle]: https://facebook.github.io/react/docs/component-specs.html
