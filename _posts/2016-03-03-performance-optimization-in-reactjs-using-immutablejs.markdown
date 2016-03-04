@@ -1,6 +1,6 @@
 ---
 layout: post
-title: 'Performance Tweeking in React.js using Immutable.js'
+title: 'Performance Tweaking in React.js using Immutable.js'
 date: 2016-03-03
 categories: React
 ---
@@ -164,10 +164,8 @@ Because `Immutable.js` creates new records with new references upon any change t
 
 The ability to use `PureRenderMixin` on any component in our app regardless of the props/state structure complexity is amazing. This allows us to make certain that components throughout our app are only ever re-rendering when they truely need to.
 
+<br/><br/>
 ### Less re-rendering === Boost in performance.
-
-<br/><br/><br/>
-Till Next Time!
 
 [immutable]: https://facebook.github.io/immutable-js/
 [ev]: https://github.com/globexdesigns
