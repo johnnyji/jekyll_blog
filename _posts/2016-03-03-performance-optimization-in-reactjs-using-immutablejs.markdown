@@ -9,10 +9,12 @@ Over the past little bit I've began to work more and more about speed and optimi
 
 I watched a [great talk][talk] this morning given by my boss [Ev][ev], who is one of the smartest developers I know. In this talk he touches on things that tend to slow down our React applications, and it boils down to two main reasons:
 
+<br />
 <blockquote>
   <div>1. Rendering to the DOM is insanely slow. Avoid it as much as you can. </div>
   <div>2. Re-rendering to the DOM is just as painful. Avoid it as much as you can.</div>
 </blockquote>
+<br />
 
 Okay, so clearly there's a direct message here; <b>avoid unnecessary writes to the DOM whenever possible</b>. Let's take a look at this in the context of React.js.
 <br /><br />
@@ -165,7 +167,7 @@ Because `Immutable.js` creates new records with new references upon any change t
 The ability to use `PureRenderMixin` on any component in our app regardless of the props/state structure complexity is amazing. This allows us to make certain that components throughout our app are only ever re-rendering when they truely need to.
 
 <br/><br/>
-### Less re-rendering === Boost in performance.
+<b>Less re-rendering === Boost in performance.</b>
 
 [immutable]: https://facebook.github.io/immutable-js/
 [ev]: https://github.com/globexdesigns
