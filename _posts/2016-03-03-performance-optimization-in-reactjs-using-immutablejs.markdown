@@ -5,9 +5,9 @@ date: 2016-03-03
 categories: React
 ---
 
-Over the past little bit I've began to work more and more about speed and optimization in React. I've begun to notice that the more complex my apps got, the longer it would take them to render and re-render. Even React can't save us from eventual performance slowdown...
+Over the past little bit I've had troubles with optimization in React. I've begun to notice that the more complex my apps got, the longer it would take them to render and re-render. Even React can't save me from eventual performance slowdown (mostly due to my own stupidity)...
 
-I watched a [great talk][talk] this morning given by my boss [Ev][ev], who is one of the smartest developers I know. In this talk he touches on things that tend to slow down our React applications, and it boils down to two main reasons:
+I watched a [great talk][talk] this morning given by my boss [Ev][ev], who is one without a doubt one of the smartest developers I know. In this talk he touches on things that tend to slow down our React applications, and it boils down to two main culprits:
 
 <br />
 <blockquote>
