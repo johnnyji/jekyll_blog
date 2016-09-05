@@ -7,40 +7,34 @@
 @import "header";
 @import "post";
 
-
 /**
  * Page content
  */
 
 .lite {
-  background-color: #FAFAFA;
+  background-color: #FFF;
 }
 
 .page-container {
   @include larger-mobile-viewport { margin-top: 2rem; }
   position: relative;
   margin: 1rem auto 0 auto;
-  width: 100%;
+  max-width: 900px;
 }
 
 .post-content {
   margin-bottom: $spacing-unit;
+
   h2 {
     font-size: 32px;
-    @include media-query($on-laptop) {
-      font-size: 28px;
-    }
+    @include media-query($on-laptop) { font-size: 28px }
   }
   h3 {
     font-size: 26px;
-    @include media-query($on-laptop) {
-      font-size: 22px;
-    }
+    @include media-query($on-laptop) { font-size: 22px }
   }
   h4 {
     font-size: 20px;
-    @include media-query($on-laptop) {
-      font-size: 18px;
-    }
+    @include media-query($on-laptop) { font-size: 18px }
   }
 }
