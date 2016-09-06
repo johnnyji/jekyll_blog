@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Johnny Ji's Blog</title>
+  <meta name="description" content="Lambda">
+  <link rel="stylesheet" href="http://johnnyji.me/css/main.css">
+  <link rel="canonical" href="/ruby/2015/04/02/difference-between-procs-and-lambdas.html">
+  <link rel="alternate" type="application/rss+xml" title="Johnny Ji" href="/feed.xml"" />
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css">
+  <link href="https://fonts.googleapis.com/css?family=Lora:400,400i|Open+Sans:600,400" rel="stylesheet">
+</head>
+
+
+  <body class="lite">
+
+    <header class="header header-lite">
+  <a class="header-title header-title-lite" href="http://johnnyji.me">JOHNNY JI</a>
+  <div class="header-social-media">
+    <a href="https://www.github.com/johnnyji" target="_blank" class="header-social-media-link github header-lite">
+      <i class="fa fa-github header-lite"></i>
+    </a>
+    <a href="https://www.twitter.com/johnnyisji" target="_blank" class="header-social-media-link twitter header-lite">
+      <i class="fa fa-twitter header-lite"></i>
+    </a>
+    <a href="https://www.linkedin.com/in/johnnyji" target="_blank" class="header-social-media-link linkedin header-lite">
+      <i class="fa fa-linkedin header-lite"></i>
+    </a>
+    <a href="https://www.instagram.com/johnnyisji"" target="_blank" class="header-social-media-link instagram header-lite">
+      <i class="fa fa-instagram header-lite"></i>
+    </a>
+  </div>
+</header>
+    
+
+    <div class="page-container">
+      <div class="single-post">
+  <header class="single-post-header">
+    <h1 class="single-post-header-title">Difference Between Procs and Lambdas</h1>
+    <p class="single-post-header-date">// Apr 2, 2015</p>
+  </header>
+  <div class="single-post-content"><h3><strong>Lambda</strong></h3>
+
+<p>When you instantiate a <code class="highlighter-rouge">lambda</code> within a method, the lambda will perform it’s function in coherence with the method. So if you define a lambda:</p>
+
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">def</span> <span class="nf">some_method</span>
+  <span class="n">my_lambda</span> <span class="o">=</span> <span class="nb">lambda</span> <span class="p">{</span> <span class="k">return</span> <span class="s2">"Hello!"</span> <span class="p">}.</span><span class="nf">call</span>
+  <span class="s2">"Goodbye"</span>
+<span class="k">end</span>
+
+<span class="n">some_method</span> <span class="c1">#=&gt; "Goodbye"</span></code></pre></figure>
+
+<p>Even though the lambda has a return statement, it will not exit the entire method but only return itself, and continue on with the method it exists in.
+<br /><br /></p>
+
+<h3><strong>Proc</strong></h3>
+
+<p>When you instantiate a <code class="highlighter-rouge">Proc.new</code> within a method, the proc becomes integrated as a part of the method:</p>
+
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">def</span> <span class="nf">some_method</span>
+  <span class="n">my_proc</span> <span class="o">=</span> <span class="no">Proc</span><span class="p">.</span><span class="nf">new</span> <span class="p">{</span> <span class="k">return</span> <span class="s2">"Hello!"</span> <span class="p">}.</span><span class="nf">call</span>
+  <span class="s2">"Goodbye"</span>
+<span class="k">end</span>
+
+<span class="n">some_method</span> <span class="c1">#=&gt; "Hello!"</span></code></pre></figure>
+
+<p>Now when the method runs, once the proc is hit. The entire method will stop and return. 
+<br /><br /></p>
+</div>
+</div>
+
+    </div>
+
+  </body>
+
+</html>

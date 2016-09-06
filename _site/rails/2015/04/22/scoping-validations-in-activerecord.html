@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Johnny Ji's Blog</title>
+  <meta name="description" content="In ActiveRecord, you can add something called :scope to your validations, which simply means validate an object WITHIN the scope of another object.">
+  <link rel="stylesheet" href="http://johnnyji.me/css/main.css">
+  <link rel="canonical" href="/rails/2015/04/22/scoping-validations-in-activerecord.html">
+  <link rel="alternate" type="application/rss+xml" title="Johnny Ji" href="/feed.xml"" />
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css">
+  <link href="https://fonts.googleapis.com/css?family=Lora:400,400i|Open+Sans:600,400" rel="stylesheet">
+</head>
+
+
+  <body class="lite">
+
+    <header class="header header-lite">
+  <a class="header-title header-title-lite" href="http://johnnyji.me">JOHNNY JI</a>
+  <div class="header-social-media">
+    <a href="https://www.github.com/johnnyji" target="_blank" class="header-social-media-link github header-lite">
+      <i class="fa fa-github header-lite"></i>
+    </a>
+    <a href="https://www.twitter.com/johnnyisji" target="_blank" class="header-social-media-link twitter header-lite">
+      <i class="fa fa-twitter header-lite"></i>
+    </a>
+    <a href="https://www.linkedin.com/in/johnnyji" target="_blank" class="header-social-media-link linkedin header-lite">
+      <i class="fa fa-linkedin header-lite"></i>
+    </a>
+    <a href="https://www.instagram.com/johnnyisji"" target="_blank" class="header-social-media-link instagram header-lite">
+      <i class="fa fa-instagram header-lite"></i>
+    </a>
+  </div>
+</header>
+    
+
+    <div class="page-container">
+      <div class="single-post">
+  <header class="single-post-header">
+    <h1 class="single-post-header-title">Scoping Validations in ActiveRecord</h1>
+    <p class="single-post-header-date">// Apr 22, 2015</p>
+  </header>
+  <div class="single-post-content"><p>In <em>ActiveRecord</em>, you can add something called <code class="highlighter-rouge">:scope</code> to your validations, which simply means validate an object WITHIN the scope of another object.</p>
+
+<p>So if you had a <code class="highlighter-rouge">Upvote</code> class which needed to validate if a user has upvoted on a post already, the proper validation would be:</p>
+
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">Upvote</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+  <span class="n">belongs_to</span> <span class="ss">:post</span>
+  <span class="n">belongs_to</span> <span class="ss">:user</span>
+
+  <span class="n">validates</span> <span class="ss">:post_id</span><span class="p">,</span> <span class="ss">uniqueness: </span><span class="p">{</span> <span class="kp">true</span><span class="p">,</span> <span class="ss">scope: :user_id</span> <span class="p">}</span>
+
+<span class="k">end</span></code></pre></figure>
+
+<p><br /></p>
+
+<p>This will validate the uniqueness of the <code class="highlighter-rouge">post_id</code> WITHIN the scope of the <code class="highlighter-rouge">user_id</code>, as to make sure that there is never a duplicate <code class="highlighter-rouge">post_id</code> for a single <code class="highlighter-rouge">user_id</code>.</p>
+
+<p>This will properly ensure that a post cannot be liked by a user more than once.</p>
+
+</div>
+</div>
+
+    </div>
+
+  </body>
+
+</html>

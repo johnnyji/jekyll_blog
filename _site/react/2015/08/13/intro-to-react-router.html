@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Johnny Ji's Blog</title>
+  <meta name="description" content="Today has been a pretty awesome day for me. I had the chance to fully dive into setting up a React app in NPM (which will be another blog post on it’s own). ...">
+  <link rel="stylesheet" href="http://johnnyji.me/css/main.css">
+  <link rel="canonical" href="/react/2015/08/13/intro-to-react-router.html">
+  <link rel="alternate" type="application/rss+xml" title="Johnny Ji" href="/feed.xml"" />
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css">
+  <link href="https://fonts.googleapis.com/css?family=Lora:400,400i|Open+Sans:600,400" rel="stylesheet">
+</head>
+
+
+  <body class="lite">
+
+    <header class="header header-lite">
+  <a class="header-title header-title-lite" href="http://johnnyji.me">JOHNNY JI</a>
+  <div class="header-social-media">
+    <a href="https://www.github.com/johnnyji" target="_blank" class="header-social-media-link github header-lite">
+      <i class="fa fa-github header-lite"></i>
+    </a>
+    <a href="https://www.twitter.com/johnnyisji" target="_blank" class="header-social-media-link twitter header-lite">
+      <i class="fa fa-twitter header-lite"></i>
+    </a>
+    <a href="https://www.linkedin.com/in/johnnyji" target="_blank" class="header-social-media-link linkedin header-lite">
+      <i class="fa fa-linkedin header-lite"></i>
+    </a>
+    <a href="https://www.instagram.com/johnnyisji"" target="_blank" class="header-social-media-link instagram header-lite">
+      <i class="fa fa-instagram header-lite"></i>
+    </a>
+  </div>
+</header>
+    
+
+    <div class="page-container">
+      <div class="single-post">
+  <header class="single-post-header">
+    <h1 class="single-post-header-title">Intro to React Router</h1>
+    <p class="single-post-header-date">// Aug 13, 2015</p>
+  </header>
+  <div class="single-post-content"><p>Today has been a pretty awesome day for me. I had the chance to fully dive into setting up a React app in NPM (which will be another blog post on it’s own). As I was setting up the app, I also had the chance to explore and implement <a href="https://rackt.github.io/react-router/">React Router</a>.</p>
+
+<p>I found React Router’s nested routing architecture very intuitive and true to React’s trickle down nature. Here’s the step-by-step intro to how I found myself to implement the React Router. For a more comprehensive guide, I highly recommend hitting the <a href="https://rackt.github.io/react-router/">docs</a>.</p>
+
+<p>I’ll assume that you have a React skeleton set up. Go ahead and run <code class="highlighter-rouge">npm i -S react-router</code>.</p>
+
+<p>In our <code class="highlighter-rouge">app.js</code> (or whatever your entry point js file is), instead of rendering the React component using <code class="highlighter-rouge">React.render</code>, we’re going to render the component using the router.</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="c1">//  app/shared/routes.js</span>
+
+<span class="kr">import</span> <span class="nx">React</span> <span class="nx">from</span> <span class="s1">'react'</span><span class="p">;</span>
+<span class="kr">import</span> <span class="p">{</span> <span class="nx">Route</span> <span class="p">}</span> <span class="nx">from</span> <span class="s1">'react-router'</span><span class="p">;</span>
+
+<span class="c1">// Import any routes handler components that will be used</span>
+<span class="kr">import</span> <span class="nx">AppHandler</span> <span class="nx">from</span> <span class="s1">'../components/app/appHandler'</span><span class="p">;</span>
+<span class="kr">import</span> <span class="nx">LoginHandler</span> <span class="nx">from</span> <span class="s1">'../components/app/loginHandler'</span><span class="p">;</span>
+
+<span class="kd">let</span> <span class="nx">routes</span> <span class="o">=</span> <span class="p">(</span>
+  <span class="o">&lt;</span><span class="nx">Route</span> <span class="nx">name</span><span class="o">=</span><span class="s1">'app'</span> <span class="nx">path</span><span class="o">=</span><span class="s1">'/'</span> <span class="nx">handler</span><span class="o">=</span><span class="p">{</span><span class="nx">AppHandler</span><span class="p">}</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="nx">Route</span> <span class="nx">name</span><span class="o">=</span><span class="s1">'login'</span> <span class="nx">path</span><span class="o">=</span><span class="s1">'/login'</span> <span class="nx">handler</span><span class="o">=</span><span class="p">{</span><span class="nx">LoginHandler</span><span class="p">}</span> <span class="sr">/</span><span class="err">&gt;
+</span>    <span class="o">&lt;</span><span class="nx">Route</span> <span class="nx">name</span><span class="o">=</span><span class="s1">'password-reset'</span> <span class="nx">path</span><span class="o">=</span><span class="s1">'/password_reset'</span> <span class="nx">handler</span><span class="o">=</span><span class="p">{</span><span class="nx">PasswordResetHandler</span><span class="p">}</span> <span class="sr">/</span><span class="err">&gt;
+</span>  <span class="o">&lt;</span><span class="sr">/Route</span><span class="err">&gt;
+</span><span class="p">);</span>
+
+<span class="kr">export</span> <span class="k">default</span> <span class="nx">routes</span><span class="p">;</span></code></pre></figure>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="c1">// app/app.js</span>
+
+<span class="kr">import</span> <span class="nx">React</span> <span class="nx">from</span> <span class="s1">'react'</span><span class="p">;</span>
+<span class="kr">import</span> <span class="nx">Router</span> <span class="nx">from</span> <span class="s1">'react-router'</span><span class="p">;</span>
+<span class="kr">import</span> <span class="nx">routes</span> <span class="nx">from</span> <span class="s1">'./shared/routes'</span>
+
+<span class="nx">Router</span><span class="p">.</span><span class="nx">run</span><span class="p">(</span><span class="nx">routes</span><span class="p">,</span> <span class="nx">Router</span><span class="p">.</span><span class="nx">HistoryLocation</span><span class="p">,</span> <span class="p">(</span><span class="nx">Handler</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+  <span class="nx">React</span><span class="p">.</span><span class="nx">render</span><span class="p">(</span><span class="o">&lt;</span><span class="nx">Handler</span> <span class="o">/&gt;</span><span class="p">,</span> <span class="nb">document</span><span class="p">.</span><span class="nx">body</span><span class="p">);</span>
+<span class="p">});</span></code></pre></figure>
+
+<p><br /></p>
+
+<p>Our <code class="highlighter-rouge">app.js</code> file is calling <code class="highlighter-rouge">Router.run</code> which takes all our routes (imported from the <code class="highlighter-rouge">routes.js</code> file), and dependant on which route handler is called, renders that paticular component.</p>
+
+<p>You’ll see that the second argument the <code class="highlighter-rouge">Router.run</code> function takes is <code class="highlighter-rouge">Router.HistoryLocation</code>. By default, every route will be prefixed with a <code class="highlighter-rouge">#</code>. when you click a link that takes you to the “login” link, the URL path will actually be <code class="highlighter-rouge">http://localhost:8080/#/login</code>. In order to bypass this <code class="highlighter-rouge">#</code> key, we specify that we want to use <code class="highlighter-rouge">Router.HistoryLocation</code> to create our URLs. The resulting route will be <code class="highlighter-rouge">http://localhost:8080/login</code>.</p>
+
+<p>In our <code class="highlighter-rouge">routes</code> file, we have specified that our most top level route is <code class="highlighter-rouge">/</code>, which points to the <code class="highlighter-rouge">AppHandler</code>. This is the setup for our <code class="highlighter-rouge">AppHandler</code>:</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="c1">// app/components/app/appHandler.js</span>
+
+<span class="kr">import</span> <span class="nx">React</span> <span class="nx">from</span> <span class="s1">'react'</span><span class="p">;</span>
+<span class="kr">import</span> <span class="nx">Router</span> <span class="nx">from</span> <span class="s1">'react-router'</span><span class="p">;</span>
+<span class="kr">import</span> <span class="p">{</span> <span class="nx">Link</span><span class="p">,</span> <span class="nx">RouteHandler</span> <span class="p">}</span> <span class="nx">from</span> <span class="s1">'react-router'</span><span class="p">;</span>
+
+
+<span class="kr">export</span> <span class="k">default</span> <span class="kr">class</span> <span class="nx">AppHandler</span> <span class="kr">extends</span> <span class="nx">React</span><span class="p">.</span><span class="nx">Component</span> <span class="p">{</span>
+  <span class="nx">render</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="p">(</span>
+      <span class="o">&lt;</span><span class="nx">div</span> <span class="nx">className</span><span class="o">=</span><span class="s1">'app'</span><span class="o">&gt;</span>
+        <span class="o">&lt;</span><span class="nx">Link</span> <span class="nx">to</span><span class="o">=</span><span class="s1">'login'</span><span class="o">&gt;</span><span class="nx">Login</span><span class="o">&lt;</span><span class="sr">/Link</span><span class="err">&gt;
+</span>
+        <span class="c1">// VERY IMPORTANT, this is what handles all our routes</span>
+        <span class="o">&lt;</span><span class="nx">RouteHandler</span> <span class="o">/&gt;</span>  
+      <span class="o">&lt;</span><span class="sr">/div</span><span class="err">&gt;
+</span>    <span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">}</span></code></pre></figure>
+
+<p><br /></p>
+
+<p>We specify must <code class="highlighter-rouge">&lt;RouteHandler /&gt;</code> at the very bottom of our component render in order for the router links to work. Now, whenever the user clicks on a <code class="highlighter-rouge">Link</code> component that we’ve imported from the router, the corresponding <code class="highlighter-rouge">&lt;Route /&gt;</code> component in our <code class="highlighter-rouge">routes.js</code> will be called.</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="c1">// The link component's "to" prop will find the corresponding route component with the same "name" prop. These two props are the identifying factors that link the two components.</span>
+
+<span class="c1">// this link...</span>
+<span class="o">&lt;</span><span class="nx">Link</span> <span class="nx">to</span><span class="o">=</span><span class="s1">'some-path'</span><span class="o">&gt;</span><span class="nx">Go</span> <span class="nx">to</span> <span class="nx">path</span><span class="o">!&lt;</span><span class="sr">/Link</span><span class="err">&gt;
+</span>
+<span class="c1">// will hit this route!</span>
+<span class="o">&lt;</span><span class="nx">Route</span> <span class="nx">name</span><span class="o">=</span><span class="s1">'some-path'</span> <span class="nx">path</span><span class="o">=</span><span class="s1">'/some_url_path'</span> <span class="nx">handler</span><span class="o">=</span><span class="p">{</span><span class="nx">SomeReactComponent</span><span class="p">}</span> <span class="sr">/&gt;</span></code></pre></figure>
+
+<p><br /></p>
+
+<p>React Router seems really amazing and I can wait to dig way deeper into it. This is just the tip of the router iceberg for me and I’ll document my progress as I discover more and more amazing things about it!</p>
+
+</div>
+</div>
+
+    </div>
+
+  </body>
+
+</html>

@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Johnny Ji's Blog</title>
+  <meta name="description" content="React is an amazing library, no doubt about it. But every library has it’s own quirks that make us all go “If only that one thing was done better…”.">
+  <link rel="stylesheet" href="http://johnnyji.me/css/main.css">
+  <link rel="canonical" href="/react/2015/06/21/react-state-management-through-reflux-js.html">
+  <link rel="alternate" type="application/rss+xml" title="Johnny Ji" href="/feed.xml"" />
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css">
+  <link href="https://fonts.googleapis.com/css?family=Lora:400,400i|Open+Sans:600,400" rel="stylesheet">
+</head>
+
+
+  <body class="lite">
+
+    <header class="header header-lite">
+  <a class="header-title header-title-lite" href="http://johnnyji.me">JOHNNY JI</a>
+  <div class="header-social-media">
+    <a href="https://www.github.com/johnnyji" target="_blank" class="header-social-media-link github header-lite">
+      <i class="fa fa-github header-lite"></i>
+    </a>
+    <a href="https://www.twitter.com/johnnyisji" target="_blank" class="header-social-media-link twitter header-lite">
+      <i class="fa fa-twitter header-lite"></i>
+    </a>
+    <a href="https://www.linkedin.com/in/johnnyji" target="_blank" class="header-social-media-link linkedin header-lite">
+      <i class="fa fa-linkedin header-lite"></i>
+    </a>
+    <a href="https://www.instagram.com/johnnyisji"" target="_blank" class="header-social-media-link instagram header-lite">
+      <i class="fa fa-instagram header-lite"></i>
+    </a>
+  </div>
+</header>
+    
+
+    <div class="page-container">
+      <div class="single-post">
+  <header class="single-post-header">
+    <h1 class="single-post-header-title">React State Management Through Reflux.js</h1>
+    <p class="single-post-header-date">// Jun 21, 2015</p>
+  </header>
+  <div class="single-post-content"><p>React is an amazing library, no doubt about it. But every library has it’s own quirks that make us all go <em>“If only that one thing was done better…”</em>.</p>
+
+<p>For me, that quirk is having to invoke a callback function from a child component in order to change the state of it’s parent component. Now this doesn’t seem so troublesome when it’s just the two layers deep, but imagine having to pass down props through numerous child components and having a chain of callbacks being fired so the parent component can receive the callback and update the state accordingly. Now imagine having to keep track of multiple props that fire multiple callbacks across multiple components. That to me, sounds like the definition of hell.</p>
+
+<p>So enter <strong>Reflux</strong>. Reflux is a framework for an architechtural pattern called Flux. I won’t get too much into Flux on this post, check out the <a href="https://facebook.github.io/flux/docs/overview.html">official docs</a> to learn more.</p>
+
+<p>Basically Reflux helps us keep track of our application state so that instead of passing around numerous callback functions, we can instead trigger events and have certain React components who need the data of those events listen for the triggers; bypassing the middle man completely!</p>
+
+<p><em>(The middle in this case being all the other components that the callbacks would normally have to flow through to reach it’s destination)</em>
+<br /><br /></p>
+
+<p>Here’s a small and not so bad example of the callback hell I was mentioning:</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="c1">// For the purposes of this demonstration I will be using ES5</span>
+
+<span class="kd">var</span> <span class="nx">Parent</span> <span class="o">=</span> <span class="nx">React</span><span class="p">.</span><span class="nx">createClass</span><span class="p">({</span>
+  <span class="na">getInitialState</span><span class="p">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="p">{</span>
+      <span class="na">name</span><span class="p">:</span> <span class="s2">"Johnny"</span><span class="p">,</span>
+      <span class="na">sex</span><span class="p">:</span> <span class="s2">"male"</span>
+    <span class="p">}</span>
+  <span class="p">},</span>
+  <span class="na">handleChangeName</span><span class="p">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">setState</span><span class="p">({</span> <span class="na">name</span><span class="p">:</span> <span class="nx">e</span><span class="p">.</span><span class="nx">target</span><span class="p">.</span><span class="nx">value</span> <span class="p">});</span>
+  <span class="p">},</span>
+  <span class="na">render</span><span class="p">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="p">(</span>
+      <span class="o">&lt;</span><span class="nx">DisplayInfo</span>
+        <span class="nx">name</span><span class="o">=</span><span class="p">{</span><span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">name</span><span class="p">}</span>
+        <span class="nx">sex</span><span class="o">=</span><span class="p">{</span><span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">sex</span><span class="p">}</span>
+        <span class="nx">handleChangeName</span><span class="o">=</span><span class="p">{</span><span class="k">this</span><span class="p">.</span><span class="nx">handleChangeName</span><span class="p">}</span>
+      <span class="sr">/</span><span class="err">&gt;
+</span>    <span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">});</span>
+
+<span class="kd">var</span> <span class="nx">DisplayInfo</span> <span class="o">=</span> <span class="nx">React</span><span class="p">.</span><span class="nx">createClass</span><span class="p">({</span>
+  <span class="na">render</span><span class="p">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="p">(</span>
+      <span class="o">&lt;</span><span class="nx">div</span><span class="o">&gt;</span>
+        <span class="o">&lt;</span><span class="nx">h1</span><span class="o">&gt;</span><span class="na">Name</span><span class="p">:</span> <span class="p">{</span><span class="k">this</span><span class="p">.</span><span class="nx">props</span><span class="p">.</span><span class="nx">firstChildOnlyInfo</span><span class="p">}</span><span class="o">&lt;</span><span class="sr">/h1</span><span class="err">&gt;
+</span>        <span class="o">&lt;</span><span class="nx">h3</span><span class="o">&gt;</span><span class="na">Sex</span><span class="p">:</span> <span class="p">{</span><span class="k">this</span><span class="p">.</span><span class="nx">props</span><span class="p">.</span><span class="nx">sex</span><span class="p">}</span><span class="o">&lt;</span><span class="sr">/h3</span><span class="err">&gt;
+</span>
+        <span class="o">&lt;</span><span class="nx">InputField</span> <span class="nx">handleChangeName</span><span class="o">=</span><span class="p">{</span><span class="k">this</span><span class="p">.</span><span class="nx">props</span><span class="p">.</span><span class="nx">handleChangeName</span><span class="p">}</span> <span class="sr">/</span><span class="err">&gt;
+</span>      <span class="o">&lt;</span><span class="sr">/div</span><span class="err">&gt;
+</span>    <span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">});</span>
+
+<span class="kd">var</span> <span class="nx">InputField</span> <span class="o">=</span> <span class="nx">React</span><span class="p">.</span><span class="nx">createClass</span><span class="p">({</span>
+  <span class="na">render</span><span class="p">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="o">&lt;</span><span class="nx">input</span> <span class="nx">onChange</span><span class="o">=</span><span class="p">{</span><span class="k">this</span><span class="p">.</span><span class="nx">props</span><span class="p">.</span><span class="nx">handleChangeName</span><span class="p">}</span><span class="o">&gt;&lt;</span><span class="sr">/input</span><span class="err">&gt;
+</span>    <span class="c1">// this.props.handleNameChange will invoke the prop that it belongs to on it's parent component, which will in turn do the same to it's parent component until we've reached the very top level parent component, in which a function is invoked to change a state. The changed state is then passed back down as props through rerendering in order to alter each component accordingly.</span>
+  <span class="p">}</span>
+<span class="p">});</span></code></pre></figure>
+
+<p><br /></p>
+
+<p>So here we can already see that even with only two levels of child component, we’re having to tediously pass props (<code class="highlighter-rouge">handleChangeName</code>) around as functions so a callback chain can reach the parent component to change the state of <code class="highlighter-rouge">name</code>. Imagine doing this on a production scale application. Not ideal at all.
+<br /><br /></p>
+
+<p>Here’s how we would approach the same situation in <strong>Reflux</strong>:</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="c1">// Here's our new Reflux actions and stores!</span>
+
+<span class="kd">var</span> <span class="nx">ParentAction</span> <span class="o">=</span> <span class="nx">Reflux</span><span class="p">.</span><span class="nx">createActions</span><span class="p">([</span>
+  <span class="c1">// actions are simply an array of strings that direct to functions in stores.</span>
+  <span class="s2">"changeName"</span>
+<span class="p">]);</span>
+
+<span class="kd">var</span> <span class="nx">ParentStore</span> <span class="o">=</span> <span class="nx">Reflux</span><span class="p">.</span><span class="nx">createStore</span><span class="p">({</span>
+  <span class="na">init</span><span class="p">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+    <span class="c1">// we keep a track of the state on the store</span>
+    <span class="k">this</span><span class="p">.</span><span class="na">state</span><span class="p">:</span> <span class="p">{</span>
+      <span class="na">name</span><span class="p">:</span> <span class="s2">"Johnny"</span><span class="p">,</span>
+      <span class="na">sex</span><span class="p">:</span> <span class="s2">"male"</span>
+    <span class="p">};</span>
+    <span class="c1">// this is telling our store to listen to any invoked actions in the ParentActions and invoke the corresponding function. The naming convention is to prepend the function in the store with the word "on". (i.e. if the action is "changeName", the corresponding store function is "onChangeName")</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">listenTo</span><span class="p">(</span><span class="nx">ParentActions</span><span class="p">);</span>
+  <span class="p">},</span>
+  <span class="na">onChangeName</span><span class="p">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">newValue</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">name</span> <span class="o">=</span> <span class="nx">newValue</span><span class="p">;</span>
+
+    <span class="c1">// trigger is a method in Reflux that triggers an event, allowing any listeners to react to the event. In this case, our Parent component in React is listening to this event.</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">trigger</span><span class="p">({</span> <span class="na">name</span><span class="p">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">name</span> <span class="p">});</span>
+    <span class="c1">//=&gt; this will trigger: { name: "some value" }, and we just have to simply call this.setState(); on that in our React component.</span>
+  <span class="p">}</span>
+<span class="p">});</span>
+
+
+<span class="c1">// Here's our React code!</span>
+
+<span class="kd">var</span> <span class="nx">Parent</span> <span class="o">=</span> <span class="nx">React</span><span class="p">.</span><span class="nx">createClass</span><span class="p">({</span>
+  <span class="na">getInitialState</span><span class="p">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="p">{</span>
+      <span class="na">name</span><span class="p">:</span> <span class="s2">"Johnny"</span><span class="p">,</span>
+      <span class="na">sex</span><span class="p">:</span> <span class="s2">"male"</span>
+    <span class="p">}</span>
+  <span class="p">},</span>
+  <span class="na">componentDidMount</span><span class="p">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+    <span class="c1">// here we are listening to the ParentStore for any changes it triggers, and passing in onChange as the callback function that will handle the changes and update any state accordingly.</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">unsubscribe</span> <span class="o">=</span> <span class="nx">ParentStore</span><span class="p">.</span><span class="nx">listen</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">onChange</span><span class="p">);</span>
+  <span class="p">},</span>
+  <span class="na">componentWillUnmount</span><span class="p">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">unsubscribe</span><span class="p">();</span>
+  <span class="p">},</span>
+  <span class="na">onChange</span><span class="p">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// here the data is the new state being passed back, because the stores only have one trigger action, we're using lodash's _.pick to select only the key-value pairs that exists as states on this component. So if any other component's events are triggers, we're not adding any additional state onto this component by accident.</span>
+    <span class="kd">var</span> <span class="nx">newState</span> <span class="o">=</span> <span class="nx">_</span><span class="p">.</span><span class="nx">pick</span><span class="p">(</span><span class="nx">data</span><span class="p">,</span> <span class="nx">_</span><span class="p">.</span><span class="nx">keysIn</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="p">));</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">setState</span><span class="p">(</span><span class="nx">newState</span><span class="p">);</span>
+  <span class="p">},</span>
+  <span class="na">render</span><span class="p">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="p">(</span>
+      <span class="o">&lt;</span><span class="nx">DisplayInfo</span>
+        <span class="nx">name</span><span class="o">=</span><span class="p">{</span><span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">name</span><span class="p">}</span>
+        <span class="nx">sex</span><span class="o">=</span><span class="p">{</span><span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">sex</span><span class="p">}</span>
+        <span class="c1">// there's no longer need for callback props to be passed</span>
+      <span class="sr">/</span><span class="err">&gt;
+</span>    <span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">});</span>
+
+<span class="kd">var</span> <span class="nx">DisplayInfo</span> <span class="o">=</span> <span class="nx">React</span><span class="p">.</span><span class="nx">createClass</span><span class="p">({</span>
+  <span class="na">render</span><span class="p">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="p">(</span>
+      <span class="o">&lt;</span><span class="nx">div</span><span class="o">&gt;</span>
+        <span class="o">&lt;</span><span class="nx">h1</span><span class="o">&gt;</span><span class="na">Name</span><span class="p">:</span> <span class="p">{</span><span class="k">this</span><span class="p">.</span><span class="nx">props</span><span class="p">.</span><span class="nx">firstChildOnlyInfo</span><span class="p">}</span><span class="o">&lt;</span><span class="sr">/h1</span><span class="err">&gt;
+</span>        <span class="o">&lt;</span><span class="nx">h3</span><span class="o">&gt;</span><span class="na">Sex</span><span class="p">:</span> <span class="p">{</span><span class="k">this</span><span class="p">.</span><span class="nx">props</span><span class="p">.</span><span class="nx">sex</span><span class="p">}</span><span class="o">&lt;</span><span class="sr">/h3</span><span class="err">&gt;
+</span>      
+        <span class="o">&lt;</span><span class="nx">InputField</span> <span class="o">/&gt;</span>
+      <span class="o">&lt;</span><span class="sr">/div</span><span class="err">&gt;
+</span>    <span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">});</span>
+
+<span class="kd">var</span> <span class="nx">InputField</span> <span class="o">=</span> <span class="nx">React</span><span class="p">.</span><span class="nx">createClass</span><span class="p">({</span>
+  <span class="na">handleChange</span><span class="p">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// here we're telling the ParentStore to update the state of name</span>
+    <span class="nx">ParentStore</span><span class="p">.</span><span class="nx">changeName</span><span class="p">(</span><span class="nx">e</span><span class="p">.</span><span class="nx">target</span><span class="p">.</span><span class="nx">value</span><span class="p">);</span>
+  <span class="p">}</span>
+  <span class="nl">render</span><span class="p">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="o">&lt;</span><span class="nx">input</span> <span class="nx">onChange</span><span class="o">=</span><span class="p">{</span><span class="k">this</span><span class="p">.</span><span class="nx">handleChange</span><span class="p">}</span><span class="o">&gt;&lt;</span><span class="sr">/input</span><span class="err">&gt;
+</span>  <span class="p">}</span>
+<span class="p">});</span></code></pre></figure>
+
+<p><br /></p>
+
+<p>So as you can see here, we are no longer having to pass props around to invoke callbacks in order to change parent state.</p>
+
+<p><strong>TL;DR</strong> Anytime we have to change a state on a distant parent component, we simply call an action which will trigger a store function. The store will do it’s calculation and trigger it’s own event, which React components can listen to, and those components that are listening will automatically receive the new data, without us having to manually pass the data through callback props.</p>
+
+<p>Reflux is an amazing tool and I’ve only begun to take a look at it, so I’m sure that I’ll post more about it in the future! Until then, have fun Reacting!</p>
+
+</div>
+</div>
+
+    </div>
+
+  </body>
+
+</html>

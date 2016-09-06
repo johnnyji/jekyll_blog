@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Johnny Ji's Blog</title>
+  <meta name="description" content="If you’ve ever experienced performance issues whilst using React.js, it’s likely because your React components are needlessly re-rendering. Luckily, React pr...">
+  <link rel="stylesheet" href="http://johnnyji.me/css/main.css">
+  <link rel="canonical" href="/react/2016/06/27/why-arrow-functions-murder-react-performance.html">
+  <link rel="alternate" type="application/rss+xml" title="Johnny Ji" href="/feed.xml"" />
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css">
+  <link href="https://fonts.googleapis.com/css?family=Lora:400,400i|Open+Sans:600,400" rel="stylesheet">
+</head>
+
+
+  <body class="lite">
+
+    <header class="header header-lite">
+  <a class="header-title header-title-lite" href="http://johnnyji.me">JOHNNY JI</a>
+  <div class="header-social-media">
+    <a href="https://www.github.com/johnnyji" target="_blank" class="header-social-media-link github header-lite">
+      <i class="fa fa-github header-lite"></i>
+    </a>
+    <a href="https://www.twitter.com/johnnyisji" target="_blank" class="header-social-media-link twitter header-lite">
+      <i class="fa fa-twitter header-lite"></i>
+    </a>
+    <a href="https://www.linkedin.com/in/johnnyji" target="_blank" class="header-social-media-link linkedin header-lite">
+      <i class="fa fa-linkedin header-lite"></i>
+    </a>
+    <a href="https://www.instagram.com/johnnyisji"" target="_blank" class="header-social-media-link instagram header-lite">
+      <i class="fa fa-instagram header-lite"></i>
+    </a>
+  </div>
+</header>
+    
+
+    <div class="page-container">
+      <div class="single-post">
+  <header class="single-post-header">
+    <h1 class="single-post-header-title">Why Anon Functions Murder Performance in React</h1>
+    <p class="single-post-header-date">// Jun 27, 2016</p>
+  </header>
+  <div class="single-post-content"><p>If you’ve ever experienced performance issues whilst using React.js, it’s likely because your React components are needlessly re-rendering. Luckily, React provides an easy out of the box solution which is <code class="highlighter-rouge">shouldComponentUpdate</code>. If you’ve never seen or used <code class="highlighter-rouge">shouldComponentUpdate</code>, I made a post about it <a href="http://johnnyji.me/react/2016/03/03/performance-optimization-in-reactjs-using-immutablejs.html">here</a>.</p>
+
+<p><code class="highlighter-rouge">shouldComponentUpdate</code> <b>shallow compares</b> the props/state of the component and only when either has changed, does the component re-render; thus cutting out needless re-renders.
+<br />
+<br /></p>
+
+<h3>So... What's the problem?</h3>
+
+<p>Well the problem is, there’s been a pattern that I’ve been seeing quite a lot in the React.js community; using anonymous (arrow) functions as callback props. Here are two examples, the first with arrow functions, and the latter without. It’s immediately clear why people prefer the arrow function approach:
+<br />
+<br /></p>
+
+<p><b><em>with</em> ES6 Arrow Functions:</b></p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript">  <span class="c1">// ...</span>
+
+  <span class="nx">render</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="p">(</span>
+      <span class="o">&lt;</span><span class="nx">div</span><span class="o">&gt;</span>
+        <span class="o">&lt;</span><span class="nx">CustomButtonComponent</span>
+          <span class="nx">label</span><span class="o">=</span><span class="s1">'Click me to increment!'</span>
+          <span class="nx">onClicked</span><span class="o">=</span><span class="p">{()</span> <span class="o">=&gt;</span> <span class="p">{</span> <span class="k">this</span><span class="p">.</span><span class="nx">setState</span><span class="p">({</span><span class="na">count</span><span class="p">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">count</span> <span class="o">+</span> <span class="mi">1</span><span class="p">})</span> <span class="p">}}</span> <span class="sr">/</span><span class="err">&gt;
+</span>        <span class="o">&lt;</span><span class="nx">CustomButtonComponent</span>
+          <span class="nx">label</span><span class="o">=</span><span class="s1">'Click me to decrement!'</span>
+          <span class="nx">onClicked</span><span class="o">=</span><span class="p">{()</span> <span class="o">=&gt;</span> <span class="p">{</span> <span class="k">this</span><span class="p">.</span><span class="nx">setState</span><span class="p">({</span><span class="na">count</span><span class="p">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">count</span> <span class="o">-</span> <span class="mi">1</span><span class="p">})</span> <span class="p">}}</span> <span class="sr">/</span><span class="err">&gt;
+</span>      <span class="o">&lt;</span><span class="sr">/div</span><span class="err">&gt;
+</span>    <span class="p">);</span>
+  <span class="p">}</span>
+  
+  <span class="c1">// ...</span>
+<span class="p">}</span></code></pre></figure>
+
+<p><b><em>without</em> ES6 Arrow Functions:</b></p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript">  <span class="c1">// ...</span>
+
+  <span class="nx">render</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="p">(</span>
+      <span class="o">&lt;</span><span class="nx">div</span><span class="o">&gt;</span>
+        <span class="o">&lt;</span><span class="nx">CustomButtonComponent</span>
+          <span class="nx">label</span><span class="o">=</span><span class="s1">'Click me to increment!'</span>
+          <span class="nx">onClicked</span><span class="o">=</span><span class="p">{</span><span class="k">this</span><span class="p">.</span><span class="nx">_handleIncrementView</span><span class="p">}</span> <span class="sr">/</span><span class="err">&gt;
+</span>        <span class="o">&lt;</span><span class="nx">CustomButtonComponent</span>
+          <span class="nx">label</span><span class="o">=</span><span class="s1">'Click me to decrement!'</span>
+          <span class="nx">onClicked</span><span class="o">=</span><span class="p">{</span><span class="k">this</span><span class="p">.</span><span class="nx">_handleDecrementView</span><span class="p">}</span> <span class="sr">/</span><span class="err">&gt;
+</span>      <span class="o">&lt;</span><span class="sr">/div</span><span class="err">&gt;
+</span>    <span class="p">);</span>
+  <span class="p">}</span>
+
+  <span class="nx">_handleIncrementCount</span> <span class="o">=</span> <span class="p">()</span> <span class="o">=&gt;</span> <span class="p">{</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">setState</span><span class="p">({</span><span class="na">count</span><span class="p">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">count</span> <span class="o">+</span> <span class="mi">1</span><span class="p">});</span>
+  <span class="p">};</span>
+  
+  <span class="nx">_handleDecrementCount</span> <span class="o">=</span> <span class="p">()</span> <span class="o">=&gt;</span> <span class="p">{</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">setState</span><span class="p">({</span><span class="na">count</span><span class="p">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">count</span> <span class="o">-</span> <span class="mi">1</span><span class="p">});</span>
+  <span class="p">};</span>
+
+  <span class="c1">// ...</span>
+<span class="p">}</span></code></pre></figure>
+
+<p><br /></p>
+
+<p>Looking at this code, I would probably pick the first one. With the introduction of arrow functions in ES6, it has never been easier to write anonymous functions, the first example using arrow functions looks very clean and legible (if I do say so myself :bowtie:).</p>
+
+<p><b>HOWEVER</b>, there is always more than meets the eye. The first example is actually REALLY BAD. The first component will cause the <code class="highlighter-rouge">CustomButtonComponent</code> to re-render needlessly, even when we’ve optimized the component with <code class="highlighter-rouge">shouldComponentUpdate</code>.
+<br />
+<br /></p>
+
+<h3>So why are arrow functions bad exactly?</h3>
+
+<p>Arrow functions used in this context are what’s known as <code class="highlighter-rouge">Anonymous Functions</code> in JavaScript. Anonymous functions, just as they their name hints at, have no identity. They are functions that are created, used and discarded just as quickly.</p>
+
+<p>We use anonymous functions all the time is JavaScript, mostly as callback functions to execute some quick functionality. Therefore, the logical thought is to use anonymous functions for our React component callback props as well. However, this will be the <em><b>silent killer</b></em> of your React app’s performance. Here’s why:</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kr">class</span> <span class="nx">Main</span> <span class="kr">extends</span> <span class="nx">React</span><span class="p">.</span><span class="nx">Component</span> <span class="p">{</span>
+  <span class="c1">// ...</span>
+  <span class="nx">render</span><span class="p">()</span> <span class="p">{</span>
+    <span class="c1">// We should NEVER pass anonymous functions as props to React components unless</span>
+    <span class="c1">// we absolutely need to. Anonymous functions are redefined on every render cycle, which means</span>
+    <span class="c1">// the function you pass to your child component is different every time.</span>
+    <span class="c1">//</span>
+    <span class="c1">// This will break shallow comparing on your child component, as the prop will be different every time.</span>
+    <span class="k">return</span> <span class="p">(</span>
+      <span class="o">&lt;</span><span class="nx">div</span><span class="o">&gt;</span>
+        <span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="nx">This</span> <span class="nx">button</span> <span class="nx">has</span> <span class="nx">been</span> <span class="nx">clicked</span> <span class="p">{</span><span class="nx">count</span><span class="p">}</span> <span class="nx">times</span><span class="o">&lt;</span><span class="sr">/p</span><span class="err">&gt;
+</span>        <span class="o">&lt;</span><span class="nx">CustomButtonComponent</span>
+          <span class="nx">label</span><span class="o">=</span><span class="s1">'Click me!'</span>
+          <span class="nx">onClicked</span><span class="o">=</span><span class="p">{()</span> <span class="o">=&gt;</span> <span class="c1">// ... } /&gt;</span>
+      <span class="o">&lt;</span><span class="sr">/div</span><span class="err">&gt;
+</span>    <span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+
+<span class="c1">// ... In another file ...</span>
+
+<span class="kr">class</span> <span class="nx">CustomButtonComponent</span> <span class="p">{</span>
+  <span class="nx">shouldComponentUpdate</span><span class="p">(</span><span class="nx">nextProps</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// This will ensure that our component only ever re-renders</span>
+    <span class="c1">// if it's props have changed</span>
+    <span class="k">return</span> <span class="p">(</span>
+      <span class="k">this</span><span class="p">.</span><span class="nx">props</span><span class="p">.</span><span class="nx">onClicked</span> <span class="o">!==</span> <span class="nx">nextProps</span><span class="p">.</span><span class="nx">onClicked</span> <span class="o">||</span>
+      <span class="k">this</span><span class="p">.</span><span class="nx">props</span><span class="p">.</span><span class="nx">label</span> <span class="o">!==</span> <span class="nx">nextProps</span><span class="p">.</span><span class="nx">label</span>
+    <span class="p">);</span>
+  <span class="p">}</span>
+
+  <span class="nx">render</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="o">&lt;</span><span class="nx">button</span> <span class="nx">onClick</span><span class="o">=</span><span class="p">{</span><span class="k">this</span><span class="p">.</span><span class="nx">props</span><span class="p">.</span><span class="nx">onClicked</span><span class="p">}</span><span class="o">&gt;</span><span class="p">{</span><span class="nx">label</span><span class="p">}</span><span class="o">&lt;</span><span class="sr">/button&gt;</span><span class="err">;
+</span>  <span class="p">}</span>
+<span class="p">}</span></code></pre></figure>
+
+<p>An anonymous function by nature has no reference, thus they will be redefined/recreated on every component render cycle. In our case, that means everytime <code class="highlighter-rouge">Main</code> re-renders, it redefines the <code class="highlighter-rouge">onClicked</code> prop of the <code class="highlighter-rouge">CustomButtonComponent</code>, forcing <code class="highlighter-rouge">CustomButtonComponent</code> to re-render even if has been optimized with <code class="highlighter-rouge">shouldComponentUpdate</code>. <b>This breaks the intended behaviour of <code class="highlighter-rouge">shouldComponentUpdate</code></b>.
+<br />
+<br /></p>
+
+<p><b>Here’s how we should rewrite this file so <code class="highlighter-rouge">CustomButtonComponent</code> will only render as needed:</b></p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kr">class</span> <span class="nx">Main</span> <span class="kr">extends</span> <span class="nx">React</span><span class="p">.</span><span class="nx">Component</span> <span class="p">{</span>
+  <span class="c1">// ...</span>
+  <span class="nx">render</span><span class="p">()</span> <span class="p">{</span>
+    <span class="c1">// Because we've named the callback prop `this._handleClicked`, we're now passing a FUNCTION REFERENCE and</span>
+    <span class="c1">// no longer creating a new function on every render cycle. The function reference will not change throughout</span>
+    <span class="c1">// the lifecycle of `Main`, therefore it will never cause `CustomButtonComponent` to re-render.</span>
+    <span class="k">return</span> <span class="p">(</span>
+      <span class="o">&lt;</span><span class="nx">div</span><span class="o">&gt;</span>
+        <span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="nx">This</span> <span class="nx">button</span> <span class="nx">has</span> <span class="nx">been</span> <span class="nx">clicked</span> <span class="p">{</span><span class="nx">count</span><span class="p">}</span> <span class="nx">times</span><span class="o">&lt;</span><span class="sr">/p</span><span class="err">&gt;
+</span>        <span class="o">&lt;</span><span class="nx">CustomButtonComponent</span> <span class="nx">onClicked</span><span class="o">=</span><span class="p">{</span><span class="k">this</span><span class="p">.</span><span class="nx">_handleClicked</span><span class="p">}</span> <span class="sr">/</span><span class="err">&gt;
+</span>      <span class="o">&lt;</span><span class="sr">/div</span><span class="err">&gt;
+</span>    <span class="p">);</span>
+  <span class="p">}</span>
+
+  <span class="nx">_handleClicked</span> <span class="o">=</span> <span class="p">()</span> <span class="o">=&gt;</span> <span class="p">{</span>
+    <span class="c1">// ...</span>
+  <span class="p">};</span>
+<span class="p">}</span></code></pre></figure>
+
+<p><br /></p>
+
+<p>Here we’re passing the reference of <code class="highlighter-rouge">this._handleClicked</code>, and therefore not creating a new function on every render. Now <code class="highlighter-rouge">CustomButtonComponent</code> will receive the same callback prop everytime and won’t needlessly re-render. But don’t just take my word for it, I’ve created a working <a href="https://jsfiddle.net/johnnyji/mtkjc5on/">jsfiddle</a> to demostrate the downside of using arrow functions as callback props, see for yourself <a href="https://jsfiddle.net/johnnyji/mtkjc5on/">here</a>.</p>
+
+<p>The downside to this approach is that you have to write some more code (most of which will boil a lot of plates); however the flip side is that you end up with optimized performance, and I think that’s a pretty big win.
+<br />
+<br /></p>
+
+</div>
+</div>
+
+    </div>
+
+  </body>
+
+</html>

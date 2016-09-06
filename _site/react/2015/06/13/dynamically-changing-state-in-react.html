@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Johnny Ji's Blog</title>
+  <meta name="description" content="One of the headaches I had with React was trying to figure out a general function that could update any state associated with the element that updated it. Th...">
+  <link rel="stylesheet" href="http://johnnyji.me/css/main.css">
+  <link rel="canonical" href="/react/2015/06/13/dynamically-changing-state-in-react.html">
+  <link rel="alternate" type="application/rss+xml" title="Johnny Ji" href="/feed.xml"" />
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css">
+  <link href="https://fonts.googleapis.com/css?family=Lora:400,400i|Open+Sans:600,400" rel="stylesheet">
+</head>
+
+
+  <body class="lite">
+
+    <header class="header header-lite">
+  <a class="header-title header-title-lite" href="http://johnnyji.me">JOHNNY JI</a>
+  <div class="header-social-media">
+    <a href="https://www.github.com/johnnyji" target="_blank" class="header-social-media-link github header-lite">
+      <i class="fa fa-github header-lite"></i>
+    </a>
+    <a href="https://www.twitter.com/johnnyisji" target="_blank" class="header-social-media-link twitter header-lite">
+      <i class="fa fa-twitter header-lite"></i>
+    </a>
+    <a href="https://www.linkedin.com/in/johnnyji" target="_blank" class="header-social-media-link linkedin header-lite">
+      <i class="fa fa-linkedin header-lite"></i>
+    </a>
+    <a href="https://www.instagram.com/johnnyisji"" target="_blank" class="header-social-media-link instagram header-lite">
+      <i class="fa fa-instagram header-lite"></i>
+    </a>
+  </div>
+</header>
+    
+
+    <div class="page-container">
+      <div class="single-post">
+  <header class="single-post-header">
+    <h1 class="single-post-header-title">Dynamic State Changing in React.js</h1>
+    <p class="single-post-header-date">// Jun 13, 2015</p>
+  </header>
+  <div class="single-post-content"><p>One of the headaches I had with React was trying to figure out a general function that could update any state associated with the element that updated it. There were a few initial issues that I faced:</p>
+
+<p><br /></p>
+<blockquote>
+  <li>How could I distinguish which state was associated with which element?</li>
+  <li>How could one function change any state for any element?</li>
+  <li>What if the state has nested attributes? Such as a `user` state</li>
+</blockquote>
+<p><br /></p>
+
+<p>The following are two functions that I’ve spent some time coming up with. Both will dynamically change any state so long as the parameters are passed to them.</p>
+
+<p><code class="highlighter-rouge">changeStateAttributeValue</code> changes a single attributes on a given state, i.e. changing the email attribute on a state called user:</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">changeStateAttributeValue</span><span class="err">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">stateName</span><span class="p">,</span> <span class="nx">attributeKey</span><span class="p">,</span> <span class="nx">attributeValue</span><span class="p">)</span> <span class="p">{</span>
+  <span class="kd">var</span> <span class="nx">newState</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="p">;</span> 
+  <span class="kd">var</span> <span class="nx">stateBeingChanged</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="p">[</span><span class="nx">stateName</span><span class="p">];</span>
+  <span class="nx">stateBeingChanged</span><span class="p">[</span><span class="nx">attributeKey</span><span class="p">]</span> <span class="o">=</span> <span class="nx">attributeValue</span><span class="p">;</span>
+  <span class="nx">newState</span><span class="p">[</span><span class="nx">stateName</span><span class="p">]</span> <span class="o">=</span> <span class="nx">stateBeingChanged</span><span class="p">;</span>
+  <span class="k">this</span><span class="p">.</span><span class="nx">setState</span><span class="p">(</span><span class="nx">newState</span><span class="p">);</span>
+<span class="p">}</span></code></pre></figure>
+
+<p><br /></p>
+
+<p><code class="highlighter-rouge">changeState</code> simply changes a single state on a component given the state name and it’s new value:</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">changeState</span><span class="err">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">stateName</span><span class="p">,</span> <span class="nx">value</span><span class="p">)</span> <span class="p">{</span>
+  <span class="kd">var</span> <span class="nx">newState</span> <span class="o">=</span> <span class="p">{};</span>
+  <span class="nx">newState</span><span class="p">[</span><span class="nx">stateName</span><span class="p">]</span> <span class="o">=</span> <span class="nx">value</span><span class="p">;</span>
+  <span class="k">this</span><span class="p">.</span><span class="nx">setState</span><span class="p">(</span><span class="nx">newState</span><span class="p">);</span>
+<span class="p">}</span></code></pre></figure>
+
+<p><br /></p>
+
+<p>I wish I would have had this code to begin with! This would have saved so much time! <b>DRY FTW.</b></p>
+</div>
+</div>
+
+    </div>
+
+  </body>
+
+</html>

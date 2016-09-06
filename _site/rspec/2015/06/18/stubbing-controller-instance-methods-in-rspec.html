@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Johnny Ji's Blog</title>
+  <meta name="description" content="Recently I’ve had to restructure our company’s API, and part of that was writing new request specs for everything.">
+  <link rel="stylesheet" href="http://johnnyji.me/css/main.css">
+  <link rel="canonical" href="/rspec/2015/06/18/stubbing-controller-instance-methods-in-rspec.html">
+  <link rel="alternate" type="application/rss+xml" title="Johnny Ji" href="/feed.xml"" />
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css">
+  <link href="https://fonts.googleapis.com/css?family=Lora:400,400i|Open+Sans:600,400" rel="stylesheet">
+</head>
+
+
+  <body class="lite">
+
+    <header class="header header-lite">
+  <a class="header-title header-title-lite" href="http://johnnyji.me">JOHNNY JI</a>
+  <div class="header-social-media">
+    <a href="https://www.github.com/johnnyji" target="_blank" class="header-social-media-link github header-lite">
+      <i class="fa fa-github header-lite"></i>
+    </a>
+    <a href="https://www.twitter.com/johnnyisji" target="_blank" class="header-social-media-link twitter header-lite">
+      <i class="fa fa-twitter header-lite"></i>
+    </a>
+    <a href="https://www.linkedin.com/in/johnnyji" target="_blank" class="header-social-media-link linkedin header-lite">
+      <i class="fa fa-linkedin header-lite"></i>
+    </a>
+    <a href="https://www.instagram.com/johnnyisji"" target="_blank" class="header-social-media-link instagram header-lite">
+      <i class="fa fa-instagram header-lite"></i>
+    </a>
+  </div>
+</header>
+    
+
+    <div class="page-container">
+      <div class="single-post">
+  <header class="single-post-header">
+    <h1 class="single-post-header-title">How to Stub Controller Methods in RSpec Request Specs! (FTW)</h1>
+    <p class="single-post-header-date">// Jun 18, 2015</p>
+  </header>
+  <div class="single-post-content"><p>Recently I’ve had to restructure our <a href="http://fitplan.io">company’s</a> API, and part of that was writing new request specs for everything.</p>
+
+<p>One <strong>HUGE</strong> headache I ran into while writing request specs for the API was bypassing controller <code class="highlighter-rouge">before_actions</code> such as <code class="highlighter-rouge">require_user</code>, as well as stubbing out crucial controller instance methods like <code class="highlighter-rouge">current_user</code>.
+<br /><br /></p>
+
+<p>I tried searching online; I don’t exaggerate when I say that I tried nearly everything:</p>
+
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">let</span><span class="p">(</span><span class="ss">:user</span><span class="p">)</span> <span class="p">{</span> <span class="no">FactoryGirl</span><span class="p">.</span><span class="nf">create</span><span class="p">(</span><span class="ss">:user</span><span class="p">)</span> <span class="p">}</span>
+
+<span class="n">controller</span><span class="p">.</span><span class="nf">stub</span><span class="p">(</span><span class="ss">:current_user</span><span class="p">)</span> <span class="p">{</span> <span class="n">user</span> <span class="p">}</span>
+<span class="c1">#=&gt; deprecated syntax</span>
+
+<span class="n">allow</span><span class="p">(</span><span class="n">controller</span><span class="p">).</span><span class="nf">to</span> <span class="n">receive</span><span class="p">(</span><span class="ss">:current_user</span><span class="p">)</span> <span class="p">{</span> <span class="n">user</span> <span class="p">}</span>
+<span class="c1">#=&gt; couldn't recognize current_user</span>
+
+<span class="n">allow</span><span class="p">(</span><span class="n">controller</span><span class="p">).</span><span class="nf">to</span> <span class="n">receive</span><span class="p">(</span><span class="ss">:current_user</span><span class="p">).</span><span class="nf">and_return</span><span class="p">(</span><span class="n">user</span><span class="p">)</span> 
+<span class="c1">#=&gt; still couldn't recognize current_user...</span>
+
+<span class="n">allow</span><span class="p">(</span><span class="no">ApplicationController</span><span class="p">)</span><span class="n">to</span> <span class="n">receive</span><span class="p">(</span><span class="ss">:current_user</span><span class="p">).</span><span class="nf">and_return</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
+<span class="c1">#=&gt; by this point I was ready to give up...</span></code></pre></figure>
+
+<p>You get the idea… Hours of searching Stack Overflow and Relish and different docs didn’t yield me the answer I needed.
+<br /><br /></p>
+
+<p>Then I realized that <code class="highlighter-rouge">current_user</code>, <code class="highlighter-rouge">require_login</code> and all these methods were <strong>INSTANCE METHODS</strong>. Not class methods. <strong>Here’s the correct way to stub out instance methods in RSpec:</strong></p>
+
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">let</span><span class="p">(</span><span class="ss">:user</span><span class="p">)</span> <span class="p">{</span> <span class="no">FactoryGirl</span><span class="p">.</span><span class="nf">create</span><span class="p">(</span><span class="ss">:user</span><span class="p">)</span> <span class="p">}</span>
+
+<span class="n">it</span> <span class="s2">"tests a controller action that requires a current user"</span> <span class="k">do</span>
+  <span class="n">allow_any_instance_of</span><span class="p">(</span><span class="no">ApplicationController</span><span class="p">).</span><span class="nf">to</span> <span class="n">receive</span><span class="p">(</span><span class="ss">:current_user</span><span class="p">).</span><span class="nf">and_return</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
+  <span class="n">get</span> <span class="s2">"/some/controller/action/path"</span>
+
+  <span class="n">expect</span><span class="p">(</span><span class="n">response</span><span class="p">.</span><span class="nf">code</span><span class="p">).</span><span class="nf">to</span> <span class="n">eq</span><span class="p">(</span><span class="s2">"200"</span><span class="p">)</span>
+  <span class="c1"># ...</span>
+<span class="k">end</span></code></pre></figure>
+
+<p>This RSpec helper allows you to stub out any instance method that exists on any class. However, my major use for this has been for stubbing out controller methods such as <code class="highlighter-rouge">current_user</code>, any controller before actions and <strong>access tokens</strong> if I’m doing request specs on a Rails API.
+<br /><br /></p>
+
+<p><em>Example of controller action to test:</em></p>
+
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="c1"># Here we have users#show which will </span>
+<span class="c1"># render the occupation of the user in json</span>
+
+<span class="k">class</span> <span class="nc">Api</span><span class="o">::</span><span class="no">UsersController</span> <span class="o">&lt;</span> <span class="no">Api</span><span class="o">::</span><span class="no">ApplicationController</span>
+  <span class="n">doorkeeper_for</span> <span class="ss">:all</span>
+  <span class="ss">before_action: </span><span class="n">require_user</span>
+
+  <span class="k">def</span> <span class="nf">show</span>
+    <span class="n">occupation</span> <span class="o">=</span> <span class="n">current_user</span><span class="p">.</span><span class="nf">occupation</span>
+    <span class="n">render</span> <span class="ss">json: </span><span class="p">{</span> <span class="ss">occupation: </span><span class="n">occupation</span> <span class="p">},</span> <span class="ss">status: </span><span class="mi">200</span>
+  <span class="k">end</span>
+
+<span class="k">end</span></code></pre></figure>
+
+<p><br /></p>
+
+<p>In this example, we are using the <a href="https://github.com/doorkeeper-gem/doorkeeper">Doorkeeper gem</a> to protect the controller against unauthorized API calls (the following example will work with other token authorization methods too, the process is similar).</p>
+
+<p>So in this situation we would have to stub out the access token and the current user in order to successfully test the response of our request:</p>
+
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">describe</span> <span class="s2">"GET /users/show "</span> <span class="k">do</span>
+  <span class="n">let</span><span class="p">(</span><span class="ss">:user</span><span class="p">)</span> <span class="p">{</span> <span class="no">FactoryGirl</span><span class="p">.</span><span class="nf">create</span><span class="p">(</span><span class="ss">:user</span><span class="p">)</span> <span class="p">}</span>
+  <span class="n">let</span><span class="p">(</span><span class="ss">:token</span><span class="p">)</span> <span class="p">{</span> <span class="n">double</span> <span class="n">acceptable?</span><span class="p">:</span> <span class="kp">true</span> <span class="p">}</span> <span class="c1"># this is way to stub doorkeeper tokens, if you're using other gems or methods, please refer to their respective counterparts.</span>
+
+  <span class="n">before</span><span class="p">(</span><span class="ss">:each</span><span class="p">)</span> <span class="k">do</span>
+    <span class="n">allow_any_instance_of</span><span class="p">(</span><span class="no">API</span><span class="o">::</span><span class="no">ApplicationController</span><span class="p">).</span><span class="nf">to</span> <span class="n">receive</span><span class="p">(</span><span class="ss">:doorkeeper_token</span><span class="p">).</span><span class="nf">and_return</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
+    <span class="n">allow_any_instance_of</span><span class="p">(</span><span class="no">API</span><span class="o">::</span><span class="no">ApplicationController</span><span class="p">).</span><span class="nf">to</span> <span class="n">receive</span><span class="p">(</span><span class="ss">:current_user</span><span class="p">).</span><span class="nf">and_return</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
+    <span class="n">get</span> <span class="s2">"/users/show"</span>
+  <span class="k">end</span>
+
+  <span class="n">it</span> <span class="s2">"should respond with status 200"</span> <span class="k">do</span>
+    <span class="n">expect</span><span class="p">(</span><span class="n">response</span><span class="p">.</span><span class="nf">code</span><span class="p">).</span><span class="nf">to</span> <span class="n">eq</span><span class="p">(</span><span class="s2">"200"</span><span class="p">)</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="c1">#=&gt; 1 example, 1 success</span></code></pre></figure>
+
+<p>We have now succesfully stubbed out <code class="highlighter-rouge">current_user</code> and <code class="highlighter-rouge">doorkeeper_token</code> and can now successfully test our <code class="highlighter-rouge">controller#action</code>!
+<br /><br /></p>
+
+<p><strong>BUT WAIT.</strong> There’s a bunch of code used just for stubbing, it would suck if we had to repeat that code over and over again for every request spec that we create… So let’s move that into a spec support in order to write less code!</p>
+
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="c1"># /app/spec/support/api_controller_helper.rb</span>
+
+<span class="k">module</span> <span class="nn">ApiControllerHelper</span>
+  <span class="k">def</span> <span class="nf">stub_access_token</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
+    <span class="n">allow_any_instance_of</span><span class="p">(</span><span class="no">Api</span><span class="o">::</span><span class="no">ApplicationController</span><span class="p">).</span><span class="nf">to</span> <span class="n">receive</span><span class="p">(</span><span class="ss">:doorkeeper_token</span><span class="p">).</span><span class="nf">and_return</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">stub_current_user</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
+    <span class="n">allow_any_instance_of</span><span class="p">(</span><span class="no">Api</span><span class="o">::</span><span class="no">ApplicationController</span><span class="p">).</span><span class="nf">to</span> <span class="n">receive</span><span class="p">(</span><span class="ss">:current_user</span><span class="p">).</span><span class="nf">and_return</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="no">RSpec</span><span class="p">.</span><span class="nf">configure</span> <span class="o">|</span><span class="n">config</span><span class="o">|</span> <span class="k">do</span>
+  <span class="n">config</span><span class="p">.</span><span class="nf">include</span> <span class="no">ApiControllerHelper</span>
+<span class="k">end</span></code></pre></figure>
+
+<p><br /></p>
+
+<p>In the end, our spec will look like this:</p>
+
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">describe</span> <span class="s2">"GET /users/show "</span> <span class="k">do</span>
+  <span class="n">let</span><span class="p">(</span><span class="ss">:user</span><span class="p">)</span> <span class="p">{</span> <span class="no">FactoryGirl</span><span class="p">.</span><span class="nf">create</span><span class="p">(</span><span class="ss">:user</span><span class="p">)</span> <span class="p">}</span>
+  <span class="n">let</span><span class="p">(</span><span class="ss">:token</span><span class="p">)</span> <span class="p">{</span> <span class="n">double</span> <span class="n">acceptable?</span><span class="p">:</span> <span class="kp">true</span> <span class="p">}</span>
+
+  <span class="n">before</span><span class="p">(</span><span class="ss">:each</span><span class="p">)</span> <span class="k">do</span>
+    <span class="n">stub_access_token</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
+    <span class="n">stub_current_user</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
+    <span class="n">get</span> <span class="s2">"/users/show"</span>
+  <span class="k">end</span>
+
+  <span class="n">it</span> <span class="s2">"should respond with status 200"</span> <span class="k">do</span>
+    <span class="n">expect</span><span class="p">(</span><span class="n">response</span><span class="p">.</span><span class="nf">code</span><span class="p">).</span><span class="nf">to</span> <span class="n">eq</span><span class="p">(</span><span class="s2">"200"</span><span class="p">)</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="c1">#=&gt; 1 example, 1 success</span></code></pre></figure>
+
+<p><br /></p>
+
+<p>It took me quite a while to figure this out but in the end it was more than worth it. Armed with this knowledge, I’m sure you’ll be able to bang out pages and pages of request specs in no time!
+<br /><br /></p>
+
+<p><strong>TL;DR</strong> Use <code class="highlighter-rouge">allow_any_instance_of(Object).to receive(method_on_object).and_return(mock_method_used_for_testing)</code> to mock an instance method on any object. Such as <code class="highlighter-rouge">current_user</code> on a controller.
+<br /><br /><br /></p>
+
+<h3><strong>Fuck yeah.</strong></h3>
+
+</div>
+</div>
+
+    </div>
+
+  </body>
+
+</html>

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Johnny Ji's Blog</title>
+  <meta name="description" content="So up until now I’ve always tried to use em whenever possible for sizing fonts and other things alike. However, I’ve never taken the time to fully understand...">
+  <link rel="stylesheet" href="http://johnnyji.me/css/main.css">
+  <link rel="canonical" href="/css/2015/06/11/css-showdown-rem-vs-em.html">
+  <link rel="alternate" type="application/rss+xml" title="Johnny Ji" href="/feed.xml"" />
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css">
+  <link href="https://fonts.googleapis.com/css?family=Lora:400,400i|Open+Sans:600,400" rel="stylesheet">
+</head>
+
+
+  <body class="lite">
+
+    <header class="header header-lite">
+  <a class="header-title header-title-lite" href="http://johnnyji.me">JOHNNY JI</a>
+  <div class="header-social-media">
+    <a href="https://www.github.com/johnnyji" target="_blank" class="header-social-media-link github header-lite">
+      <i class="fa fa-github header-lite"></i>
+    </a>
+    <a href="https://www.twitter.com/johnnyisji" target="_blank" class="header-social-media-link twitter header-lite">
+      <i class="fa fa-twitter header-lite"></i>
+    </a>
+    <a href="https://www.linkedin.com/in/johnnyji" target="_blank" class="header-social-media-link linkedin header-lite">
+      <i class="fa fa-linkedin header-lite"></i>
+    </a>
+    <a href="https://www.instagram.com/johnnyisji"" target="_blank" class="header-social-media-link instagram header-lite">
+      <i class="fa fa-instagram header-lite"></i>
+    </a>
+  </div>
+</header>
+    
+
+    <div class="page-container">
+      <div class="single-post">
+  <header class="single-post-header">
+    <h1 class="single-post-header-title">CSS Showdown: REM vs. EM</h1>
+    <p class="single-post-header-date">// Jun 11, 2015</p>
+  </header>
+  <div class="single-post-content"><p>So up until now I’ve always tried to use <code class="highlighter-rouge">em</code> whenever possible for sizing fonts and other things alike. However, I’ve never taken the time to fully understand the difference between <code class="highlighter-rouge">em</code> and <code class="highlighter-rouge">rem</code>.</p>
+
+<p>After taking some time to read upon this subject. I may actually never use <code class="highlighter-rouge">em</code> again… (at least when it comes to fonts). Here’s why.</p>
+
+<p><code class="highlighter-rouge">rem</code> stands for <strong>Root EM</strong>. Whenever your referring to a unit of measurement as <code class="highlighter-rouge">em</code> in css, it’s referring to it’s closest <strong>DIRECT PARENT</strong>.</p>
+
+<p>So <code class="highlighter-rouge">1em</code> of a direct child component is 100% of it’s parent, <code class="highlighter-rouge">0.73em</code> is 73% of it’s parent etc…</p>
+
+<p>I find the problem with this approach is that the CSS isn’t quite elegantly scaled. If I change an <code class="highlighter-rouge">em</code> somewhere in my code, I have no idea how many other styles are affected down the chain, and in a bigger application, this could become troublesome quick.</p>
+
+<p>So enter <code class="highlighter-rouge">rem</code>, which is relative not to it’s DIRECT parent component, but the root parent component (body, html). Sizing in <code class="highlighter-rouge">rem</code> is alot easier because I can be rest assured that changing the sizing on a particular style will have no effect on other elements, and that whenever I’m specifiying sizing, I only have to specify it to the body or html versus whatever that component’s direct parent is.</p>
+
+<p>So <strong>TL;DR</strong> answer: Use <code class="highlighter-rouge">rem</code> over <code class="highlighter-rouge">em</code> because rem is relative to the body and html rather than direct parent, which is both mentally easier to comprehend and prevents against unintended sizing changes.</p>
+</div>
+</div>
+
+    </div>
+
+  </body>
+
+</html>

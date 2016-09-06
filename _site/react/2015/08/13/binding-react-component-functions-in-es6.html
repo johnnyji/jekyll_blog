@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Johnny Ji's Blog</title>
+  <meta name="description" content="Transitioning React components to ES6 isn’t all different and seemed to have flowed quite nicely, until I learnt that I had to manually bind all my component...">
+  <link rel="stylesheet" href="http://johnnyji.me/css/main.css">
+  <link rel="canonical" href="/react/2015/08/13/binding-react-component-functions-in-es6.html">
+  <link rel="alternate" type="application/rss+xml" title="Johnny Ji" href="/feed.xml"" />
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css">
+  <link href="https://fonts.googleapis.com/css?family=Lora:400,400i|Open+Sans:600,400" rel="stylesheet">
+</head>
+
+
+  <body class="lite">
+
+    <header class="header header-lite">
+  <a class="header-title header-title-lite" href="http://johnnyji.me">JOHNNY JI</a>
+  <div class="header-social-media">
+    <a href="https://www.github.com/johnnyji" target="_blank" class="header-social-media-link github header-lite">
+      <i class="fa fa-github header-lite"></i>
+    </a>
+    <a href="https://www.twitter.com/johnnyisji" target="_blank" class="header-social-media-link twitter header-lite">
+      <i class="fa fa-twitter header-lite"></i>
+    </a>
+    <a href="https://www.linkedin.com/in/johnnyji" target="_blank" class="header-social-media-link linkedin header-lite">
+      <i class="fa fa-linkedin header-lite"></i>
+    </a>
+    <a href="https://www.instagram.com/johnnyisji"" target="_blank" class="header-social-media-link instagram header-lite">
+      <i class="fa fa-instagram header-lite"></i>
+    </a>
+  </div>
+</header>
+    
+
+    <div class="page-container">
+      <div class="single-post">
+  <header class="single-post-header">
+    <h1 class="single-post-header-title">Binding React Component Functions in ES6</h1>
+    <p class="single-post-header-date">// Aug 13, 2015</p>
+  </header>
+  <div class="single-post-content"><p>Transitioning React components to ES6 isn’t all different and seemed to have flowed quite nicely, until I learnt that I had to manually bind all my component’s functions to <code class="highlighter-rouge">this</code>. I felt like someone had just squirted ketchup all over my Oreo Sundae.</p>
+
+<p>It turns out that one lovely thing about <code class="highlighter-rouge">React.createClass</code> was that it was automatically binding all the component’s functions. So whats the ES6 solution for this?</p>
+
+<p>We’ll we could manually bind every function in our component like such:</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kr">import</span> <span class="nx">React</span> <span class="nx">from</span> <span class="s1">'react'</span><span class="p">;</span>
+
+<span class="kr">export</span> <span class="k">default</span> <span class="kr">class</span> <span class="nx">LoginHandler</span> <span class="kr">extends</span> <span class="nx">React</span><span class="p">.</span><span class="nx">Component</span> <span class="p">{</span>
+  <span class="nx">constructor</span><span class="p">(</span><span class="nx">props</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// ...</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">verifyEmail</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">verifyEmail</span><span class="p">.</span><span class="nx">bind</span><span class="p">(</span><span class="k">this</span><span class="p">);</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">_verifyPassword</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">verifyPassword</span><span class="p">.</span><span class="nx">bind</span><span class="p">(</span><span class="k">this</span><span class="p">);</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">_verifyPasswordConfirmation</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">verifyPasswordConfirmation</span><span class="p">.</span><span class="nx">bind</span><span class="p">(</span><span class="k">this</span><span class="p">);</span>
+  <span class="p">}</span>
+  <span class="nx">_verifyEmail</span><span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">//...</span>
+  <span class="p">}</span>
+  <span class="nx">_verifyPassword</span><span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">//...</span>
+  <span class="p">}</span>
+  <span class="nx">_verifyPasswordConfirmation</span><span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">//...</span>
+  <span class="p">}</span>
+<span class="p">}</span></code></pre></figure>
+
+<p><br /></p>
+
+<p><strong>That seriously sucks.</strong> Having to type all that for each function in every component makes my skin cringe. So instead, let’s write our own class that every component can inherit from, to make this code alot more DRY and easier to the eye.</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kr">import</span> <span class="nx">React</span> <span class="nx">from</span> <span class="s1">'react'</span><span class="p">;</span>
+
+<span class="kr">export</span> <span class="k">default</span> <span class="kr">class</span> <span class="nx">ReactTemplate</span> <span class="kr">extends</span> <span class="nx">React</span><span class="p">.</span><span class="nx">Component</span> <span class="p">{</span>
+  <span class="c1">// (...params) is the new Rest Parameters in ES6 that allow multiple number of parameters</span>
+  <span class="nx">_bindFunctions</span><span class="p">(...</span><span class="nx">funcs</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">funcs</span><span class="p">.</span><span class="nx">forEach</span><span class="p">(</span><span class="nx">func</span> <span class="o">=&gt;</span> <span class="k">this</span><span class="p">[</span><span class="nx">func</span><span class="p">]</span> <span class="o">=</span> <span class="k">this</span><span class="p">[</span><span class="nx">func</span><span class="p">].</span><span class="nx">bind</span><span class="p">(</span><span class="k">this</span><span class="p">));</span>
+  <span class="p">}</span>
+<span class="p">}</span></code></pre></figure>
+
+<p><br /></p>
+
+<p>Now that we’ve defined our <code class="highlighter-rouge">ReactTemplate</code>, we can extend from that on all our components. Later on, we can also add more helper functions to this template when necessary.</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kr">import</span> <span class="nx">React</span> <span class="nx">from</span> <span class="s1">'react'</span><span class="p">;</span>
+<span class="kr">import</span> <span class="nx">ReactTemplate</span> <span class="nx">from</span> <span class="s1">'...'</span><span class="p">;</span>
+
+<span class="kr">export</span> <span class="k">default</span> <span class="kr">class</span> <span class="nx">LoginHandler</span> <span class="kr">extends</span> <span class="nx">ReactTemplate</span> <span class="p">{</span>
+  <span class="nx">constructor</span><span class="p">(</span><span class="nx">props</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// ...</span>
+    <span class="c1">// this.verifyEmail = this.verifyEmail.bind(this);</span>
+    <span class="c1">// this._verifyPassword = this.verifyPassword.bind(this);</span>
+    <span class="c1">// this._verifyPasswordConfirmation = this.verifyPasswordConfirmation.bind(this);</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">_bindFunctions</span><span class="p">(</span><span class="s1">'_verifyEmail'</span><span class="p">,</span> <span class="s1">'_verifyPassword'</span><span class="p">,</span> <span class="s1">'_verifyPasswordConfirmation'</span><span class="p">);</span>
+  <span class="p">}</span>
+  <span class="nx">_verifyEmail</span><span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">//...</span>
+  <span class="p">}</span>
+  <span class="nx">_verifyPassword</span><span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">//...</span>
+  <span class="p">}</span>
+  <span class="nx">_verifyPasswordConfirmation</span><span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">//...</span>
+  <span class="p">}</span>
+<span class="p">}</span></code></pre></figure>
+
+<p><br /></p>
+
+<p>So much nicer. <strong>Ahhh…….</strong></p>
+</div>
+</div>
+
+    </div>
+
+  </body>
+
+</html>

@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Johnny Ji's Blog</title>
+  <meta name="description" content="Before we begin. A helpful note is to set config.use_transactional_fixtures = true in your spec helper. I found that when I wasn’t doing this, Factory Girl w...">
+  <link rel="stylesheet" href="http://johnnyji.me/css/main.css">
+  <link rel="canonical" href="/rspec/2015/06/16/polymorphic-associations-in-factorygirl.html">
+  <link rel="alternate" type="application/rss+xml" title="Johnny Ji" href="/feed.xml"" />
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css">
+  <link href="https://fonts.googleapis.com/css?family=Lora:400,400i|Open+Sans:600,400" rel="stylesheet">
+</head>
+
+
+  <body class="lite">
+
+    <header class="header header-lite">
+  <a class="header-title header-title-lite" href="http://johnnyji.me">JOHNNY JI</a>
+  <div class="header-social-media">
+    <a href="https://www.github.com/johnnyji" target="_blank" class="header-social-media-link github header-lite">
+      <i class="fa fa-github header-lite"></i>
+    </a>
+    <a href="https://www.twitter.com/johnnyisji" target="_blank" class="header-social-media-link twitter header-lite">
+      <i class="fa fa-twitter header-lite"></i>
+    </a>
+    <a href="https://www.linkedin.com/in/johnnyji" target="_blank" class="header-social-media-link linkedin header-lite">
+      <i class="fa fa-linkedin header-lite"></i>
+    </a>
+    <a href="https://www.instagram.com/johnnyisji"" target="_blank" class="header-social-media-link instagram header-lite">
+      <i class="fa fa-instagram header-lite"></i>
+    </a>
+  </div>
+</header>
+    
+
+    <div class="page-container">
+      <div class="single-post">
+  <header class="single-post-header">
+    <h1 class="single-post-header-title">Polymorphic Associations in FactoryGirl</h1>
+    <p class="single-post-header-date">// Jun 16, 2015</p>
+  </header>
+  <div class="single-post-content"><p>Before we begin. A helpful note is to set <code class="highlighter-rouge">config.use_transactional_fixtures = true</code> in your spec helper. I found that when I wasn’t doing this, Factory Girl was creating duplicate instances of my models and because of that, validations were failing.</p>
+
+<p>So recently at work I’ve been refactoring the user models into polymorphic associations. Part of that process was introducing new factories for these polymorphic associations in Factory Girl. The associations are as follows:</p>
+
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">Profile</span>
+  <span class="n">belongs_to</span> <span class="ss">:profileable</span><span class="p">,</span> <span class="ss">polymorphic: </span><span class="kp">true</span>
+<span class="k">end</span>
+
+<span class="k">class</span> <span class="nc">Account</span>
+  <span class="n">belongs_to</span> <span class="ss">:accountable</span><span class="p">,</span> <span class="ss">polymorphic: </span><span class="kp">true</span>
+<span class="k">end</span>
+
+<span class="k">class</span> <span class="nc">Student</span>
+  <span class="n">has_one</span> <span class="ss">:profile</span><span class="p">,</span> <span class="ss">as: :profileable</span>
+  <span class="n">has_one</span> <span class="ss">:account</span><span class="p">,</span> <span class="ss">as: :accountable</span>
+<span class="k">end</span>
+
+<span class="k">class</span> <span class="nc">Teacher</span>
+  <span class="n">has_one</span> <span class="ss">:profile</span><span class="p">,</span> <span class="ss">as: :profileable</span>
+  <span class="n">has_one</span> <span class="ss">:account</span><span class="p">,</span> <span class="ss">as: :accountable</span>
+<span class="k">end</span></code></pre></figure>
+
+<p><br /></p>
+
+<p>Breaking down the models this way allows us to seperate the concerns of authentication, profile information and teacher/student specific information into their own datasets. I favour this over STI because here, there are no <code class="highlighter-rouge">nil</code> columns anywhere.</p>
+
+<p>So the question remains, how do we create factories for such associations? Well first we need to create a profile and account factory and specify them as polymorphic:</p>
+
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="no">FactoryGirl</span><span class="p">.</span><span class="nf">define</span> <span class="k">do</span>
+  <span class="n">factory</span> <span class="ss">:account</span><span class="p">,</span> <span class="ss">class: </span><span class="no">Account</span> <span class="k">do</span>
+    <span class="n">email</span>                  <span class="p">{</span> <span class="no">Faker</span><span class="o">::</span><span class="no">Internet</span><span class="p">.</span><span class="nf">email</span> <span class="p">}</span>
+    <span class="n">password</span>               <span class="p">{</span> <span class="s2">"supersecret"</span> <span class="p">}</span>
+    <span class="n">password_confirmation</span>  <span class="p">{</span> <span class="s2">"supersecret"</span> <span class="p">}</span>
+    <span class="n">association</span> <span class="ss">:accountable</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="no">FactoryGirl</span><span class="p">.</span><span class="nf">define</span> <span class="k">do</span>
+  <span class="n">factory</span> <span class="ss">:account</span><span class="p">,</span> <span class="ss">class: </span><span class="no">Account</span> <span class="k">do</span>
+    <span class="n">first_name</span>             <span class="p">{</span> <span class="no">Faker</span><span class="o">::</span><span class="no">Name</span><span class="p">.</span><span class="nf">first_name</span> <span class="p">}</span>
+    <span class="n">last_name</span>              <span class="p">{</span> <span class="no">Faker</span><span class="o">::</span><span class="no">Name</span><span class="p">.</span><span class="nf">last_name</span> <span class="p">}</span>
+    <span class="n">association</span> <span class="ss">:profileable</span>
+  <span class="k">end</span>
+<span class="k">end</span></code></pre></figure>
+
+<p><br /></p>
+
+<p>We associate the factories to their polymorphicable (is that a word?), because in the model, they belong to their polymorphicable. Now it’s time to create the student and teacher factories:</p>
+
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="no">FactoryGirl</span><span class="p">.</span><span class="nf">define</span> <span class="k">do</span>
+  <span class="n">factory</span> <span class="ss">:student</span><span class="p">,</span> <span class="ss">class: </span><span class="no">Student</span> <span class="k">do</span>
+    <span class="n">trait</span> <span class="ss">:trial</span>          <span class="p">{</span> <span class="ss">subscription_status: </span><span class="mi">0</span> <span class="p">}</span>
+    <span class="n">trait</span> <span class="ss">:subscribed</span>     <span class="p">{</span> <span class="ss">subscription_status: </span><span class="mi">1</span> <span class="p">}</span>
+
+    <span class="n">after</span><span class="p">(</span><span class="ss">:create</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">student</span><span class="o">|</span>
+      <span class="n">create</span><span class="p">(</span><span class="ss">:account</span><span class="p">,</span> <span class="ss">accountable: </span><span class="n">student</span><span class="p">)</span>
+      <span class="n">create</span><span class="p">(</span><span class="ss">:profile</span><span class="p">,</span> <span class="ss">profileable: </span><span class="n">student</span><span class="p">)</span>
+    <span class="k">end</span>
+
+  <span class="k">end</span>
+<span class="k">end</span></code></pre></figure>
+
+<p><br /></p>
+
+<p>For the sake of scrolling, I won’t create the teacher factory because it’s the same idea. When creating the factories for the models that have the polymorphic model, you simply create the polymorphic model in an <code class="highlighter-rouge">after(:create)</code> block and specify the polymorphicable to be the model the factory is for.</p>
+
+<p><strong>TADA. Polymorphic associations in FactoryGirl… Done!</strong></p>
+</div>
+</div>
+
+    </div>
+
+  </body>
+
+</html>

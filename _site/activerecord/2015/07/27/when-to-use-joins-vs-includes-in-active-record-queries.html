@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Johnny Ji's Blog</title>
+  <meta name="description" content="The difference between includes and joins has always eluded me a little bit when it came to ActiveRecord queries. I knew that includes performs a LEFT OUTER ...">
+  <link rel="stylesheet" href="http://johnnyji.me/css/main.css">
+  <link rel="canonical" href="/activerecord/2015/07/27/when-to-use-joins-vs-includes-in-active-record-queries.html">
+  <link rel="alternate" type="application/rss+xml" title="Johnny Ji" href="/feed.xml"" />
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css">
+  <link href="https://fonts.googleapis.com/css?family=Lora:400,400i|Open+Sans:600,400" rel="stylesheet">
+</head>
+
+
+  <body class="lite">
+
+    <header class="header header-lite">
+  <a class="header-title header-title-lite" href="http://johnnyji.me">JOHNNY JI</a>
+  <div class="header-social-media">
+    <a href="https://www.github.com/johnnyji" target="_blank" class="header-social-media-link github header-lite">
+      <i class="fa fa-github header-lite"></i>
+    </a>
+    <a href="https://www.twitter.com/johnnyisji" target="_blank" class="header-social-media-link twitter header-lite">
+      <i class="fa fa-twitter header-lite"></i>
+    </a>
+    <a href="https://www.linkedin.com/in/johnnyji" target="_blank" class="header-social-media-link linkedin header-lite">
+      <i class="fa fa-linkedin header-lite"></i>
+    </a>
+    <a href="https://www.instagram.com/johnnyisji"" target="_blank" class="header-social-media-link instagram header-lite">
+      <i class="fa fa-instagram header-lite"></i>
+    </a>
+  </div>
+</header>
+    
+
+    <div class="page-container">
+      <div class="single-post">
+  <header class="single-post-header">
+    <h1 class="single-post-header-title">When to use Joins vs. Includes in ActiveRecord Queries</h1>
+    <p class="single-post-header-date">// Jul 27, 2015</p>
+  </header>
+  <div class="single-post-content"><p>The difference between <code class="highlighter-rouge">includes</code> and <code class="highlighter-rouge">joins</code> has always eluded me a little bit when it came to ActiveRecord queries. I knew that <code class="highlighter-rouge">includes</code> performs a <code class="highlighter-rouge">LEFT OUTER JOIN</code> whereas <code class="highlighter-rouge">joins</code> performs an <code class="highlighter-rouge">INNER JOIN</code>, but the real difference between them comes into play depending on the type of data you need to retrieve.</p>
+
+<p>If you need to access a table and it’s association, it’s better to use <code class="highlighter-rouge">include</code>, such as:</p>
+
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="vi">@result</span> <span class="o">=</span> <span class="no">Post</span><span class="p">.</span><span class="nf">includes</span><span class="p">(</span><span class="ss">:tags</span><span class="p">,</span> <span class="ss">comments: </span><span class="p">[</span><span class="ss">:user</span><span class="p">,</span> <span class="ss">:tags</span><span class="p">]).</span><span class="nf">find</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+
+<span class="c1"># This query will return the post with an id of 3, and it's associations which include it's tags, comments, each comment's user and tags. This query preloads all the information.</span>
+
+<span class="vi">@result</span><span class="p">.</span><span class="nf">user</span> <span class="c1">#=&gt; this will load the user info without another additional query</span></code></pre></figure>
+
+<p><br /></p>
+
+<p>However, if you use a <code class="highlighter-rouge">joins</code> method, this will only create the association between the two tables but it won’t actually get the data unless you manually specify through a <code class="highlighter-rouge">select</code>. Therefore, when you use <code class="highlighter-rouge">joins</code> and you try to access attributes on the joined table, you are still making excessive queries that are not necessary.</p>
+
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="vi">@result</span> <span class="o">=</span> <span class="no">Post</span><span class="p">.</span><span class="nf">joins</span><span class="p">(</span><span class="ss">:tags</span><span class="p">,</span> <span class="ss">comments: </span><span class="p">[</span><span class="ss">:user</span><span class="p">,</span> <span class="ss">:tags</span><span class="p">]).</span><span class="nf">find</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+
+<span class="c1"># This will make the association between all the tables, but it will not preload any information.</span>
+
+<span class="vi">@result</span><span class="p">.</span><span class="nf">user</span> <span class="c1">#=&gt; this will be a seperate SQL query.</span></code></pre></figure>
+
+<p><br /></p>
+
+<p><code class="highlighter-rouge">joins</code> do have their handiness. For example, if you ever need to select only some columsn from a table, a join is preferred because <code class="highlighter-rouge">includes</code> will not allow you to specify the attributes you select.</p>
+
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="vi">@result</span> <span class="o">=</span> <span class="no">Post</span><span class="p">.</span><span class="nf">joins</span><span class="p">(</span><span class="ss">:comments</span><span class="p">).</span><span class="nf">select</span><span class="p">(</span><span class="s2">"comments.title AS comment_title"</span><span class="p">).</span><span class="nf">find</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+
+<span class="c1"># This will only select the comment titles for this post.</span></code></pre></figure>
+
+<p><br /></p>
+</div>
+</div>
+
+    </div>
+
+  </body>
+
+</html>

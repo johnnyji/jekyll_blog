@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Johnny Ji's Blog</title>
+  <meta name="description" content="I can’t believe it’s been almost 4 month since I’ve made a post. These past 4 3 and a half month of my life has been insanely crazy for me. I have so many up...">
+  <link rel="stylesheet" href="http://johnnyji.me/css/main.css">
+  <link rel="canonical" href="/react/2015/12/23/creating-application-layout-with-functional-react.html">
+  <link rel="alternate" type="application/rss+xml" title="Johnny Ji" href="/feed.xml"" />
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css">
+  <link href="https://fonts.googleapis.com/css?family=Lora:400,400i|Open+Sans:600,400" rel="stylesheet">
+</head>
+
+
+  <body class="lite">
+
+    <header class="header header-lite">
+  <a class="header-title header-title-lite" href="http://johnnyji.me">JOHNNY JI</a>
+  <div class="header-social-media">
+    <a href="https://www.github.com/johnnyji" target="_blank" class="header-social-media-link github header-lite">
+      <i class="fa fa-github header-lite"></i>
+    </a>
+    <a href="https://www.twitter.com/johnnyisji" target="_blank" class="header-social-media-link twitter header-lite">
+      <i class="fa fa-twitter header-lite"></i>
+    </a>
+    <a href="https://www.linkedin.com/in/johnnyji" target="_blank" class="header-social-media-link linkedin header-lite">
+      <i class="fa fa-linkedin header-lite"></i>
+    </a>
+    <a href="https://www.instagram.com/johnnyisji"" target="_blank" class="header-social-media-link instagram header-lite">
+      <i class="fa fa-instagram header-lite"></i>
+    </a>
+  </div>
+</header>
+    
+
+    <div class="page-container">
+      <div class="single-post">
+  <header class="single-post-header">
+    <h1 class="single-post-header-title">Creating Application Layout and UI with Functional React</h1>
+    <p class="single-post-header-date">// Dec 23, 2015</p>
+  </header>
+  <div class="single-post-content"><p>I can’t believe it’s been almost 4 month since I’ve made a post. These past <strike>4</strike> 3 and a half month of my life has been insanely crazy for me. I have so many updates, so much to share! Here’s a brief breakdown, hopefully I’ll get around to dedicating posts for all of these:</p>
+
+<ul>
+  <li>I work at a <a href="http://www.cumul8.com">new place</a>!</li>
+  <li>I’ve been diving hard into <code class="highlighter-rouge">redux</code>!</li>
+  <li>I’ve began writing a book!</li>
+  <li>I’ve began to build a new product which I’m very excited to release more info about soon!</li>
+  <li>I’m beginning to play with <code class="highlighter-rouge">elixir</code>!</li>
+  <li>I’ve been occupied with Star Wars taking over my existance.</li>
+</ul>
+
+<p>But enough about that! I’ve learnt quite a bit about React over the last few months and I’d like to show you some things I’ve been doing - starting with changing the way I create application layout. Let’s take a look at a simple app:</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kr">class</span> <span class="nx">Dashboard</span> <span class="kr">extends</span> <span class="nx">React</span><span class="p">.</span><span class="nx">Component</span> <span class="p">{</span>
+  <span class="nx">render</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="p">(</span>
+      <span class="o">&lt;</span><span class="nx">div</span> <span class="nx">className</span><span class="o">=</span><span class="s1">'dashboard-wrapper'</span><span class="o">&gt;</span>
+        <span class="o">&lt;</span><span class="nx">ul</span> <span class="nx">className</span><span class="o">=</span><span class="s1">'post-list'</span><span class="o">&gt;</span>
+          <span class="o">&lt;</span><span class="nx">li</span> <span class="nx">className</span><span class="o">=</span><span class="s1">'post-item'</span><span class="o">&gt;</span><span class="p">{</span><span class="cm">/*...*/</span><span class="p">}</span><span class="o">&lt;</span><span class="sr">/li</span><span class="err">&gt;
+</span>          <span class="o">&lt;</span><span class="nx">li</span> <span class="nx">className</span><span class="o">=</span><span class="s1">'post-item'</span><span class="o">&gt;</span><span class="p">{</span><span class="cm">/*...*/</span><span class="p">}</span><span class="o">&lt;</span><span class="sr">/li</span><span class="err">&gt;
+</span>          <span class="o">&lt;</span><span class="nx">li</span> <span class="nx">className</span><span class="o">=</span><span class="s1">'post-item'</span><span class="o">&gt;</span><span class="p">{</span><span class="cm">/*...*/</span><span class="p">}</span><span class="o">&lt;</span><span class="sr">/li</span><span class="err">&gt;
+</span>        <span class="o">&lt;</span><span class="sr">/ul</span><span class="err">&gt;
+</span>      <span class="o">&lt;</span><span class="sr">/div</span><span class="err">&gt;
+</span>    <span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">}</span></code></pre></figure>
+
+<p>Here we have a simple dashboard that shows a list of posts. But if we examine closer, that’s not really what it is. It’s actually a list of items inside a container, which for sure has other use cases than just posts.</p>
+
+<p>Most likely throughout our app, we’ll have commonly themed UI elements or even the exact same UI elements in more than one place. This sounds like a perfect situation to make use of React components!</p>
+
+<p>Let’s refactor the code above a bit more clear:</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="c1">// A list item within a list</span>
+<span class="kr">class</span> <span class="nx">ListItem</span> <span class="kr">extends</span> <span class="nx">React</span><span class="p">.</span><span class="nx">Component</span> <span class="p">{</span>
+  <span class="nx">render</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="p">(</span>
+      <span class="o">&lt;</span><span class="nx">li</span> <span class="nx">className</span><span class="o">=</span><span class="p">{</span><span class="k">this</span><span class="p">.</span><span class="nx">props</span><span class="p">.</span><span class="nx">className</span> <span class="o">+</span> <span class="s1">' list-item'</span><span class="p">}</span><span class="o">&gt;</span>
+        <span class="p">{</span><span class="k">this</span><span class="p">.</span><span class="nx">props</span><span class="p">.</span><span class="nx">children</span><span class="p">}</span>
+      <span class="o">&lt;</span><span class="sr">/li</span><span class="err">&gt;
+</span>    <span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="c1">// Any time we need a list in our app</span>
+<span class="kr">class</span> <span class="nx">List</span> <span class="kr">extends</span> <span class="nx">React</span><span class="p">.</span><span class="nx">Component</span> <span class="p">{</span>
+  <span class="nx">render</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="p">(</span>
+      <span class="o">&lt;</span><span class="nx">ul</span> <span class="nx">className</span><span class="o">=</span><span class="p">{</span><span class="k">this</span><span class="p">.</span><span class="nx">props</span><span class="p">.</span><span class="nx">className</span> <span class="o">+</span> <span class="s1">' list'</span><span class="p">}</span><span class="o">&gt;</span>
+        <span class="p">{</span><span class="k">this</span><span class="p">.</span><span class="nx">props</span><span class="p">.</span><span class="nx">children</span><span class="p">}</span>
+      <span class="o">&lt;</span><span class="sr">/ul</span><span class="err">&gt;
+</span>    <span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="c1">// Any time we need to wrap content in our app, this is great for setting min and max content</span>
+<span class="c1">// content width.</span>
+<span class="kr">class</span> <span class="nx">ContentWrapper</span> <span class="kr">extends</span> <span class="nx">React</span><span class="p">.</span><span class="nx">Component</span> <span class="p">{</span>
+  <span class="nx">render</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="p">(</span>
+      <span class="o">&lt;</span><span class="nx">div</span> <span class="nx">className</span><span class="o">=</span><span class="p">{</span><span class="k">this</span><span class="p">.</span><span class="nx">props</span><span class="p">.</span><span class="nx">className</span> <span class="o">+</span> <span class="s1">' content-wrapper'</span><span class="p">}</span><span class="o">&gt;</span>
+        <span class="p">{</span><span class="k">this</span><span class="p">.</span><span class="nx">props</span><span class="p">.</span><span class="nx">children</span><span class="p">}</span>
+      <span class="o">&lt;</span><span class="sr">/div</span><span class="err">&gt;
+</span>    <span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="c1">// Now finally, here's our new `Dashboard` component</span>
+<span class="kr">class</span> <span class="nx">Dashboard</span> <span class="kr">extends</span> <span class="nx">React</span><span class="p">.</span><span class="nx">Component</span> <span class="p">{</span>
+  <span class="nx">render</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="p">(</span>
+      <span class="o">&lt;</span><span class="nx">ContentWrapper</span> <span class="nx">className</span><span class="o">=</span><span class="s1">'dashboard-wrapper'</span><span class="o">&gt;</span>
+        <span class="o">&lt;</span><span class="nx">List</span> <span class="nx">className</span><span class="o">=</span><span class="s1">'post-list'</span><span class="o">&gt;</span>
+          <span class="o">&lt;</span><span class="nx">ListItem</span> <span class="nx">className</span><span class="o">=</span><span class="s1">'post-item'</span><span class="o">&gt;</span><span class="p">{</span><span class="cm">/*...*/</span><span class="p">}</span><span class="o">&lt;</span><span class="sr">/ListItem</span><span class="err">&gt;
+</span>          <span class="o">&lt;</span><span class="nx">ListItem</span> <span class="nx">className</span><span class="o">=</span><span class="s1">'post-item'</span><span class="o">&gt;</span><span class="p">{</span><span class="cm">/*...*/</span><span class="p">}</span><span class="o">&lt;</span><span class="sr">/ListItem</span><span class="err">&gt;
+</span>          <span class="o">&lt;</span><span class="nx">ListItem</span> <span class="nx">className</span><span class="o">=</span><span class="s1">'post-item'</span><span class="o">&gt;</span><span class="p">{</span><span class="cm">/*...*/</span><span class="p">}</span><span class="o">&lt;</span><span class="sr">/ListItem</span><span class="err">&gt;
+</span>        <span class="o">&lt;</span><span class="sr">/List</span><span class="err">&gt;
+</span>      <span class="o">&lt;</span><span class="sr">/ContentWrapper</span><span class="err">&gt;
+</span>    <span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">}</span></code></pre></figure>
+
+<p>That <code class="highlighter-rouge">Dashboard</code> component is so much more <b>legible</b> than our previous one! Seperating out application layout and UI into React components allow us to:</p>
+
+<ul>
+  <li>Create self contained UI elements</li>
+  <li>Have a better visual hiearchy of our app</li>
+  <li>Reuse similar UI elements across our app faster</li>
+</ul>
+
+<p>Once I started migrating all the <em>dumb</em> layout and UI components into their own components, I was so much more efficient at visualizing my app without even opening a web browser, because I knew what all of those components looked like, and I could easily compose them together to create a view.</p>
+
+<p><b>But wait</b> - you’ve probably noticed that one of the downsides of this is very repetitive and mundane code. Even worse, we’re inherting all of <code class="highlighter-rouge">React.Component</code>’s functionalities and methods, when really all we’re doing is rendering the child props, this can get a bit expensive as you start to build a lot of these layout components.
+<br /><br /></p>
+
+<p><b>FUNCTIONAL REACT TO THE RESCUE!</b></p>
+
+<p>The release of <code class="highlighter-rouge">React v0.14</code> introduced something very useful - <b>Functional React Components</b>, which look something like this:</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kr">const</span> <span class="nx">List</span> <span class="o">=</span> <span class="p">(</span><span class="nx">props</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="p">(</span>
+    <span class="o">&lt;</span><span class="nx">li</span> <span class="nx">className</span><span class="o">=</span><span class="p">{</span><span class="nx">props</span><span class="p">.</span><span class="nx">className</span> <span class="o">+</span> <span class="s1">' list'</span><span class="p">}</span><span class="o">&gt;</span>
+      <span class="p">{</span><span class="nx">props</span><span class="p">.</span><span class="nx">children</span><span class="p">}</span>
+    <span class="o">&lt;</span><span class="sr">/li</span><span class="err">&gt;
+</span>  <span class="p">)</span> 
+<span class="p">};</span>
+
+<span class="c1">// Or to even shorten this...</span>
+<span class="kr">const</span> <span class="nx">List</span> <span class="o">=</span> <span class="p">(</span><span class="nx">props</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="o">&lt;</span><span class="nx">li</span> <span class="nx">className</span><span class="o">=</span><span class="p">{</span><span class="nx">props</span><span class="p">.</span><span class="nx">className</span> <span class="o">+</span> <span class="s1">' list'</span><span class="p">}</span><span class="o">&gt;</span><span class="p">{</span><span class="nx">props</span><span class="p">.</span><span class="nx">children</span><span class="p">}</span><span class="o">&lt;</span><span class="sr">/li&gt;</span><span class="err">;
+</span>
+<span class="nx">ReactDOM</span><span class="p">.</span><span class="nx">render</span><span class="p">(</span>
+  <span class="o">&lt;</span><span class="nx">List</span> <span class="nx">className</span><span class="o">=</span><span class="s1">'post-list'</span><span class="o">&gt;</span><span class="p">{</span><span class="cm">/*...*/</span><span class="p">}</span><span class="o">&lt;</span><span class="sr">/List</span><span class="err">&gt;
+</span><span class="p">);</span></code></pre></figure>
+
+<p>Essentially, any component that only receives and renders props (“dumb” components), can now be written as pure functions, and rendered just like any other React component. The advantages to using functional components when possible are:</p>
+
+<ul>
+  <li>Faster to render because we don’t need to inherit all the additional functionalities of <code class="highlighter-rouge">React.Component</code></li>
+  <li>No need to declare components as <code class="highlighter-rouge">class</code> (functions are much more lightweight!)</li>
+  <li>Much less code to write</li>
+</ul>
+
+<p>This is absolutely the perfect tool for our layout components. After a bit of refactoring using functional components, our application layout should now look like this:</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="c1">// Newly functional components</span>
+<span class="kr">const</span> <span class="nx">ListItem</span> <span class="o">=</span> <span class="p">(</span><span class="nx">props</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">(</span>
+  <span class="o">&lt;</span><span class="nx">li</span> <span class="nx">className</span><span class="o">=</span><span class="p">{</span><span class="nx">props</span><span class="p">.</span><span class="nx">className</span> <span class="o">+</span> <span class="s1">' list-item'</span><span class="p">}</span><span class="o">&gt;</span>
+    <span class="p">{</span><span class="nx">props</span><span class="p">.</span><span class="nx">children</span><span class="p">}</span>
+  <span class="o">&lt;</span><span class="sr">/li</span><span class="err">&gt;
+</span><span class="p">);</span>
+
+<span class="kr">class</span> <span class="nx">List</span> <span class="o">=</span> <span class="p">(</span><span class="nx">props</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">(</span>
+  <span class="o">&lt;</span><span class="nx">ul</span> <span class="nx">className</span><span class="o">=</span><span class="p">{</span><span class="nx">props</span><span class="p">.</span><span class="nx">className</span> <span class="o">+</span> <span class="s1">' list'</span><span class="p">}</span><span class="o">&gt;</span>
+    <span class="p">{</span><span class="nx">props</span><span class="p">.</span><span class="nx">children</span><span class="p">}</span>
+  <span class="o">&lt;</span><span class="sr">/ul</span><span class="err">&gt;
+</span><span class="p">);</span>
+
+<span class="kr">const</span> <span class="nx">ContentWrapper</span> <span class="o">=</span> <span class="p">(</span><span class="nx">props</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">(</span>
+  <span class="o">&lt;</span><span class="nx">div</span> <span class="nx">className</span><span class="o">=</span><span class="p">{</span><span class="nx">props</span><span class="p">.</span><span class="nx">className</span> <span class="o">+</span> <span class="s1">' content-wrapper'</span><span class="p">}</span><span class="o">&gt;</span>
+    <span class="p">{</span><span class="nx">props</span><span class="p">.</span><span class="nx">children</span><span class="p">}</span>
+  <span class="o">&lt;</span><span class="sr">/div</span><span class="err">&gt;
+</span><span class="p">);</span>
+
+<span class="c1">// Now finally, here's our new `Dashboard` component</span>
+<span class="kr">class</span> <span class="nx">Dashboard</span> <span class="kr">extends</span> <span class="nx">React</span><span class="p">.</span><span class="nx">Component</span> <span class="p">{</span>
+  <span class="nx">render</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="p">(</span>
+      <span class="o">&lt;</span><span class="nx">ContentWrapper</span> <span class="nx">className</span><span class="o">=</span><span class="s1">'dashboard-wrapper'</span><span class="o">&gt;</span>
+        <span class="o">&lt;</span><span class="nx">List</span> <span class="nx">className</span><span class="o">=</span><span class="s1">'post-list'</span><span class="o">&gt;</span>
+          <span class="o">&lt;</span><span class="nx">ListItem</span> <span class="nx">className</span><span class="o">=</span><span class="s1">'post-item'</span><span class="o">&gt;</span><span class="p">{</span><span class="cm">/*...*/</span><span class="p">}</span><span class="o">&lt;</span><span class="sr">/ListItem</span><span class="err">&gt;
+</span>          <span class="o">&lt;</span><span class="nx">ListItem</span> <span class="nx">className</span><span class="o">=</span><span class="s1">'post-item'</span><span class="o">&gt;</span><span class="p">{</span><span class="cm">/*...*/</span><span class="p">}</span><span class="o">&lt;</span><span class="sr">/ListItem</span><span class="err">&gt;
+</span>          <span class="o">&lt;</span><span class="nx">ListItem</span> <span class="nx">className</span><span class="o">=</span><span class="s1">'post-item'</span><span class="o">&gt;</span><span class="p">{</span><span class="cm">/*...*/</span><span class="p">}</span><span class="o">&lt;</span><span class="sr">/ListItem</span><span class="err">&gt;
+</span>        <span class="o">&lt;</span><span class="sr">/List</span><span class="err">&gt;
+</span>      <span class="o">&lt;</span><span class="sr">/ContentWrapper</span><span class="err">&gt;
+</span>    <span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">}</span></code></pre></figure>
+
+<p><br /></p>
+
+<p>Fuck me, that’s beautiful.</p>
+
+</div>
+</div>
+
+    </div>
+
+  </body>
+
+</html>

@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Johnny Ji's Blog</title>
+  <meta name="description" content="Okay, maybe blasphemy is a bit of a harsh word; but seriously, avoid setting state from props at all cost if you can in React components!">
+  <link rel="stylesheet" href="http://johnnyji.me/css/main.css">
+  <link rel="canonical" href="/react/2015/06/26/why-setting-props-as-state-in-react-is-blasphemy.html">
+  <link rel="alternate" type="application/rss+xml" title="Johnny Ji" href="/feed.xml"" />
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css">
+  <link href="https://fonts.googleapis.com/css?family=Lora:400,400i|Open+Sans:600,400" rel="stylesheet">
+</head>
+
+
+  <body class="lite">
+
+    <header class="header header-lite">
+  <a class="header-title header-title-lite" href="http://johnnyji.me">JOHNNY JI</a>
+  <div class="header-social-media">
+    <a href="https://www.github.com/johnnyji" target="_blank" class="header-social-media-link github header-lite">
+      <i class="fa fa-github header-lite"></i>
+    </a>
+    <a href="https://www.twitter.com/johnnyisji" target="_blank" class="header-social-media-link twitter header-lite">
+      <i class="fa fa-twitter header-lite"></i>
+    </a>
+    <a href="https://www.linkedin.com/in/johnnyji" target="_blank" class="header-social-media-link linkedin header-lite">
+      <i class="fa fa-linkedin header-lite"></i>
+    </a>
+    <a href="https://www.instagram.com/johnnyisji"" target="_blank" class="header-social-media-link instagram header-lite">
+      <i class="fa fa-instagram header-lite"></i>
+    </a>
+  </div>
+</header>
+    
+
+    <div class="page-container">
+      <div class="single-post">
+  <header class="single-post-header">
+    <h1 class="single-post-header-title">Why Setting Props as State in React.js is Blasphemy</h1>
+    <p class="single-post-header-date">// Jun 26, 2015</p>
+  </header>
+  <div class="single-post-content"><p>Okay, maybe blasphemy is a bit of a harsh word; but seriously, avoid setting <code class="highlighter-rouge">state</code> from <code class="highlighter-rouge">props</code> at all cost if you can in React components!</p>
+
+<p>When I started out with React, I made this mistake countless times, and like the noob that I was <strike>and still probably am</strike>, I decided to I to set state as props that were passed through to the component and declared myself a “genius” for doing so… Oh how I wish I could go back and slap myself in the face.</p>
+
+<p>Let’s take a step back and define what <code class="highlighter-rouge">props</code> and <code class="highlighter-rouge">states</code> are:</p>
+
+<p><br />
+<strong>Props:</strong></p>
+<blockquote>
+  Props are short for properties. These are static properties on a React component that are immutable (cannot be changed).
+</blockquote>
+
+<p><strong>State:</strong></p>
+<blockquote>
+  State is mutable, and defines at any given time, the current state of the React component that is being rendered.
+</blockquote>
+<p><br /></p>
+
+<p>Thats the key right there, <strong>Immutable vs. Mutable</strong>. Because <code class="highlighter-rouge">state</code> if mutable, it is passed down to child components as <code class="highlighter-rouge">props</code> which are immutable.</p>
+
+<p>This ensures that the only way for the child component to render something different or change is if the state of the parent component has changed; causing a rerender of all the child components whom have inherited it’s state through props. This is the central idea of React’s <strong>unidirectional data flow</strong>.</p>
+
+<p>Here are two examples:</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript">  <span class="c1">// BAD EXAMPLE</span>
+  <span class="kr">class</span> <span class="nx">ChildComponent</span> <span class="kr">extends</span> <span class="nx">React</span><span class="p">.</span><span class="nx">Component</span> <span class="p">{</span>
+    <span class="nx">constructor</span><span class="p">(</span><span class="nx">props</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">this</span><span class="p">.</span><span class="nx">state</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="na">age</span><span class="p">:</span> <span class="nx">props</span><span class="p">.</span><span class="nx">age</span>
+      <span class="p">}</span>
+    <span class="p">}</span>
+    <span class="nx">render</span><span class="p">()</span> <span class="p">{</span>
+      <span class="k">return</span> <span class="p">(</span>
+        <span class="o">&lt;</span><span class="nx">div</span><span class="o">&gt;</span>
+          <span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="err">`</span><span class="nx">I</span> <span class="nx">am</span> <span class="nx">$</span><span class="p">{</span><span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">age</span><span class="p">}</span> <span class="nx">old</span><span class="err">`</span><span class="o">&lt;</span><span class="sr">/p</span><span class="err">&gt;
+</span>        <span class="o">&lt;</span><span class="sr">/div</span><span class="err">&gt;
+</span>      <span class="p">);</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+
+  <span class="c1">// GOOD EXAMPLE</span>
+  <span class="kr">class</span> <span class="nx">ChildComponent</span> <span class="kr">extends</span> <span class="nx">React</span><span class="p">.</span><span class="nx">Component</span> <span class="p">{</span>
+    <span class="nx">constructor</span><span class="p">(</span><span class="nx">props</span><span class="p">)</span> <span class="p">{</span>
+      <span class="c1">// no need to set state here because the age is passed down from the parent component through props</span>
+    <span class="p">}</span>
+    <span class="nx">render</span><span class="p">()</span> <span class="p">{</span>
+      <span class="k">return</span> <span class="p">(</span>
+        <span class="o">&lt;</span><span class="nx">div</span><span class="o">&gt;</span>
+          <span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="err">`</span><span class="nx">I</span> <span class="nx">am</span> <span class="nx">$</span><span class="p">{</span><span class="k">this</span><span class="p">.</span><span class="nx">props</span><span class="p">.</span><span class="nx">age</span><span class="p">}</span> <span class="nx">old</span><span class="err">`</span><span class="o">&lt;</span><span class="sr">/p</span><span class="err">&gt;
+</span>        <span class="o">&lt;</span><span class="sr">/div</span><span class="err">&gt;
+</span>      <span class="p">);</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+
+  <span class="nx">ChildComponent</span><span class="p">.</span><span class="nx">propTypes</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="na">age</span><span class="p">:</span> <span class="nx">React</span><span class="p">.</span><span class="nx">propTypes</span><span class="p">.</span><span class="nx">number</span><span class="p">.</span><span class="nx">isRequired</span>
+  <span class="p">}</span></code></pre></figure>
+
+<p><br /></p>
+
+<p>The difference between the first and the second example is that when the <code class="highlighter-rouge">this.state.age</code> on the parent of the <code class="highlighter-rouge">ChildComponent</code> changes, the second example will rerender. This is because the new age prop is being used in the render function, causing the <code class="highlighter-rouge">ChildComponent</code> to rerender.</p>
+
+<p>However, the first example will NOT rerender unless the component is unmounted and remounted again; because <code class="highlighter-rouge">state</code> is only ever set when the component initially mounts.</p>
+
+<p>It was groundbreaking for me when I finally realized why I shouldn’t be setting <code class="highlighter-rouge">state</code> from <code class="highlighter-rouge">props</code>, and I hoped this helped you come to a similar realization and <em>dancing around in your room</em> feeling.
+<br /><br /></p>
+
+<h3><strong>Oh yeah!</strong></h3>
+</div>
+</div>
+
+    </div>
+
+  </body>
+
+</html>

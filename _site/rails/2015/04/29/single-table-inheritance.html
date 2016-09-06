@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Johnny Ji's Blog</title>
+  <meta name="description" content="Today’s topic that peaked my inheritance was Single Table Inheritance, which is having multiple models inherit their attributes from a base model. In Rails, ...">
+  <link rel="stylesheet" href="http://johnnyji.me/css/main.css">
+  <link rel="canonical" href="/rails/2015/04/29/single-table-inheritance.html">
+  <link rel="alternate" type="application/rss+xml" title="Johnny Ji" href="/feed.xml"" />
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css">
+  <link href="https://fonts.googleapis.com/css?family=Lora:400,400i|Open+Sans:600,400" rel="stylesheet">
+</head>
+
+
+  <body class="lite">
+
+    <header class="header header-lite">
+  <a class="header-title header-title-lite" href="http://johnnyji.me">JOHNNY JI</a>
+  <div class="header-social-media">
+    <a href="https://www.github.com/johnnyji" target="_blank" class="header-social-media-link github header-lite">
+      <i class="fa fa-github header-lite"></i>
+    </a>
+    <a href="https://www.twitter.com/johnnyisji" target="_blank" class="header-social-media-link twitter header-lite">
+      <i class="fa fa-twitter header-lite"></i>
+    </a>
+    <a href="https://www.linkedin.com/in/johnnyji" target="_blank" class="header-social-media-link linkedin header-lite">
+      <i class="fa fa-linkedin header-lite"></i>
+    </a>
+    <a href="https://www.instagram.com/johnnyisji"" target="_blank" class="header-social-media-link instagram header-lite">
+      <i class="fa fa-instagram header-lite"></i>
+    </a>
+  </div>
+</header>
+    
+
+    <div class="page-container">
+      <div class="single-post">
+  <header class="single-post-header">
+    <h1 class="single-post-header-title">STI Stands for Single Table Inheritance</h1>
+    <p class="single-post-header-date">// Apr 29, 2015</p>
+  </header>
+  <div class="single-post-content"><p>Today’s topic that peaked my inheritance was <strong>Single Table Inheritance</strong>, which is having multiple models inherit their attributes from a base model. In Rails, STI occurs when all your models inherit from <code class="highlighter-rouge">ActiveRecord::Base</code>.</p>
+
+<p>So in what situation would we best benefit from STI? Well when a model in your database as many <code class="highlighter-rouge">types</code> of itself. The best example I can think of is a User model. Imagine there are many “type” of users, such as:</p>
+
+<p><br />
+<strong>Users</strong></p>
+<ul>
+  <li>Guests</li>
+  <li>Admin</li>
+  <li>Verified</li>
+  <li>Banned</li>
+</ul>
+<p><br /></p>
+
+<p>In a case such as this, STI is perfect because all of these sub-categories are their own objects with their own attributes and abilities, however they’re all nested under the User model.</p>
+
+<p>First you would need to add a <code class="highlighter-rouge">:type</code> column as a string to the <code class="highlighter-rouge">User</code> model in migrations, and Rails will automagically specify that column with the sub-category model name depending on what type of User was created or updated.</p>
+
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">AddTypeToUsers</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Migration</span>
+  <span class="k">def</span> <span class="nf">change</span>
+    <span class="n">add_column</span> <span class="ss">:users</span><span class="p">,</span> <span class="ss">:type</span><span class="p">,</span> <span class="ss">:string</span>
+  <span class="k">end</span>
+<span class="k">end</span></code></pre></figure>
+
+<p><br /></p>
+
+<p>Now whenever you create the <code class="highlighter-rouge">Admin</code> or <code class="highlighter-rouge">Guest</code> or whatever model; you simply need to make those models inherit from <code class="highlighter-rouge">User</code> which is subsequently inherit from <code class="highlighter-rouge">ActiveRecord::Base</code>.</p>
+
+<p>Just like that, you now have multiply types of users whom can also all have their own unique attributes and permissions!</p>
+</div>
+</div>
+
+    </div>
+
+  </body>
+
+</html>

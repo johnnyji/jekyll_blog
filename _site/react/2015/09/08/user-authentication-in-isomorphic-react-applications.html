@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Johnny Ji's Blog</title>
+  <meta name="description" content="I love apps that remember who I am and redirects me to certain pages on load, depending on if I’m logged in or not. I read an amazing post about React and Fl...">
+  <link rel="stylesheet" href="http://johnnyji.me/css/main.css">
+  <link rel="canonical" href="/react/2015/09/08/user-authentication-in-isomorphic-react-applications.html">
+  <link rel="alternate" type="application/rss+xml" title="Johnny Ji" href="/feed.xml"" />
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css">
+  <link href="https://fonts.googleapis.com/css?family=Lora:400,400i|Open+Sans:600,400" rel="stylesheet">
+</head>
+
+
+  <body class="lite">
+
+    <header class="header header-lite">
+  <a class="header-title header-title-lite" href="http://johnnyji.me">JOHNNY JI</a>
+  <div class="header-social-media">
+    <a href="https://www.github.com/johnnyji" target="_blank" class="header-social-media-link github header-lite">
+      <i class="fa fa-github header-lite"></i>
+    </a>
+    <a href="https://www.twitter.com/johnnyisji" target="_blank" class="header-social-media-link twitter header-lite">
+      <i class="fa fa-twitter header-lite"></i>
+    </a>
+    <a href="https://www.linkedin.com/in/johnnyji" target="_blank" class="header-social-media-link linkedin header-lite">
+      <i class="fa fa-linkedin header-lite"></i>
+    </a>
+    <a href="https://www.instagram.com/johnnyisji"" target="_blank" class="header-social-media-link instagram header-lite">
+      <i class="fa fa-instagram header-lite"></i>
+    </a>
+  </div>
+</header>
+    
+
+    <div class="page-container">
+      <div class="single-post">
+  <header class="single-post-header">
+    <h1 class="single-post-header-title">User Authentication In Isomorphic React Applications</h1>
+    <p class="single-post-header-date">// Sep 8, 2015</p>
+  </header>
+  <div class="single-post-content"><p>I love apps that remember who I am and redirects me to certain pages on load, depending on if I’m logged in or not. I read an amazing post about <a href="https://auth0.com/blog/2015/04/09/adding-authentication-to-your-react-flux-app/">React and Flux Auth Flow</a>. It does an exceptional job at walking through the process of user authentication using React, Flux and React Router…</p>
+
+<p>However, this approach will only work with a pure client side application. I looked tirelessly online for a simple way to authenticate an isomporhic application, but there wasn’t much on subject.</p>
+
+<p>Through playing around, I’ve found my own way to implement a very similar auth flow that works amazing well with server side rendering! The main difference between my implementation and the other ones is that I’ve opted out of using <code class="highlighter-rouge">willTransitionTo</code>, which I’ll explain why at the end.</p>
+
+<p><em>(For brevity, I will keep my code snippets fairly simple, this is by no means an example of production grade code).</em>
+<br /><br /></p>
+
+<p><strong>Here’s what we’ll be using:</strong></p>
+
+<ul>
+  <li><code class="highlighter-rouge">React</code> duh</li>
+  <li><code class="highlighter-rouge">React Router</code> for our routing purposes</li>
+  <li><code class="highlighter-rouge">Reflux</code> as the flux implementation</li>
+  <li><code class="highlighter-rouge">Node</code> as our backend API</li>
+  <li><code class="highlighter-rouge">JSON Web Token (JWT)</code> for current user instance storage</li>
+  <li><code class="highlighter-rouge">localStorage</code> to store our JWTs on the client</li>
+</ul>
+
+<p><br />
+<strong>In order to create the best user flow, here are a few things we’ll focus on:</strong></p>
+<blockquote>
+  <ul>
+    <li>Creating a decorator to protect confidential components from unauthorized users</li>
+    <li>If the user was previously logged in, we'll show them their dashboard on app load</li>
+    <li>If the user manually changes the route causing a page refresh, we want to auto authenticate them on the new path load</li>
+  </ul>
+</blockquote>
+<p><br /></p>
+
+<p>Let’s first set up our example routes:</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">let</span> <span class="nx">routes</span> <span class="o">=</span> <span class="p">(</span>
+  <span class="o">&lt;</span><span class="nx">Route</span> <span class="nx">path</span><span class="o">=</span><span class="s1">'/'</span> <span class="nx">handler</span><span class="o">=</span><span class="p">{</span><span class="nx">AppHandler</span><span class="p">}</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="nx">DefaultRoute</span> <span class="nx">name</span><span class="o">=</span><span class="s1">'home'</span> <span class="nx">handler</span><span class="o">=</span><span class="p">{</span><span class="nx">HomeHandler</span><span class="p">}</span> <span class="sr">/</span><span class="err">&gt;
+</span>    <span class="o">&lt;</span><span class="nx">Route</span> <span class="nx">name</span><span class="o">=</span><span class="s1">'dashboard'</span> <span class="nx">path</span><span class="o">=</span><span class="s1">'/dashboard'</span> <span class="nx">handler</span><span class="o">=</span><span class="p">{</span><span class="nx">DashboardHandler</span><span class="p">}</span> <span class="sr">/</span><span class="err">&gt;
+</span>    <span class="o">&lt;</span><span class="nx">Route</span> <span class="nx">name</span><span class="o">=</span><span class="s1">'login'</span> <span class="nx">path</span><span class="o">=</span><span class="s1">'/login'</span> <span class="nx">handler</span><span class="o">=</span><span class="p">{</span><span class="nx">AuthHandler</span><span class="p">}</span> <span class="sr">/</span><span class="err">&gt;
+</span>    <span class="o">&lt;</span><span class="nx">Route</span> <span class="nx">name</span><span class="o">=</span><span class="s1">'join'</span> <span class="nx">path</span><span class="o">=</span><span class="s1">'/join'</span> <span class="nx">handler</span><span class="o">=</span><span class="p">{</span><span class="nx">AuthHandler</span><span class="p">}</span> <span class="sr">/</span><span class="err">&gt;
+</span>  <span class="o">&lt;</span><span class="sr">/Route</span><span class="err">&gt;
+</span><span class="p">);</span>
+
+<span class="kr">export</span> <span class="k">default</span> <span class="nx">routes</span><span class="p">;</span></code></pre></figure>
+
+<p>For simplicity sake, we’ll keep it to a few basic routes. <code class="highlighter-rouge">dashboard</code> will be the only <strong>protected route/component</strong> in our app, meaning in order to access it, a current user must be present; otherwise we want to redirect the client to the <code class="highlighter-rouge">login</code> route.
+<br /><br /></p>
+
+<p><strong>Creating a decorator to protect confidential components from unauthorized users</strong></p>
+
+<p>In order to shield our <code class="highlighter-rouge">dashboard</code> component from any unauthorized users. We need to wrap it in a custom decorator to make sure that a logged in user is present before revealing it’s contents. We do that like so:</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kr">export</span> <span class="k">default</span> <span class="p">(</span><span class="nx">ComponentToBeRendered</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>  
+  <span class="kr">class</span> <span class="nx">ProtectedComponent</span> <span class="kr">extends</span> <span class="nx">React</span><span class="p">.</span><span class="nx">Component</span> <span class="p">{</span>
+    <span class="nx">constructor</span><span class="p">(</span><span class="nx">props</span><span class="p">)</span> <span class="p">{</span>
+      <span class="kr">super</span><span class="p">(</span><span class="nx">props</span><span class="p">);</span>
+      <span class="c1">// we're keeping track of the current user instance</span>
+      <span class="k">this</span><span class="p">.</span><span class="nx">state</span> <span class="o">=</span> <span class="p">{</span> <span class="na">currentUser</span><span class="p">:</span> <span class="nx">AuthStore</span><span class="p">.</span><span class="nx">getCurrentUser</span><span class="p">()</span> <span class="p">};</span>
+      <span class="k">this</span><span class="p">.</span><span class="nx">_updateState</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">_updateState</span><span class="p">.</span><span class="nx">bind</span><span class="p">(</span><span class="k">this</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="nx">componentDidMount</span><span class="p">()</span> <span class="p">{</span>
+      <span class="k">this</span><span class="p">.</span><span class="nx">_unsubscribe</span> <span class="o">=</span> <span class="nx">AuthStore</span><span class="p">.</span><span class="nx">listen</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">_updateState</span><span class="p">);</span>
+
+      <span class="c1">// returns out of method is current user already exists</span>
+      <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">currentUser</span><span class="p">)</span> <span class="k">return</span><span class="p">;</span>
+
+      <span class="kd">let</span> <span class="nx">jwt</span> <span class="o">=</span> <span class="nx">localStorage</span><span class="p">.</span><span class="nx">getItem</span><span class="p">(</span><span class="s1">'jwt'</span><span class="p">);</span>
+      <span class="kd">let</span> <span class="nx">unauthorized</span> <span class="o">=</span> <span class="o">!</span><span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">currentUser</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="nx">jwt</span><span class="p">;</span>
+
+      <span class="c1">// automatically authenticates the user if a JWT is found</span>
+      <span class="k">if</span> <span class="p">(</span><span class="nx">jwt</span><span class="p">)</span> <span class="nx">AuthActions</span><span class="p">.</span><span class="nx">autoLoginUser</span><span class="p">(</span><span class="nx">jwt</span><span class="p">);</span>
+
+      <span class="c1">// redirect to login page is theres no current user state or any JWT</span>
+      <span class="k">if</span> <span class="p">(</span><span class="nx">unauthorized</span><span class="p">)</span> <span class="k">this</span><span class="p">.</span><span class="nx">context</span><span class="p">.</span><span class="nx">router</span><span class="p">.</span><span class="nx">transitionTo</span><span class="p">(</span><span class="s1">'/login'</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="nx">componentWillUnmount</span><span class="p">()</span> <span class="p">{</span>
+      <span class="k">this</span><span class="p">.</span><span class="nx">_unsubscribe</span><span class="p">();</span>
+    <span class="p">}</span>
+    <span class="nx">_updateState</span><span class="p">(</span><span class="nx">state</span><span class="p">)</span> <span class="p">{</span>
+      <span class="c1">// once AuthActions.autoLoginUser returns success and authenticates, the current user state is updated</span>
+      <span class="k">this</span><span class="p">.</span><span class="nx">setState</span><span class="p">({</span> <span class="na">currentUser</span><span class="p">:</span> <span class="nx">state</span><span class="p">.</span><span class="nx">currentUser</span> <span class="p">});</span>
+    <span class="p">}</span>
+    <span class="nx">render</span><span class="p">()</span> <span class="p">{</span>
+      <span class="kd">let</span> <span class="nx">s</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="p">;</span>
+      
+      <span class="c1">// we show a loading screen initally, and based on if the current user is updated or not, we either show the contents intended to be rendered, or redirec the client to the login page.</span>
+
+      <span class="k">if</span> <span class="p">(</span><span class="nx">s</span><span class="p">.</span><span class="nx">currentUser</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="o">&lt;</span><span class="nx">ComponentToBeRendered</span> <span class="p">{...</span><span class="k">this</span><span class="p">.</span><span class="nx">props</span><span class="p">}</span> <span class="nx">currentUser</span><span class="o">=</span><span class="p">{</span><span class="nx">s</span><span class="p">.</span><span class="nx">currentUser</span><span class="p">}</span> <span class="sr">/&gt;</span><span class="err">;
+</span>      <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="o">&lt;</span><span class="nx">Spinner</span> <span class="nx">fullScreen</span><span class="o">=</span><span class="p">{</span><span class="kc">true</span><span class="p">}</span> <span class="sr">/&gt;</span><span class="err">;
+</span>      <span class="p">}</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+
+  <span class="nx">ProtectedComponent</span><span class="p">.</span><span class="nx">contextTypes</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="na">router</span><span class="p">:</span> <span class="nx">React</span><span class="p">.</span><span class="nx">PropTypes</span><span class="p">.</span><span class="nx">func</span>
+  <span class="p">};</span>
+
+  <span class="k">return</span> <span class="nx">ProtectedComponent</span><span class="p">;</span>
+<span class="p">}</span></code></pre></figure>
+
+<p>Now whenever we need to protect a component to only authorized users, we simply call it like so:</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kr">class</span> <span class="nx">DashboardHandler</span> <span class="kr">extends</span> <span class="nx">React</span><span class="p">.</span><span class="nx">Component</span> <span class="p">{</span>
+  <span class="c1">// ...</span>
+<span class="p">}</span>
+
+<span class="c1">// here we wrap our decorator around our component</span>
+<span class="kr">export</span> <span class="k">default</span> <span class="nx">ProtectedComponent</span><span class="p">(</span><span class="nx">DashboardHandler</span><span class="p">);</span></code></pre></figure>
+
+<p>When a user tries to access this component either through the app’s flow or manually through the URL, they will either be authenticated and saved in state or redirected to a manual login page.
+<br /><br /></p>
+
+<p><strong>Get or authenticate the current user when a new route is rendered</strong></p>
+
+<p>First, let’s quickly configure the server side render code:</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">app</span><span class="p">.</span><span class="nx">use</span><span class="p">((</span><span class="nx">req</span><span class="p">,</span> <span class="nx">res</span><span class="p">,</span> <span class="nx">next</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+  <span class="c1">// ...</span>
+  <span class="nx">Router</span><span class="p">.</span><span class="nx">run</span><span class="p">(</span><span class="nx">routes</span><span class="p">,</span> <span class="nx">req</span><span class="p">.</span><span class="nx">url</span><span class="p">,</span> <span class="p">(</span><span class="nx">Handler</span><span class="p">,</span> <span class="nx">state</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+    <span class="kd">let</span> <span class="nx">content</span> <span class="o">=</span> <span class="nx">React</span><span class="p">.</span><span class="nx">renderToString</span><span class="p">(</span><span class="o">&lt;</span><span class="nx">Handler</span> <span class="o">/&gt;</span><span class="p">);</span>
+
+    <span class="nx">res</span><span class="p">.</span><span class="nx">render</span><span class="p">(</span><span class="s1">'index'</span><span class="p">,</span> <span class="p">{</span> <span class="na">content</span><span class="p">:</span> <span class="nx">content</span> <span class="p">});</span>
+  <span class="p">});</span>
+<span class="p">});</span></code></pre></figure>
+
+<p>According to our route definitions, the default component a user hits on load is the <code class="highlighter-rouge">HomeHandler</code>. In order for the user to be redirected if logged in, we first must check for an existing current user instance here.</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kr">export</span> <span class="k">default</span> <span class="kr">class</span> <span class="nx">HomeHandler</span> <span class="kr">extends</span> <span class="nx">React</span><span class="p">.</span><span class="nx">Component</span> <span class="p">{</span>
+  <span class="nx">constructor</span><span class="p">(</span><span class="nx">props</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kr">super</span><span class="p">(</span><span class="nx">props</span><span class="p">);</span>
+  <span class="p">}</span>
+  <span class="nx">componentDidMount</span><span class="p">()</span> <span class="p">{</span>
+    <span class="c1">// when the component mounts, we want to run a method and see if there's any current user available</span>
+    <span class="nx">AuthHelper</span><span class="p">.</span><span class="nx">updateCurrentUser</span><span class="p">();</span>
+  <span class="p">}</span>
+  <span class="nx">render</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="p">(</span>
+      <span class="o">&lt;</span><span class="nx">div</span><span class="o">&gt;</span>
+        <span class="o">&lt;</span><span class="nx">h1</span><span class="o">&gt;</span><span class="nx">My</span> <span class="nx">App</span><span class="o">!&lt;</span><span class="sr">/h1</span><span class="err">&gt;
+</span>        <span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="nx">Welcome</span> <span class="nx">to</span> <span class="nx">the</span> <span class="nx">home</span> <span class="nx">page</span><span class="o">!&lt;</span><span class="sr">/p</span><span class="err">&gt;
+</span>      <span class="o">&lt;</span><span class="sr">/div</span><span class="err">&gt;
+</span>    <span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">}</span></code></pre></figure>
+
+<p>Here’s our <code class="highlighter-rouge">AuthHelper</code> file:</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kr">class</span> <span class="nx">AuthHelper</span> <span class="p">{</span>
+  <span class="c1">// checks for the store state for current user, if non existent then it auto logins based on json web token in localStorage</span>
+  <span class="nx">updateCurrentUser</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">AuthStore</span><span class="p">.</span><span class="nx">getCurrentUser</span><span class="p">())</span> <span class="k">return</span><span class="p">;</span>
+
+    <span class="kd">let</span> <span class="nx">jwt</span> <span class="o">=</span> <span class="nx">localStorage</span><span class="p">.</span><span class="nx">getItem</span><span class="p">(</span><span class="s1">'jwt'</span><span class="p">);</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">jwt</span><span class="p">)</span> <span class="nx">AuthActions</span><span class="p">.</span><span class="nx">autoLoginUser</span><span class="p">(</span><span class="nx">jwt</span><span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kr">export</span> <span class="k">default</span> <span class="k">new</span> <span class="nx">AuthHelper</span><span class="p">;</span></code></pre></figure>
+
+<p>If a <code class="highlighter-rouge">currentUser</code> state exists on the <code class="highlighter-rouge">AuthStore</code>, it means that the loading of the default route was likely  triggered programatically, therefore <code class="highlighter-rouge">AuthStore</code> state is persisted and there’s no need to reevaluate the current user.</p>
+
+<p>However, if the route was <strong>manually triggered</strong>, it would run server-side, meaning no <code class="highlighter-rouge">currentUser</code> state exists on the <code class="highlighter-rouge">AuthStore</code>. In that case we check for a <code class="highlighter-rouge">JWT</code> in <code class="highlighter-rouge">localStorage</code> and if such a token exists, we use that to call our API and authenticate the user. Here’s our <code class="highlighter-rouge">AuthActions</code> and <code class="highlighter-rouge">AuthStore</code>:</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">AuthActions</span> <span class="o">=</span> <span class="nx">Reflux</span><span class="p">.</span><span class="nx">createActions</span><span class="p">({</span>
+  <span class="s1">'autoLoginUser'</span><span class="p">:</span> <span class="p">{</span> <span class="nl">children</span><span class="p">:</span> <span class="p">[</span><span class="s1">'completed'</span><span class="p">,</span> <span class="s1">'failed'</span><span class="p">]</span> <span class="p">}</span>
+<span class="p">});</span>
+
+<span class="nx">AuthActions</span><span class="p">.</span><span class="nx">autoLoginUser</span><span class="p">.</span><span class="nx">listen</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">jwt</span><span class="p">)</span> <span class="p">{</span>
+  <span class="kd">let</span> <span class="nx">savedJwt</span> <span class="o">=</span> <span class="nx">localStorage</span><span class="p">.</span><span class="nx">getItem</span><span class="p">(</span><span class="s1">'jwt'</span><span class="p">);</span>
+  <span class="k">if</span> <span class="p">(</span><span class="nx">savedJwt</span> <span class="o">!==</span> <span class="nx">jwt</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// if the jwt passed in and the jwt in localStorage don't match, then we redirect them to the manual login page to reprompt for password</span>
+
+    <span class="c1">// I will explain what RouterContainer is a little bit later</span>
+    <span class="nx">RouterContainer</span><span class="p">.</span><span class="nx">get</span><span class="p">().</span><span class="nx">transitionTo</span><span class="p">(</span><span class="s1">'/login'</span><span class="p">);</span>
+  <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+    <span class="nx">sendSomeAjaxRequestToAuthenticateUser</span><span class="p">(...)</span>
+    <span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">completed</span><span class="p">)</span>
+    <span class="p">.</span><span class="k">catch</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">failed</span><span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">});</span>
+
+<span class="nx">module</span><span class="p">.</span><span class="nx">exports</span> <span class="o">=</span> <span class="nx">AuthActions</span><span class="p">;</span></code></pre></figure>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">AuthStore</span> <span class="o">=</span> <span class="nx">Reflux</span><span class="p">.</span><span class="nx">createStore</span><span class="p">({</span>
+  <span class="c1">// ...</span>
+  <span class="na">onAutoLoginUserCompleted</span><span class="p">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">response</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">_saveSessionAndRedirect</span><span class="p">(</span><span class="nx">response</span><span class="p">);</span>
+  <span class="p">},</span>
+  <span class="na">_saveSessionAndRedirect</span><span class="p">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">response</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">jwt</span> <span class="o">=</span> <span class="nx">response</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">token</span><span class="p">;</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">currentUser</span> <span class="o">=</span> <span class="nx">response</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">user</span><span class="p">;</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">trigger</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="p">);</span>
+    <span class="c1">// Here we see the RouterContainer again</span>
+    <span class="nx">RouterContainer</span><span class="p">.</span><span class="nx">get</span><span class="p">().</span><span class="nx">transitionTo</span><span class="p">(</span><span class="s1">'/dashboard'</span><span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">});</span>
+
+<span class="nx">module</span><span class="p">.</span><span class="nx">exports</span> <span class="o">=</span> <span class="nx">AuthStore</span><span class="p">;</span></code></pre></figure>
+
+<p>Once we call <code class="highlighter-rouge">autoLoginUser</code>, it makes an AJAX call to our API to authenticate the <code class="highlighter-rouge">JWT</code>, once the token has been verified, we save the current user data in our state, trigger it and redirect the user to their dashboard.</p>
+
+<p>Here I’ve used <code class="highlighter-rouge">RouterContainer</code> twice, once in my actions and once in my store. Both times, I’ve used it to redirect the user from within Flux. <code class="highlighter-rouge">RouterContainer</code> is just a container for our instance of the the <a href="https://rackt.github.io/react-router/">React Router</a>. We set this initally in our client side render like so:</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="c1">//...</span>
+
+<span class="c1">// sets the router instance in the RouterContainer, so the routes can be accessed by util classes and Reflux</span>
+<span class="nx">RouterContainer</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="nx">router</span><span class="p">);</span>
+
+<span class="nx">router</span><span class="p">.</span><span class="nx">run</span><span class="p">(</span><span class="nx">routes</span><span class="p">,</span> <span class="nx">Router</span><span class="p">.</span><span class="nx">HistoryLocation</span><span class="p">,</span> <span class="nx">Handler</span> <span class="o">=&gt;</span> <span class="p">{</span>
+  <span class="nx">React</span><span class="p">.</span><span class="nx">render</span><span class="p">(</span><span class="o">&lt;</span><span class="nx">Handler</span> <span class="o">/&gt;</span><span class="p">,</span> <span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="s1">'app'</span><span class="p">));</span>
+<span class="p">});</span></code></pre></figure>
+
+<p>Here’s the file for <code class="highlighter-rouge">RouterContainer</code>:</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">let</span> <span class="nx">_router</span><span class="p">;</span>
+
+<span class="kd">let</span> <span class="nx">RouterContainer</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="c1">// accepts the router as a argument and sets the internal _router as the router instance passed in</span>
+  <span class="na">set</span><span class="p">:</span> <span class="nx">router</span> <span class="o">=&gt;</span> <span class="nx">_router</span> <span class="o">=</span> <span class="nx">router</span><span class="p">,</span>
+  <span class="c1">// return the instance of router set on the RouterContainer</span>
+  <span class="na">get</span><span class="p">:</span> <span class="p">()</span> <span class="o">=&gt;</span> <span class="nx">_router</span>
+<span class="p">};</span>
+
+<span class="kr">export</span> <span class="k">default</span> <span class="nx">RouterContainer</span><span class="p">;</span></code></pre></figure>
+
+<p><br /></p>
+
+<p>Once we’ve set the instance of router in our <code class="highlighter-rouge">RouterContainer</code>, we can reuse it anywhere in our app by calling <code class="highlighter-rouge">RouterContianer.get()</code>, including our Flux actions and stores.</p>
+
+<p>Now when the user tries to access our application, either from the root URL or by manually entering a URL (ie <code class="highlighter-rouge">http://www.myapp.com/dashboard</code>), we can authenticate and either reveal the app content or redirect then to the appropriate page.
+<br /><br /></p>
+
+<p><strong>Thats it!</strong> That’s the very rough and dirty guide to user authentication in an isomorphic React app.</p>
+
+<p>I should mention that if you’re only authenticating a client side app and there’s no server side rendering, you should check out the <code class="highlighter-rouge">willTransitionTo</code> static method on <a href="https://rackt.github.io/react-router/">React Router</a> as mentioned in the <a href="https://auth0.com/blog/2015/04/09/adding-authentication-to-your-react-flux-app/">React Auth Flow</a> blog post I read. The reason why I didn’t use <code class="highlighter-rouge">willTransitionTo</code> is because when we render server side, the state of our stores and <code class="highlighter-rouge">localStorage</code> are both unaccesible, therefore it’s much easier to show a loading screen for a split second while the client authenticates the user directly after the server renders the inital React code.</p>
+
+</div>
+</div>
+
+    </div>
+
+  </body>
+
+</html>

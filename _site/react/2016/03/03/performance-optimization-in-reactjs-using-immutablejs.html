@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Johnny Ji's Blog</title>
+  <meta name="description" content="Over the past little bit I’ve had troubles with optimization in React. I’ve begun to notice that the more complex my apps got, the longer it would take them ...">
+  <link rel="stylesheet" href="http://johnnyji.me/css/main.css">
+  <link rel="canonical" href="/react/2016/03/03/performance-optimization-in-reactjs-using-immutablejs.html">
+  <link rel="alternate" type="application/rss+xml" title="Johnny Ji" href="/feed.xml"" />
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css">
+  <link href="https://fonts.googleapis.com/css?family=Lora:400,400i|Open+Sans:600,400" rel="stylesheet">
+</head>
+
+
+  <body class="lite">
+
+    <header class="header header-lite">
+  <a class="header-title header-title-lite" href="http://johnnyji.me">JOHNNY JI</a>
+  <div class="header-social-media">
+    <a href="https://www.github.com/johnnyji" target="_blank" class="header-social-media-link github header-lite">
+      <i class="fa fa-github header-lite"></i>
+    </a>
+    <a href="https://www.twitter.com/johnnyisji" target="_blank" class="header-social-media-link twitter header-lite">
+      <i class="fa fa-twitter header-lite"></i>
+    </a>
+    <a href="https://www.linkedin.com/in/johnnyji" target="_blank" class="header-social-media-link linkedin header-lite">
+      <i class="fa fa-linkedin header-lite"></i>
+    </a>
+    <a href="https://www.instagram.com/johnnyisji"" target="_blank" class="header-social-media-link instagram header-lite">
+      <i class="fa fa-instagram header-lite"></i>
+    </a>
+  </div>
+</header>
+    
+
+    <div class="page-container">
+      <div class="single-post">
+  <header class="single-post-header">
+    <h1 class="single-post-header-title">Performance Tweaking in React.js using Immutable.js</h1>
+    <p class="single-post-header-date">// Mar 3, 2016</p>
+  </header>
+  <div class="single-post-content"><p>Over the past little bit I’ve had troubles with optimization in React. I’ve begun to notice that the more complex my apps got, the longer it would take them to render and re-render. Even React can’t save me from eventual performance slowdown (mostly due to my own stupidity)…</p>
+
+<p>I watched a <a href="https://www.youtube.com/watch?v=Jv18_gdAhGg">great talk</a> this morning given by my boss <a href="https://github.com/globexdesigns">Ev</a>, who is one without a doubt one of the smartest developers I know. In this talk he touches on things that tend to slow down our React applications, and it boils down to two main culprits:</p>
+
+<blockquote>
+  <div>1. Rendering to the DOM is insanely slow. Avoid it as much as you can. </div>
+  <div>2. Re-rendering to the DOM is just as slow. Avoid it as much as you can.</div>
+</blockquote>
+
+<p>Okay, so clearly there’s a direct message here; <b>avoid unnecessary writes to the DOM whenever possible</b>. Let’s take a look at this in the context of React.js.</p>
+
+<hr />
+
+<p>There is really no escaping the initial <code class="highlighter-rouge">render</code> process (otherwise users would not see anything on your page!). Knowing this, our best bet is to reduce the amount of re-renders to as little as we possibly can. This is the perfect job for <code class="highlighter-rouge">shouldComponentUpdate</code>.</p>
+
+<p>As a part of React’s <a href="https://facebook.github.io/react/docs/component-specs.html">lifecycle</a>, <code class="highlighter-rouge">shouldComponentUpdate</code> is a method that returns a boolean, which determines if the component needs to update or not.</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript">  <span class="c1">// Re-render the component only if the message prop</span>
+  <span class="c1">// will change on the next iteration.</span>
+  <span class="nx">shouldComponentUpdate</span><span class="p">(</span><span class="nx">nextProps</span><span class="p">,</span> <span class="nx">nextState</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">props</span><span class="p">.</span><span class="nx">message</span> <span class="o">!==</span> <span class="nx">nextProps</span><span class="p">.</span><span class="nx">message</span><span class="p">;</span>
+  <span class="p">}</span></code></pre></figure>
+
+<p><code class="highlighter-rouge">shouldComponentUpdate</code> by itself already seems really useful for determining if a component should re-render. Simply put, if the props/state don’t change, then don’t re-render. Voila!
+<br /><br /></p>
+
+<p>But wait… This is can get really ugly really fast. I can think of two general cases where your <code class="highlighter-rouge">shouldComponentUpdate</code> can get out of hand.</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript">  <span class="c1">// Too many props and state to check!</span>
+
+  <span class="nx">shouldComponentUpdate</span><span class="p">(</span><span class="nx">nextProps</span><span class="p">,</span> <span class="nx">nextState</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="p">(</span>
+      <span class="k">this</span><span class="p">.</span><span class="nx">props</span><span class="p">.</span><span class="nx">message</span> <span class="o">!==</span> <span class="nx">nextProps</span><span class="p">.</span><span class="nx">message</span> <span class="o">||</span>
+      <span class="k">this</span><span class="p">.</span><span class="nx">props</span><span class="p">.</span><span class="nx">firstName</span> <span class="o">!==</span> <span class="nx">nextProps</span><span class="p">.</span><span class="nx">firstName</span> <span class="o">||</span>
+      <span class="k">this</span><span class="p">.</span><span class="nx">props</span><span class="p">.</span><span class="nx">lastName</span> <span class="o">!==</span> <span class="nx">nextProps</span><span class="p">.</span><span class="nx">lastName</span> <span class="o">||</span>
+      <span class="k">this</span><span class="p">.</span><span class="nx">props</span><span class="p">.</span><span class="nx">avatar</span> <span class="o">!==</span> <span class="nx">nextProps</span><span class="p">.</span><span class="nx">avatar</span> <span class="o">||</span>
+      <span class="k">this</span><span class="p">.</span><span class="nx">props</span><span class="p">.</span><span class="nx">address</span> <span class="o">!==</span> <span class="nx">nextProps</span><span class="p">.</span><span class="nx">address</span> <span class="o">||</span>
+      <span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">componentReady</span> <span class="o">!==</span> <span class="nx">nextState</span><span class="p">.</span><span class="nx">componentReady</span>
+      <span class="c1">// etc...</span>
+    <span class="p">);</span>
+  <span class="p">}</span></code></pre></figure>
+
+<p>In this example, it’s extremely easy to remove or add a prop/state to the component and forget to do the same in <code class="highlighter-rouge">shouldComponentUpdate</code>.</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript">  <span class="c1">// Deeply nested props/state</span>
+
+  <span class="cm">/*
+    this.props.user = {
+      name: {
+        english: {
+          first: 'Johnny',
+          last: 'Ji'
+        }
+      },
+      age: 21,
+      height: // etc...
+    };
+
+    nextProps.user = {
+      name: {
+        english: {
+          first: 'Johnny',
+          last: 'Depp' // This attribute has changed!
+        }
+      },
+      age: 21,
+      height: // etc...
+    };
+   */</span>
+
+  <span class="nx">shouldComponentUpdate</span><span class="p">(</span><span class="nx">nextProps</span><span class="p">,</span> <span class="nx">nextState</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">props</span><span class="p">.</span><span class="nx">user</span> <span class="o">!==</span> <span class="nx">nextProps</span><span class="p">.</span><span class="nx">user</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="c1">// Even though the two objects are different, `shouldComponentUpdate`</span>
+  <span class="c1">// will return false.</span></code></pre></figure>
+
+<p>In this example, we have less props but more deeply nested props (which is good). However, we can no longer use a simple <code class="highlighter-rouge">===</code> equator, we have to compare the two objects to see if they’re different. What’s even worse is that because both are nested, we have to recursively do a deep comparison.</p>
+
+<p>So why does this suck? Well because deep comparisons are expensive to perform, and when done on every prop/state of every component over an entire app, could leave a nasty scar.</p>
+
+<p><code class="highlighter-rouge">shouldComponentUpdate</code> is actually so useful, React has an add-on helper mixin called <code class="highlighter-rouge">PureRenderMixin</code> that out-of-the-box implements it for you. All you need to do is decorate or mixin your component with the functionality. Unfortunately <code class="highlighter-rouge">PureRenderMixin</code> also only performs shallow comparisons; which still doesn’t solve our problem.</p>
+
+<hr />
+
+<h3 id="so-then-what-do-i-do">So then what do I do?</h3>
+
+<p>You can use <a href="https://facebook.github.io/immutable-js/">Immutable.js</a>. Immutable is an amazing library that provides us with a way of having immutable datatypes in JavaScript.</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript">  <span class="nx">Immutable</span><span class="p">.</span><span class="nx">List</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">]);</span>             <span class="c1">// Like an array, but immutable</span>
+  <span class="nx">Immutable</span><span class="p">.</span><span class="nx">Map</span><span class="p">({</span><span class="na">a</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="na">b</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="na">c</span><span class="p">:</span> <span class="mi">3</span><span class="p">});</span>   <span class="c1">// Like an object, but immutable</span>
+  <span class="c1">// and so much more, etc...</span></code></pre></figure>
+
+<p>Immutable.js not only brings functional programming perks such as immutable datatypes into JavaScript, but it can also allows us to optimize the hell out of our React code. But first we need to understand how Immutable.js achieves immutability in a language at allows for mutations.</p>
+
+<p>Immutable.js is just a collection of methods that will take your JavaScript datatypes as arguments and create an object that stores them. Under the hood, it actually works something like this:</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript">  <span class="kr">const</span> <span class="nx">user</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="na">firstName</span><span class="p">:</span> <span class="s1">'Johnny'</span><span class="p">,</span>
+    <span class="na">lastName</span><span class="p">:</span> <span class="s1">'Ji'</span>
+  <span class="p">};</span>
+
+  <span class="kr">const</span> <span class="nx">immutableUser</span> <span class="o">=</span> <span class="nx">Immutable</span><span class="p">.</span><span class="nx">Map</span><span class="p">({</span>
+    <span class="na">firstName</span><span class="p">:</span> <span class="s1">'Johnny'</span><span class="p">,</span>
+    <span class="na">lastName</span><span class="p">:</span> <span class="s1">'Ji'</span>
+  <span class="p">});</span>
+
+  <span class="c1">// immutableUser is now an instance of `Immutable.Map`, which is actually a JavaScript object containing information</span>
+  <span class="c1">// about the `user` object we passed it. You can imagine it as something like this =&gt;</span>
+  <span class="c1">//</span>
+  <span class="c1">// {id: 1, ref: 2bfe829d, size: 2, _actualData: {firstName: 'Johnny', lastName: 'Ji'}, methods: {...}};</span></code></pre></figure>
+
+<p>Of course this is not actually how <code class="highlighter-rouge">Immutable.js</code> stores your data, but the structure and the logic is the same. It is nothing more an object wrapper that make sure you can’t mutate the contained data, thus achieving the effect of <em>immutability</em>.</p>
+
+<hr />
+
+<h3 id="what-does-this-have-to-do-with-optimizing-react">What does this have to do with optimizing React?</h3>
+
+<p>Here it comes. Because <code class="highlighter-rouge">Immutable.js</code> records are immutable, everytime a change is made, a new copy of the record is returned, and the previous one is never altered. But the best part about that is that every new record also comes with a new <code class="highlighter-rouge">reference</code> attribute.</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript">  <span class="kr">const</span> <span class="nx">car</span> <span class="o">=</span> <span class="nx">Immutable</span><span class="p">.</span><span class="nx">fromJS</span><span class="p">({</span>
+    <span class="na">exterior</span><span class="p">:</span> <span class="p">{</span>
+      <span class="na">details</span><span class="p">:</span> <span class="p">{</span>
+        <span class="na">color</span><span class="p">:</span> <span class="s1">'blue'</span>
+      <span class="p">}</span>
+    <span class="p">}</span>
+  <span class="p">});</span>
+
+  <span class="kr">const</span> <span class="nx">differentCar</span> <span class="o">=</span> <span class="nx">car</span><span class="p">.</span><span class="nx">setIn</span><span class="p">([</span><span class="s1">'exterior'</span><span class="p">,</span> <span class="s1">'details'</span><span class="p">,</span> <span class="s1">'color'</span><span class="p">],</span> <span class="s1">'red'</span><span class="p">);</span>
+
+  <span class="c1">// The original `car` was never changed, instead a new copy of `car` with the color attribute set to red</span>
+  <span class="c1">// was created and set to variable called `differentCar`. Most importantly, notice that the reference of the</span>
+  <span class="c1">// two maps have changed:</span>
+  <span class="c1">//</span>
+  <span class="c1">// `car` =&gt;           {size: ..., id: ..., _actualData: ..., ref: 123}</span>
+  <span class="c1">// `differentCar` =&gt;  {size: ..., id: ..., _actualData: ..., ref: 738}</span></code></pre></figure>
+
+<p>If all changes to <code class="highlighter-rouge">Immutable.js</code> records return a new record with a new <code class="highlighter-rouge">reference</code> id, that effectively means not matter how deeply nested the change, we will still be aware that the new record has INFACT changed. <b>We can deep compare Immutable.js datatypes by simply checking if the references are different</b>.</p>
+
+<p>I’ll say it again: <b>We can deep compare Immutable.js datatypes by simply checking if the references are different.</b></p>
+
+<p>Didn’t our whole problem with <code class="highlighter-rouge">shouldComponentUpdate</code> and <code class="highlighter-rouge">PureRenderMixin</code> have to do with the inpracticality of performing deep comparisons on our props/state?</p>
+
+<p>Because <code class="highlighter-rouge">Immutable.js</code> creates new records with new references upon any change to the data, we can do deep comparisons of current props/state to next props/state for next to nothing! In fact, so long as you use <code class="highlighter-rouge">Immutable.js</code> for your datatypes, <code class="highlighter-rouge">PureRenderMixin</code> will work and “deep compare” out-of-the-box without you having to do any extra configurations!</p>
+
+<p>The ability to use <code class="highlighter-rouge">PureRenderMixin</code> on any component in our app regardless of the props/state structure complexity is amazing. This allows us to make certain that components throughout our app are only ever re-rendering when they truely need to.</p>
+
+</div>
+</div>
+
+    </div>
+
+  </body>
+
+</html>

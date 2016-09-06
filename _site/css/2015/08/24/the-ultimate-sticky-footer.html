@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Johnny Ji's Blog</title>
+  <meta name="description" content="One of the troubles that I’m sure every developer has run into is how to get the perfect sticky footer on your website. I’ve used alot of different variation...">
+  <link rel="stylesheet" href="http://johnnyji.me/css/main.css">
+  <link rel="canonical" href="/css/2015/08/24/the-ultimate-sticky-footer.html">
+  <link rel="alternate" type="application/rss+xml" title="Johnny Ji" href="/feed.xml"" />
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css">
+  <link href="https://fonts.googleapis.com/css?family=Lora:400,400i|Open+Sans:600,400" rel="stylesheet">
+</head>
+
+
+  <body class="lite">
+
+    <header class="header header-lite">
+  <a class="header-title header-title-lite" href="http://johnnyji.me">JOHNNY JI</a>
+  <div class="header-social-media">
+    <a href="https://www.github.com/johnnyji" target="_blank" class="header-social-media-link github header-lite">
+      <i class="fa fa-github header-lite"></i>
+    </a>
+    <a href="https://www.twitter.com/johnnyisji" target="_blank" class="header-social-media-link twitter header-lite">
+      <i class="fa fa-twitter header-lite"></i>
+    </a>
+    <a href="https://www.linkedin.com/in/johnnyji" target="_blank" class="header-social-media-link linkedin header-lite">
+      <i class="fa fa-linkedin header-lite"></i>
+    </a>
+    <a href="https://www.instagram.com/johnnyisji"" target="_blank" class="header-social-media-link instagram header-lite">
+      <i class="fa fa-instagram header-lite"></i>
+    </a>
+  </div>
+</header>
+    
+
+    <div class="page-container">
+      <div class="single-post">
+  <header class="single-post-header">
+    <h1 class="single-post-header-title">The Ultimate Sticky Footer!</h1>
+    <p class="single-post-header-date">// Aug 24, 2015</p>
+  </header>
+  <div class="single-post-content"><p>One of the troubles that I’m sure every developer has run into is how to get the perfect sticky footer on your website. I’ve used alot of different variations but my favourite one by far is one I <strike>came up with</strike> (I’m sure someone did this before I did, and if so I’m sorry but I’m taking your credit!).</p>
+
+<p>This sticky footer implementation will allow:</p>
+
+<blockquote>
+  <li>The footer to stick to the bottom of the page</li>
+  <li>The footer will extend as the page does</li>
+  <li>There will be whitespace between the footer and the page content</li>
+  <li>The implementation is simple!</li>
+</blockquote>
+<p><br /></p>
+
+<p>Enough talk! Here’s how it’s done:</p>
+
+<figure class="highlight"><pre><code class="language-css" data-lang="css"><span class="c">/* Our HTML setup
+
+&lt;body&gt;
+
+  &lt;div class='app-wrapper'&gt;
+    All of your app contents go here...
+  &lt;/div&gt;
+
+  &lt;footer&gt;This is our footer!&lt;/footer&gt;
+
+&lt;/body&gt;
+
+*/</span>
+
+
+<span class="c">/*Here's the CSS*/</span>
+
+<span class="nt">body</span> <span class="p">{</span>
+  <span class="nl">height</span><span class="p">:</span> <span class="m">100%</span><span class="p">;</span>
+  <span class="nl">margin</span><span class="p">:</span> <span class="m">0</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="nc">.app-wrapper</span> <span class="p">{</span>
+  <span class="nl">min-height</span><span class="p">:</span> <span class="m">100%</span><span class="p">;</span> <span class="c">/*page will be minimum 100% of viewport*/</span>
+  <span class="nl">height</span><span class="p">:</span> <span class="nb">auto</span><span class="p">;</span> <span class="c">/*page will grow as content expands*/</span>
+
+  <span class="c">/*IMPORTANT: the padding should be 2x the footer's height so the footer stay at the bottom and at the same time still have top room for white space between itself and the app content as the app grows, the padding acts as the space between the content and the footer, as well as the footers alloted height*/</span>
+  <span class="nl">padding-bottom</span><span class="p">:</span> <span class="m">200px</span><span class="p">;</span> 
+<span class="p">}</span>
+
+<span class="nt">footer</span> <span class="p">{</span>
+  <span class="nl">position</span><span class="p">:</span> <span class="nb">relative</span><span class="p">;</span>
+  <span class="nl">width</span><span class="p">:</span> <span class="m">100%</span><span class="p">;</span>
+  <span class="nl">height</span><span class="p">:</span> <span class="m">100px</span><span class="p">;</span>
+
+  <span class="nl">margin-top</span><span class="p">:</span> <span class="m">-100px</span><span class="p">;</span> <span class="c">/*Because the footer is right below the app-wrapper, which is at it's minimum, the whole page height, we need to make the margin-top the same as the footer's height so that it can shift up by the amount of it's height. Note that this is where the padding: 200px on app-wrapper comes in. After the footer has been shifted up 100px, there will still be white space between the footer and the app content due to the extra padding we gave to the app-wrapper*/</span>
+<span class="p">}</span></code></pre></figure>
+
+<p><br /></p>
+</div>
+</div>
+
+    </div>
+
+  </body>
+
+</html>

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Johnny Ji's Blog</title>
+  <meta name="description" content="RSpec stubs and mocks create instances of not yet existing objects on the fly and give them non-existent methods which return specific outputs that you declare.">
+  <link rel="stylesheet" href="http://johnnyji.me/css/main.css">
+  <link rel="canonical" href="/rspec/2015/04/08/lighthouse-labs-w2d3-stucks-and-mocks.html">
+  <link rel="alternate" type="application/rss+xml" title="Johnny Ji" href="/feed.xml"" />
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css">
+  <link href="https://fonts.googleapis.com/css?family=Lora:400,400i|Open+Sans:600,400" rel="stylesheet">
+</head>
+
+
+  <body class="lite">
+
+    <header class="header header-lite">
+  <a class="header-title header-title-lite" href="http://johnnyji.me">JOHNNY JI</a>
+  <div class="header-social-media">
+    <a href="https://www.github.com/johnnyji" target="_blank" class="header-social-media-link github header-lite">
+      <i class="fa fa-github header-lite"></i>
+    </a>
+    <a href="https://www.twitter.com/johnnyisji" target="_blank" class="header-social-media-link twitter header-lite">
+      <i class="fa fa-twitter header-lite"></i>
+    </a>
+    <a href="https://www.linkedin.com/in/johnnyji" target="_blank" class="header-social-media-link linkedin header-lite">
+      <i class="fa fa-linkedin header-lite"></i>
+    </a>
+    <a href="https://www.instagram.com/johnnyisji"" target="_blank" class="header-social-media-link instagram header-lite">
+      <i class="fa fa-instagram header-lite"></i>
+    </a>
+  </div>
+</header>
+    
+
+    <div class="page-container">
+      <div class="single-post">
+  <header class="single-post-header">
+    <h1 class="single-post-header-title">Lighthouse Labs W2D3: RSpec Stubs and Mocks</h1>
+    <p class="single-post-header-date">// Apr 8, 2015</p>
+  </header>
+  <div class="single-post-content"><p>RSpec stubs and mocks create instances of not yet existing objects on the fly and give them non-existent methods which return specific outputs that you declare.</p>
+
+<p>Stubbing and mocking allow you to test other methods that depend on the method that you stubbed or the class that you mocked; either because you haven’t created those methods/classes yet, or because running them would instrumentally slow down your test suite; or because you know the exact output of the methods and running them would be trivial or irrelevant.</p>
+
+<p>If you wanted to test the <code class="highlighter-rouge">rob_bank(bank)</code> method on an instance of the Robot class but you haven’t created the Bank class yet, how would you test the robot’s <code class="highlighter-rouge">rob_bank(bank)</code> methods?</p>
+
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">bank</span> <span class="o">=</span> <span class="n">instance_double</span><span class="p">(</span><span class="s2">"Bank"</span><span class="p">,</span> <span class="ss">repository: </span><span class="mi">1000000</span><span class="p">,</span> <span class="ss">name: </span><span class="s1">'RBC'</span><span class="p">)</span>
+<span class="n">allow</span><span class="p">(</span><span class="n">bank</span><span class="p">).</span><span class="nf">to</span> <span class="n">receive</span><span class="p">(</span><span class="ss">:robbed</span><span class="p">).</span><span class="nf">and_return</span><span class="p">(</span><span class="mi">1000</span><span class="p">)</span>
+
+<span class="c1">#Stubbing in a fake method which returns a value we set to our mocked bank object. This is what we would want our actual method on the actual bank object to return.</span>
+
+<span class="n">expect</span><span class="p">(</span><span class="vi">@robot</span><span class="p">.</span><span class="nf">rob</span><span class="p">(</span><span class="n">bank</span><span class="p">).</span><span class="nf">to</span> <span class="n">eq</span><span class="p">(</span><span class="mi">1000</span><span class="p">)</span></code></pre></figure>
+
+</div>
+</div>
+
+    </div>
+
+  </body>
+
+</html>

@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Johnny Ji's Blog</title>
+  <meta name="description" content="Currently in one my project, I ran into an interesting association problem that I’d previously not dealt with before. Which is specifying different kinds of ...">
+  <link rel="stylesheet" href="http://johnnyji.me/css/main.css">
+  <link rel="canonical" href="/activerecord/2015/06/24/creating-multiple-associations-between-two-models-in-activerecord.html">
+  <link rel="alternate" type="application/rss+xml" title="Johnny Ji" href="/feed.xml"" />
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css">
+  <link href="https://fonts.googleapis.com/css?family=Lora:400,400i|Open+Sans:600,400" rel="stylesheet">
+</head>
+
+
+  <body class="lite">
+
+    <header class="header header-lite">
+  <a class="header-title header-title-lite" href="http://johnnyji.me">JOHNNY JI</a>
+  <div class="header-social-media">
+    <a href="https://www.github.com/johnnyji" target="_blank" class="header-social-media-link github header-lite">
+      <i class="fa fa-github header-lite"></i>
+    </a>
+    <a href="https://www.twitter.com/johnnyisji" target="_blank" class="header-social-media-link twitter header-lite">
+      <i class="fa fa-twitter header-lite"></i>
+    </a>
+    <a href="https://www.linkedin.com/in/johnnyji" target="_blank" class="header-social-media-link linkedin header-lite">
+      <i class="fa fa-linkedin header-lite"></i>
+    </a>
+    <a href="https://www.instagram.com/johnnyisji"" target="_blank" class="header-social-media-link instagram header-lite">
+      <i class="fa fa-instagram header-lite"></i>
+    </a>
+  </div>
+</header>
+    
+
+    <div class="page-container">
+      <div class="single-post">
+  <header class="single-post-header">
+    <h1 class="single-post-header-title">Creating Multiple Associations Between Two Models in ActiveRecord</h1>
+    <p class="single-post-header-date">// Jun 24, 2015</p>
+  </header>
+  <div class="single-post-content"><p>Currently in one my project, I ran into an interesting association problem that I’d previously not dealt with before. Which is specifying different kinds of associations for the same model.</p>
+
+<p>You’re probably saying <em>“Wait whaaaa…?”</em>. Don’t worry, I can relate because that’s exactly what I said. So let’s lay out an example scenario and see how we can approach solving it:</p>
+
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">Production</span>
+  <span class="c1"># we want to be able to find out the hiearchy of our cast on the production. So ideally we would have something like this:</span>
+  <span class="n">has_one</span> <span class="ss">:lead_actor</span>
+  <span class="n">has_many</span> <span class="ss">:supporting_actors</span>
+<span class="k">end</span>
+
+<span class="k">class</span> <span class="nc">Actor</span>
+  <span class="c1"># we want to be able to find the different types of roles the actor has portrayed. So ideally we want:</span>
+  <span class="n">has_many</span> <span class="ss">:leading_performances</span>
+  <span class="n">has_many</span> <span class="ss">:supporting_performances</span>
+<span class="k">end</span>
+
+<span class="c1"># Ideally if our production of "Lion King" had a lead actor "Jacob", when we query lead performances for "Jacob", we should see "Lion King". Same goes for the supporting actors as well.</span></code></pre></figure>
+
+<p><br /></p>
+
+<p>So in this example, we have two simple models; <code class="highlighter-rouge">Actor</code> and <code class="highlighter-rouge">Production</code>. The only associations ever made is between the production and the actor, however a production can have many types of actors such as <code class="highlighter-rouge">leading_actor</code> and <code class="highlighter-rouge">supporting_actors</code>.</p>
+
+<p>So why not just create an STI and have different types of actors?</p>
+
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">LeadingActor</span> <span class="o">&lt;</span> <span class="no">Actor</span><span class="p">;</span> <span class="k">end</span>
+<span class="k">class</span> <span class="nc">SupportingActor</span> <span class="o">&lt;</span> <span class="no">Actor</span><span class="p">;</span> <span class="k">end</span></code></pre></figure>
+
+<p><br /></p>
+
+<p>Well it’s not quite that simple because an actor will not always be a leading actor. An actor can be a leading role on one production, but a supporting role on another. So in order to solve this issue, we must approach it from the association side of things. Here’s what I came up with after about an hour of playing around with different options:</p>
+
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="c1"># main models</span>
+
+<span class="k">class</span> <span class="nc">Production</span>
+  <span class="c1"># creates two associations for the same model, specifying that model with a through relationship and :source</span>
+  <span class="n">has_one</span> <span class="ss">:leading_role</span>
+  <span class="n">has_many</span> <span class="ss">:supporting_roles</span>
+  <span class="n">has_one</span> <span class="ss">:leading_actor</span><span class="p">,</span> <span class="ss">through: :leading_role</span><span class="p">,</span> <span class="ss">source: :actor</span>
+  <span class="n">has_many</span> <span class="ss">:supporting_actors</span><span class="p">,</span> <span class="ss">through: :supporting_roles</span><span class="p">,</span> <span class="ss">source: :actor</span>
+<span class="k">end</span>
+
+<span class="k">class</span> <span class="nc">Actor</span>
+  <span class="c1"># creates two associations for the same model, specifying that model with a through relationship and :source</span>
+  <span class="n">has_many</span> <span class="ss">:leading_roles</span>
+  <span class="n">has_many</span> <span class="ss">:supporting_roles</span>
+  <span class="n">has_many</span> <span class="ss">:leading_performances</span><span class="p">,</span> <span class="ss">through: :leading_roles</span><span class="p">,</span> <span class="ss">source: :production</span>
+  <span class="n">has_many</span> <span class="ss">:supporting_performances</span><span class="p">,</span> <span class="ss">through: :supporting_roles</span><span class="p">,</span> <span class="ss">source: :production</span>
+<span class="k">end</span>
+
+<span class="c1"># through association models</span>
+
+<span class="k">class</span> <span class="nc">SupportingRoles</span>
+  <span class="n">belongs_to</span> <span class="ss">:movie</span>
+  <span class="n">belongs_to</span> <span class="ss">:actor</span>
+<span class="k">end</span>
+
+<span class="k">class</span> <span class="nc">LeadingRoles</span>
+  <span class="n">belongs_to</span> <span class="ss">:movie</span>
+  <span class="n">belongs_to</span> <span class="ss">:actor</span>
+<span class="k">end</span></code></pre></figure>
+
+<p><br /></p>
+
+<p>Here our production has both lead and supporting actors due to a <code class="highlighter-rouge">through</code> relationship, we are also specifying through <code class="highlighter-rouge">source: :actor</code> that both associations are towards the <code class="highlighter-rouge">Actor</code> model.</p>
+
+<p><code class="highlighter-rouge">source</code> is an argument for an ActiveRecord association that specifies the model being associated to from the through model, if the name of the association is not the same as the name of the associated model. Read more about it <a href="http://stackoverflow.com/questions/4632408/need-help-to-understand-source-option-of-has-one-has-many-through-of-rails">here</a>.</p>
+
+<p>Back to the topic at hand, we can now also query the lead and supporting performances of our actors because of the same <code class="highlighter-rouge">through</code> relationship that connects the two models, and we will know that <code class="highlighter-rouge">leading_performances</code> or <code class="highlighter-rouge">supporting_performances</code> will return the actual production because we once again specified that through the <code class="highlighter-rouge">source</code>.</p>
+
+<p>And thats it! Now we have two models that can be associated with each other in multiple different ways and names; achieved by specifying the through models and the source model of the association.</p>
+
+</div>
+</div>
+
+    </div>
+
+  </body>
+
+</html>

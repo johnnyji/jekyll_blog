@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Johnny Ji's Blog</title>
+  <meta name="description" content="So I’ve been playing around with ActiveRecord validation errors and I think I’ve found the ideal way I want to render them from now on.">
+  <link rel="stylesheet" href="http://johnnyji.me/css/main.css">
+  <link rel="canonical" href="/rails/2015/04/18/ideal-validation-error-rendering.html">
+  <link rel="alternate" type="application/rss+xml" title="Johnny Ji" href="/feed.xml"" />
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css">
+  <link href="https://fonts.googleapis.com/css?family=Lora:400,400i|Open+Sans:600,400" rel="stylesheet">
+</head>
+
+
+  <body class="lite">
+
+    <header class="header header-lite">
+  <a class="header-title header-title-lite" href="http://johnnyji.me">JOHNNY JI</a>
+  <div class="header-social-media">
+    <a href="https://www.github.com/johnnyji" target="_blank" class="header-social-media-link github header-lite">
+      <i class="fa fa-github header-lite"></i>
+    </a>
+    <a href="https://www.twitter.com/johnnyisji" target="_blank" class="header-social-media-link twitter header-lite">
+      <i class="fa fa-twitter header-lite"></i>
+    </a>
+    <a href="https://www.linkedin.com/in/johnnyji" target="_blank" class="header-social-media-link linkedin header-lite">
+      <i class="fa fa-linkedin header-lite"></i>
+    </a>
+    <a href="https://www.instagram.com/johnnyisji"" target="_blank" class="header-social-media-link instagram header-lite">
+      <i class="fa fa-instagram header-lite"></i>
+    </a>
+  </div>
+</header>
+    
+
+    <div class="page-container">
+      <div class="single-post">
+  <header class="single-post-header">
+    <h1 class="single-post-header-title">Ideal Validation Error Rendering in ERB!</h1>
+    <p class="single-post-header-date">// Apr 18, 2015</p>
+  </header>
+  <div class="single-post-content"><p>So I’ve been playing around with ActiveRecord validation errors and I think I’ve found the ideal way I want to render them from now on.</p>
+
+<p>When your validation fails you want to ideally render a new page to populate your current page with error messages. The most convenient way to to this would be.</p>
+
+<figure class="highlight"><pre><code class="language-erb" data-lang="erb"><span class="cp">&lt;%</span> <span class="k">if</span> <span class="vi">@model</span><span class="p">.</span><span class="nf">errors</span><span class="p">.</span><span class="nf">any?</span> <span class="cp">%&gt;</span>
+  <span class="cp">&lt;%</span> <span class="vi">@model</span><span class="p">.</span><span class="nf">errors</span><span class="p">.</span><span class="nf">full_messages</span><span class="p">.</span><span class="nf">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">message</span><span class="o">|</span> <span class="cp">%&gt;</span>
+    <span class="cp">&lt;%=</span> <span class="n">message</span> <span class="cp">%&gt;</span>
+  <span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">%&gt;</span>
+<span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">%&gt;</span></code></pre></figure>
+
+<p><br /></p>
+
+<p>But the problem with this formatting is that it isn’t exactly appealing to the eye. The better way to render errors would be to ideally display them each beside or above their respective form fields. In order to do so, all you would need to do is access the paticular error by passing the attribute as a key. Such as:</p>
+
+<figure class="highlight"><pre><code class="language-erb" data-lang="erb"><span class="cp">&lt;%=</span> <span class="vi">@model</span><span class="p">.</span><span class="nf">errors</span><span class="p">[</span><span class="ss">:title</span><span class="p">]</span> <span class="cp">%&gt;</span>
+<span class="c">&lt;%# =&gt; ["Sorry! But that title is taken!"]</span></code></pre></figure>
+
+<p><br /></p>
+
+<p>This will effectively return the custom error message you set in the form of an array, which will display as so when rendered in erb. So in order to only render the message itself, just simply select the last element of the array. So the entire line of code needed to render a specific error message without using a loop would be:</p>
+
+<figure class="highlight"><pre><code class="language-erb" data-lang="erb"><span class="cp">&lt;%=</span> <span class="vi">@model</span><span class="p">.</span><span class="nf">errors</span><span class="p">[</span><span class="ss">:title</span><span class="p">].</span><span class="nf">last</span> <span class="cp">%&gt;</span>
+<span class="c">&lt;%# =&gt; Sorry! But that title is taken!</span></code></pre></figure>
+
+<p><br /></p>
+
+<p>Now you’re free to render error messages WHEREVER you want, so go ahead and style the fuck outta that page :)</p>
+
+</div>
+</div>
+
+    </div>
+
+  </body>
+
+</html>
