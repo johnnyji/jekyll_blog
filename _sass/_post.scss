@@ -44,16 +44,22 @@
     // Post section dividers
     hr {
       border-bottom: 1px solid $grey-color;
-      border: 0;
-      margin: 3rem auto;
+      border-top: 0;
+      margin: 2.5rem auto;
       width: 30px;
     }
 
     // Code blocks and quotes
     pre, blockquote {
-      margin-bottom: 1.5rem;
-      margin-top: 1.5rem;
+      margin-bottom: 2.5rem;
+      margin-top: 2.5rem;
     }
+    
+    // Code syntax
+    code {
+      font-size: 18px;
+    }
+
   }
 
 }
