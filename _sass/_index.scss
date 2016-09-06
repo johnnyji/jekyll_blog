@@ -1,3 +1,5 @@
+// Home Page styles
+
 .index-container {
   @include larger-mobile-viewport { width: 90vw; margin: 0 4rem; }
   @include medium-viewport { width: 85vw; margin: 0 4rem; }
@@ -45,9 +47,9 @@
 .get-blog-posts {
   @include larger-mobile-viewport { margin-left: 0; }
   @include mobile-viewport {
-    .brace { display: none }
     margin: 0 auto;
     font-size: 1.7rem;
+    .brace { display: none }
   }
   font-size: 1.8rem;
   margin-left: 3rem;

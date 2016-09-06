@@ -1,6 +1,6 @@
 ---
 layout: post
-title: 'Why Arrow Functions Murder React.js Performance'
+title: 'Why Anon Functions Murder Performance in React'
 date: 2016-06-27
 categories: React
 ---
@@ -11,13 +11,13 @@ If you've ever experienced performance issues whilst using React.js, it's likely
 <br/>
 <br/>
 
-<h3><b><em>So... What's the problem?</em></b></h3>
+<h3>So... What's the problem?</h3>
 
 Well the problem is, there's been a pattern that I've been seeing quite a lot in the React.js community; using anonymous (arrow) functions as callback props. Here are two examples, the first with arrow functions, and the latter without. It's immediately clear why people prefer the arrow function approach:
 <br/>
 <br/>
 
-<b>WITH ES6 Arrow Functions:</b>
+<b>*with* ES6 Arrow Functions:</b>
 {% highlight javascript %}
   // ...
 
@@ -38,7 +38,7 @@ Well the problem is, there's been a pattern that I've been seeing quite a lot in
 }
 {% endhighlight %}
 
-<b>WITHOUT ES6 Arrow Functions:</b>
+<b>*without* ES6 Arrow Functions:</b>
 {% highlight javascript %}
   // ...
 
@@ -74,7 +74,7 @@ Looking at this code, I would probably pick the first one. With the introduction
 <br/>
 <br/>
 
-<h3><b><em>So why are arrow functions bad exactly?</em></b></h3>
+<h3>So why are arrow functions bad exactly?</h3>
 
 Arrow functions used in this context are what's known as `Anonymous Functions` in JavaScript. Anonymous functions, just as they their name hints at, have no identity. They are functions that are created, used and discarded just as quickly.
 
@@ -151,10 +151,6 @@ Here we're passing the reference of `this._handleClicked`, and therefore not cre
 The downside to this approach is that you have to write some more code (most of which will boil a lot of plates); however the flip side is that you end up with optimized performance, and I think that's a pretty big win.
 <br/>
 <br/>
-<br/>
-
-
-<b>Yeaaaaahhhhhhhhh!!!</b>
 
 
 [fiddle]: https://jsfiddle.net/johnnyji/mtkjc5on/

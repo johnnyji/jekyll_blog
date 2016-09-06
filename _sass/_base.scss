@@ -38,7 +38,6 @@ body {
 }
 
 
-
 /**
  * Set `margin-bottom` to maintain vertical rhythm
  */
@@ -49,8 +48,6 @@ ul, ol, dl, figure,
     margin-bottom: $spacing-unit / 2;
 }
 
-
-
 /**
  * Images
  */
@@ -58,8 +55,6 @@ img {
     max-width: 100%;
     vertical-align: middle;
 }
-
-
 
 /**
  * Figures
@@ -140,7 +135,7 @@ pre, code {
 
 code {
   padding: 1px 5px;
-  background-color: darken(whitesmoke, 3%);
+  background-color: #FFF;
   color: darken(#bf616a, 5%);
   .lineno {
     color: #75715e;

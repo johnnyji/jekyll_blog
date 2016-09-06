@@ -1,31 +1,65 @@
 .single-post {
   @include mobile-viewport { width: 95%; }
-  position: relative;
-  margin: 0 auto;
-  width: 80%;
-  max-width: 1100px;
   padding: 3rem;
-  .single-post-header {
-    position: relative;
+  position: relative;
+
+  &-header {
     color: $background-color;
-    padding: 0 0 3rem 0;
-    .title {
-      position: relative;
+    font-family: $base-font-family;
+    font-weight: 600;
+    letter-spacing: $base-letter-spacing;
+    padding: 0;
+    margin-bottom: 5rem;
+    position: relative;
+
+    &-title {
       font-weight: 600;
-      font-size: 2rem;
+      font-size: 40px;
       margin: 0 0 1rem 0; 
     }
-    .date {
-      position: relative;
-      font-size: 1.1rem;
+
+    &-date {
+      font-family: $code-font;
+      font-size: 1.5rem;
       color: $comment-color;
     }
   }
-  .single-post-content {
-    position: relative;
-    color: $background-color;
-    font-family: $base-font-family;
+
+  &-content {
+    color: $post-font-color;
+    font-family: $post-font-family;
+    font-size: $post-font-size;
     font-weight: 400;
+    letter-spacing: $base-letter-spacing;
+    line-height: 1.58;
     margin-bottom: 5rem;
+    position: relative;
+
+    // Post subtitles
+    h2, h3, h4 {
+      font-family: $base-font-family;
+      font-weight: 600;
+    }
+
+    // Post section dividers
+    hr {
+      border-bottom: 1px solid $grey-color;
+      border-top: 0;
+      margin: 2.5rem auto;
+      width: 30px;
+    }
+
+    // Code blocks and quotes
+    pre, blockquote {
+      margin-bottom: 2.5rem;
+      margin-top: 2.5rem;
+    }
+    
+    // Code syntax
+    code {
+      font-size: 18px;
+    }
+
   }
+
 }
