@@ -4,10 +4,10 @@
     <title>Johnny Ji</title>
     <description>This is a collection of stuff that I found interesing and wanted to write about. Both as a coder and a human being in training.
 </description>
-    <link>http://johnnyji.me/</link>
-    <atom:link href="http://johnnyji.me/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Mon, 05 Sep 2016 17:31:36 -0700</pubDate>
-    <lastBuildDate>Mon, 05 Sep 2016 17:31:36 -0700</lastBuildDate>
+    <link>http://localhost:4000/</link>
+    <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
+    <pubDate>Tue, 13 Sep 2016 01:31:36 -0700</pubDate>
+    <lastBuildDate>Tue, 13 Sep 2016 01:31:36 -0700</lastBuildDate>
     <generator>Jekyll v3.2.1</generator>
     
       <item>
@@ -158,8 +158,8 @@
 
 </description>
         <pubDate>Mon, 27 Jun 2016 00:00:00 -0700</pubDate>
-        <link>http://johnnyji.me/react/2016/06/27/why-arrow-functions-murder-react-performance.html</link>
-        <guid isPermaLink="true">http://johnnyji.me/react/2016/06/27/why-arrow-functions-murder-react-performance.html</guid>
+        <link>http://localhost:4000/react/2016/06/27/why-arrow-functions-murder-react-performance.html</link>
+        <guid isPermaLink="true">http://localhost:4000/react/2016/06/27/why-arrow-functions-murder-react-performance.html</guid>
         
         
         <category>React</category>
@@ -317,8 +317,8 @@
 
 </description>
         <pubDate>Thu, 03 Mar 2016 00:00:00 -0800</pubDate>
-        <link>http://johnnyji.me/react/2016/03/03/performance-optimization-in-reactjs-using-immutablejs.html</link>
-        <guid isPermaLink="true">http://johnnyji.me/react/2016/03/03/performance-optimization-in-reactjs-using-immutablejs.html</guid>
+        <link>http://localhost:4000/react/2016/03/03/performance-optimization-in-reactjs-using-immutablejs.html</link>
+        <guid isPermaLink="true">http://localhost:4000/react/2016/03/03/performance-optimization-in-reactjs-using-immutablejs.html</guid>
         
         
         <category>React</category>
@@ -491,8 +491,8 @@
 
 </description>
         <pubDate>Wed, 23 Dec 2015 00:00:00 -0800</pubDate>
-        <link>http://johnnyji.me/react/2015/12/23/creating-application-layout-with-functional-react.html</link>
-        <guid isPermaLink="true">http://johnnyji.me/react/2015/12/23/creating-application-layout-with-functional-react.html</guid>
+        <link>http://localhost:4000/react/2015/12/23/creating-application-layout-with-functional-react.html</link>
+        <guid isPermaLink="true">http://localhost:4000/react/2015/12/23/creating-application-layout-with-functional-react.html</guid>
         
         
         <category>React</category>
@@ -740,8 +740,8 @@
 
 </description>
         <pubDate>Tue, 08 Sep 2015 00:00:00 -0700</pubDate>
-        <link>http://johnnyji.me/react/2015/09/08/user-authentication-in-isomorphic-react-applications.html</link>
-        <guid isPermaLink="true">http://johnnyji.me/react/2015/09/08/user-authentication-in-isomorphic-react-applications.html</guid>
+        <link>http://localhost:4000/react/2015/09/08/user-authentication-in-isomorphic-react-applications.html</link>
+        <guid isPermaLink="true">http://localhost:4000/react/2015/09/08/user-authentication-in-isomorphic-react-applications.html</guid>
         
         
         <category>React</category>
@@ -902,8 +902,8 @@
 &lt;p&gt;&lt;strong&gt;Happy AJAXing!&lt;/strong&gt;&lt;/p&gt;
 </description>
         <pubDate>Wed, 26 Aug 2015 00:00:00 -0700</pubDate>
-        <link>http://johnnyji.me/flux/2015/08/26/handing-async-actions-in-reflux.html</link>
-        <guid isPermaLink="true">http://johnnyji.me/flux/2015/08/26/handing-async-actions-in-reflux.html</guid>
+        <link>http://localhost:4000/flux/2015/08/26/handing-async-actions-in-reflux.html</link>
+        <guid isPermaLink="true">http://localhost:4000/flux/2015/08/26/handing-async-actions-in-reflux.html</guid>
         
         
         <category>Flux</category>
@@ -967,8 +967,8 @@
 &lt;p&gt;&lt;br /&gt;&lt;/p&gt;
 </description>
         <pubDate>Mon, 24 Aug 2015 00:00:00 -0700</pubDate>
-        <link>http://johnnyji.me/css/2015/08/24/the-ultimate-sticky-footer.html</link>
-        <guid isPermaLink="true">http://johnnyji.me/css/2015/08/24/the-ultimate-sticky-footer.html</guid>
+        <link>http://localhost:4000/css/2015/08/24/the-ultimate-sticky-footer.html</link>
+        <guid isPermaLink="true">http://localhost:4000/css/2015/08/24/the-ultimate-sticky-footer.html</guid>
         
         
         <category>CSS</category>
@@ -1059,8 +1059,8 @@
 
 </description>
         <pubDate>Thu, 13 Aug 2015 00:00:00 -0700</pubDate>
-        <link>http://johnnyji.me/react/2015/08/13/intro-to-react-router.html</link>
-        <guid isPermaLink="true">http://johnnyji.me/react/2015/08/13/intro-to-react-router.html</guid>
+        <link>http://localhost:4000/react/2015/08/13/intro-to-react-router.html</link>
+        <guid isPermaLink="true">http://localhost:4000/react/2015/08/13/intro-to-react-router.html</guid>
         
         
         <category>React</category>
@@ -1139,8 +1139,8 @@
 &lt;p&gt;So much nicer. &lt;strong&gt;Ahhh…….&lt;/strong&gt;&lt;/p&gt;
 </description>
         <pubDate>Thu, 13 Aug 2015 00:00:00 -0700</pubDate>
-        <link>http://johnnyji.me/react/2015/08/13/binding-react-component-functions-in-es6.html</link>
-        <guid isPermaLink="true">http://johnnyji.me/react/2015/08/13/binding-react-component-functions-in-es6.html</guid>
+        <link>http://localhost:4000/react/2015/08/13/binding-react-component-functions-in-es6.html</link>
+        <guid isPermaLink="true">http://localhost:4000/react/2015/08/13/binding-react-component-functions-in-es6.html</guid>
         
         
         <category>React</category>
@@ -1165,8 +1165,8 @@
 
 </description>
         <pubDate>Wed, 29 Jul 2015 00:00:00 -0700</pubDate>
-        <link>http://johnnyji.me/rails/2015/07/29/checking-for-missing-foreign-keys.html</link>
-        <guid isPermaLink="true">http://johnnyji.me/rails/2015/07/29/checking-for-missing-foreign-keys.html</guid>
+        <link>http://localhost:4000/rails/2015/07/29/checking-for-missing-foreign-keys.html</link>
+        <guid isPermaLink="true">http://localhost:4000/rails/2015/07/29/checking-for-missing-foreign-keys.html</guid>
         
         
         <category>Rails</category>
@@ -1206,8 +1206,8 @@
 &lt;p&gt;&lt;br /&gt;&lt;/p&gt;
 </description>
         <pubDate>Mon, 27 Jul 2015 00:00:00 -0700</pubDate>
-        <link>http://johnnyji.me/activerecord/2015/07/27/when-to-use-joins-vs-includes-in-active-record-queries.html</link>
-        <guid isPermaLink="true">http://johnnyji.me/activerecord/2015/07/27/when-to-use-joins-vs-includes-in-active-record-queries.html</guid>
+        <link>http://localhost:4000/activerecord/2015/07/27/when-to-use-joins-vs-includes-in-active-record-queries.html</link>
+        <guid isPermaLink="true">http://localhost:4000/activerecord/2015/07/27/when-to-use-joins-vs-includes-in-active-record-queries.html</guid>
         
         
         <category>ActiveRecord</category>

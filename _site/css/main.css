@@ -404,6 +404,8 @@ footer {
     .single-post-content pre, .single-post-content blockquote {
       margin-bottom: 2.5rem;
       margin-top: 2.5rem; }
+    .single-post-content pre code {
+      font-size: 15px; }
     .single-post-content code {
       font-size: 18px; }
 
